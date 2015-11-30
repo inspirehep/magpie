@@ -2,6 +2,10 @@ import bisect
 
 
 class KeywordToken(object):
+    """
+    Represents a keyword candidate with all its occurring forms and metrics
+    calculated e.g. no of occurrences
+    """
     def __init__(self, value, position, uri=None, form=None):
         self.value = value
         self.uri = uri
@@ -46,6 +50,15 @@ class KeywordToken(object):
 
 
 def add_token(token, collection, position, ontology_dict, form=None):
+    """ Adds an additional occurrence to a collections of tokens or creates
+     a new token if it doesn't yet exist.
+      :param token - string
+      :param collection - collection of KeywordTokens
+      :param position - integer, token position in the document
+      :param ontology_dict - dict with Literal->URI ontology mapping
+      :param form - string representing the form that a token can take
+
+      :return None"""
     if token in collection:
         collection[token].add_occurrence(position, form=form)
     else:

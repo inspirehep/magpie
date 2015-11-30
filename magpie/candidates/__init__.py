@@ -1,5 +1,5 @@
-from ngram import generate_ngram_candidates
 from anchor import generate_anchor_candidates
+from ngram import generate_ngram_candidates
 
 STRATEGY = 'NGRAMS'
 

@@ -74,7 +74,8 @@ setup(
     install_requires=[
         'rdflib',
         'nltk',
-        'Click',
+        'marisa-trie',
+        # 'Click',
     ],
 
     # List additional groups of dependencies here (e.g. development

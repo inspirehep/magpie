@@ -4,6 +4,7 @@ STEMMER_TYPE = 'Porter'
 
 
 def stem(word):
+    """ Use a chosen NLTK stemmer to stem a word. """
     stemmer = {
         'Porter': PorterStemmer(),
         'Snowball': SnowballStemmer('english'),

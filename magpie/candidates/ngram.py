@@ -1,14 +1,18 @@
+from nltk.util import ngrams as nltk_ngrams
 from anchor import generate_anchor_candidates
-from fuzzywuzzy import process as fuzz_process
-from nltk.util import ngrams
 from keyword_token import add_token
-
-CUTOFF = 91
 
 
 def generate_ngram_candidates(document, ontology):
+    """
+    Generate keyword candidates by building an ontology trie and performing
+    a fuzzy match over it with ngrams extracted from the text.
+    :param document - Document object
+    :param ontology - Ontology object
+
+    :return set of KeywordTokens
+    """
     all_words = document.get_meaningful_words()
-    all_concepts = ontology.get_all_concept_values()
     ontology_dict = ontology.get_literal_uri_mapping()
     tokens = set()
 
@@ -19,18 +23,12 @@ def generate_ngram_candidates(document, ontology):
 
     # 2-grams
     n = 2
-    concepts = ontology.get_nlength_concept_values(range(n + 1))
     ngram_tokens = dict()
     for position, ngram in get_ngrams_around_anchors(n, all_words, anchors):
         # TODO potential filtering of ngrams e.g. for linguistic purposes
         form = " ".join(ngram)
-        for hit in fuzzy_match(form, concepts, CUTOFF):
+        for hit in ontology.fuzzy_match(form):
             add_token(hit, ngram_tokens, position, ontology_dict, form=form)
-
-    # for i in tokens:
-    #     print i.value
-    # for i in set(ngram_tokens.values()):
-    #     print i.value
     tokens |= set(ngram_tokens.values())
 
     # 3-grams
@@ -54,22 +52,19 @@ def generate_ngram_candidates(document, ontology):
     return tokens
 
 
-def fuzzy_match(token, collection, cutoff):
-    hits = fuzz_process.extract(token, collection)
-    return [h[0] for h in hits if h[1] > cutoff] if hits else []
-
-
 def get_all_ngrams(n, words):
-    return enumerate(ngrams(words, n))  # not necessarily a list
+    """ Generate all possible engrams from a text and enumerate them. """
+    return enumerate(nltk_ngrams(words, n))  # not necessarily a list
 
 
 def get_ngrams_around_anchors(n, words, anchors):
-    all_ngs = []
+    """ Generate ngrams only around certain words (anchors). """
+    all_ngrams = []
     for anchor in anchors:
         for i in anchor.get_all_occurrences():
             start_index = max(0, i - n + 1)
             piece = words[start_index: min(i + n, len(words))]
-            ngs = enumerate(ngrams(piece, n), start=start_index)
-            all_ngs.extend(ngs)
+            ngrams = enumerate(nltk_ngrams(piece, n), start=start_index)
+            all_ngrams.extend(ngrams)
 
-    return all_ngs
+    return all_ngrams
