@@ -1,5 +1,5 @@
 from nltk.util import ngrams as nltk_ngrams
-from anchor import generate_anchor_candidates
+from anchor import get_anchors
 from keyword_token import add_token
 
 
@@ -17,7 +17,7 @@ def generate_ngram_candidates(document, ontology):
     tokens = set()
 
     # 1-grams
-    anchors = generate_anchor_candidates(document, ontology)
+    anchors = get_anchors(all_words, ontology_dict)
     # TODO remove the standalone ones
     tokens |= set(anchors)
 

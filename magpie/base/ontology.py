@@ -2,10 +2,9 @@ import cPickle as pickle
 import logging
 import os
 import rdflib
+from rdflib.namespace import SKOS
 from magpie.config import ONTOLOGY_DIR
 from magpie.candidates.trie import OntologyTrie
-
-SKOS_NAMESPACE = "http://www.w3.org/2004/02/skos/core#"
 
 
 # TODO change into a decorator
@@ -40,12 +39,15 @@ def memoize(f):
     return memoized
 
 
+def parse_label(label):
+    return ''.join(c for c in label if c not in ',:;').lower()
+
+
 # @memoize
 class Ontology(object):
     """ Holds the ontology. """
     def __init__(self, source):
         self.source = source
-        self.skos_namespace = rdflib.Namespace(SKOS_NAMESPACE)
         self.graph = self.load_ontology_file(source)
         self.trie = OntologyTrie(self.get_all_concept_values())
 
@@ -64,13 +66,17 @@ class Ontology(object):
 
     def get_all_concept_values(self):
         """ Get all ontology concepts in their preferred form (prefLabel). """
-        return {uri_lab[1].value.lower() for uri_lab
-                in self.graph.subject_objects(self.skos_namespace["prefLabel"])}
+        return {parse_label(x[1].value) for x
+                in self.graph.subject_objects(SKOS.prefLabel)}
 
     def get_literal_uri_mapping(self):
-        """ Get a dictionary mapping literal node values to full URIs. """
-        return {uri_lab[1].value.lower(): uri_lab[0] for uri_lab
-                in self.graph.subject_objects(self.skos_namespace["prefLabel"])}
+        """ Get a dictionary mapping parsed node values to their
+        canonical labels and full URIs. """
+        mapping = dict()
+        for uri, label in self.graph.subject_objects(SKOS.prefLabel):
+            mapping[parse_label(label.value)] = (label, uri)
+
+        return mapping
 
     def get_trie(self):
         return self.trie

@@ -16,6 +16,9 @@ class Document(object):
 
         self.wordset = self.compute_wordset()
 
+    def __str__(self):
+        return self.text
+
     def compute_wordset(self):
         tokens = WordPunctTokenizer().tokenize(self.text)
         lowercase = map(unicode.lower, tokens)
