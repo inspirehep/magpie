@@ -1,4 +1,5 @@
 import bisect
+from magpie.base.ontology import parse_label
 
 
 class KeywordToken(object):
@@ -7,17 +8,17 @@ class KeywordToken(object):
     calculated e.g. no of occurrences
     """
     def __init__(self,
-                 parsed_form,
+                 uri,
                  position=-1,
-                 uri=None,
-                 canonical_form=None,
+                 parsed_label=None,
+                 canonical_label=None,
                  form=None):
-        self.parsed_form = parsed_form
-        self.canonical_form = canonical_form
+        self.canonical_label = canonical_label
+        self.parsed_label = parsed_label
         self.uri = uri
         self.occurrences = [position]
-        self._hash = hash(self.parsed_form)
-        self.forms = {form or parsed_form}  # form if it's not None, value otherwise
+        self._hash = hash(self.uri)
+        self.forms = {form or parsed_label}  # form if it's not None, value otherwise
 
     def add_occurrence(self, position, form=None):
         assert position >= 0
@@ -43,13 +44,13 @@ class KeywordToken(object):
             return 1
 
     def __str__(self):
-        return self.canonical_form
+        return self.get_canonical_form()
 
     def get_parsed_form(self):
-        return self.parsed_form
+        return self.parsed_label or self.uri
 
     def get_canonical_form(self):
-        return self.canonical_form.value
+        return self.canonical_label or self.get_parsed_form()
 
     def get_uri(self):
         return self.uri
@@ -64,22 +65,26 @@ class KeywordToken(object):
         return self.occurrences
 
 
-def add_token(token, collection, position, ontology_dict, form=None):
+def add_token(uri, collection, position, ontology, form=None):
     """ Adds an additional occurrence to a collections of tokens or creates
      a new token if it doesn't yet exist.
-      :param token - string
+      :param uri - SKOS URI
       :param collection - collection of KeywordTokens
       :param position - integer, token position in the document
-      :param ontology_dict - dict with Literal->URI ontology mapping
+      :param ontology - Ontology object
       :param form - string representing the form that a token can take
 
       :return None"""
-    if token in collection:
-        collection[token].add_occurrence(position, form=form)
+    if uri in collection:
+        collection[uri].add_occurrence(position, form=form)
     else:
-        canonical_label, uri = ontology_dict.get(token)
-        collection[token] = KeywordToken(token,
-                                         position=position,
-                                         canonical_form=canonical_label,
-                                         uri=uri,
-                                         form=form)
+        canonical_label = ontology.get_canonical_label(uri)
+        parsed_label = parse_label(canonical_label)
+
+        collection[uri] = KeywordToken(
+            uri,
+            position=position,
+            canonical_label=canonical_label,
+            parsed_label=parsed_label,
+            form=form
+        )

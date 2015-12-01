@@ -15,7 +15,7 @@ class OntologyTrie(object):
     def __init__(self, literals):
         self.trie = marisa_trie.Trie(literals)
         self.cutoff = 2
-        self._first_row = self.get_trie_row(2)
+        self._second_row = self.get_trie_row(2)
         self._hits = set()
         self.comparisons = 0
 
@@ -26,8 +26,14 @@ class OntologyTrie(object):
         self._hits = set()
         self.comparisons = 0
 
-        for letter in self._first_row:
-            self._recursive_match(letter, word)
+        # We assume for performance purposes
+        # that there's no mistake in the first two characters
+        prefix = word[:2]
+        if prefix in self._second_row:
+            self._recursive_match(prefix, word)
+
+        # for letter in self._first_row:
+        #     self._recursive_match(letter, word)
 
         # print("Computed " + str(self.comparisons) + " comparisons")
         return {hit[0] for hit in self._hits}
@@ -51,6 +57,15 @@ class OntologyTrie(object):
         :param exclude - set of unicodes, nodes to exclude from the results. """
         exclude = exclude or set()
         return {key[:row_number] for key in self.trie.keys(prefix)} - exclude
+
+    def __getitem__(self, item):
+        return self.trie[item]
+
+    def __len__(self):
+        return len(self.trie)
+
+    def __contains__(self, item):
+        return item in self.trie
 
     def _recursive_match(self, prefix, word, prev_row=None):
         """ Walks the trie computing the Levenshtein distace """

@@ -5,7 +5,7 @@ from magpie.base.document import Document
 from magpie.base.ontology import OntologyFactory
 from magpie.config import ONTOLOGY_DIR, ROOT_DIR
 
-HEP_ONTOLOGY = os.path.join(ONTOLOGY_DIR, 'HEPontCore.rdf')
+HEP_ONTOLOGY = os.path.join(ONTOLOGY_DIR, 'HEPont.rdf')
 
 
 def calculate_recall_for_kw_candidates():
@@ -20,27 +20,34 @@ def calculate_recall_for_kw_candidates():
         with open(os.path.join(hep_data_path, f + '.key'), 'rb') as answer_file:
             answers = {line.rstrip('\n') for line in answer_file}
 
-        print(document)
+        # print(document.get_meaningful_words())
 
-        print("Candidates:")
+        print(u"Candidates:")
         for kw in kw_candidates:
-            print("\t" + kw)
+            print(u"\t" + unicode(kw))
         print
-        print("Answers:")
+
+        print(u"Answers:")
         for kw in answers:
-            print("\t" + kw)
+            print(u"\t" + unicode(kw))
         print
-        print("Conjunction:")
+
+        print(u"Conjunction:")
         for kw in kw_candidates & answers:
-            print("\t" + kw)
+            print(u"\t" + unicode(kw))
         print
 
         recall = len(kw_candidates & answers) / (len(answers))
-        print("Recall: " + str(recall))
+        print(u"Recall: " + unicode(recall))
+        print
 
         average_recall += recall
 
     average_recall /= len(files)
 
     print
-    print("Averaged recall: " + str(average_recall))
+    print(u"Averaged recall: " + unicode(average_recall))
+
+
+def get_ontology():
+    return OntologyFactory(HEP_ONTOLOGY)

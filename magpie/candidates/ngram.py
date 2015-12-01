@@ -13,12 +13,10 @@ def generate_ngram_candidates(document, ontology):
     :return set of KeywordTokens
     """
     all_words = document.get_meaningful_words()
-    ontology_dict = ontology.get_literal_uri_mapping()
     tokens = set()
 
     # 1-grams
-    anchors = get_anchors(all_words, ontology_dict)
-    # TODO remove the standalone ones
+    anchors = get_anchors(all_words, ontology)
     tokens |= set(anchors)
 
     # 2-grams
@@ -28,27 +26,33 @@ def generate_ngram_candidates(document, ontology):
         # TODO potential filtering of ngrams e.g. for linguistic purposes
         form = " ".join(ngram)
         for hit in ontology.fuzzy_match(form):
-            add_token(hit, ngram_tokens, position, ontology_dict, form=form)
+            uri = ontology.get_uri_from_label(hit)
+            add_token(uri, ngram_tokens, position, ontology, form=form)
     tokens |= set(ngram_tokens.values())
 
     # 3-grams
-    # n = 3
-    # concepts = ontology.get_nlength_concept_values(n)
-    # for position, ngram in get_all_ngrams(n, all_words):
-    #     ng_string = " ".join(ngram)
-    #     best_hit = fuzz_process.extract(ng_string, concepts)
-    #     if best_hit:
-    #         print ng_string, best_hit
+    n = 3
+    ngram_tokens = dict()
+    for position, ngram in get_ngrams_around_anchors(n, all_words, anchors):
+        # TODO potential filtering of ngrams e.g. for linguistic purposes
+        form = " ".join(ngram)
+        for hit in ontology.fuzzy_match(form):
+            uri = ontology.get_uri_from_label(hit)
+            add_token(uri, ngram_tokens, position, ontology, form=form)
+    tokens |= set(ngram_tokens.values())
 
     # 4-grams
     # n = 4
-    # concepts = ontology.get_nlength_concept_values(n)
-    # for position, ngram in get_all_ngrams(n, all_words):
-    #     ng_string = " ".join(ngram)
-    #     best_hit = fuzz_process.extract(ng_string, concepts)
-    #     if best_hit:
-    #         print ng_string, best_hit
+    # ngram_tokens = dict()
+    # for position, ngram in get_ngrams_around_anchors(n, all_words, anchors):
+    #     # TODO potential filtering of ngrams e.g. for linguistic purposes
+    #     form = " ".join(ngram)
+    #     for hit in ontology.fuzzy_match(form):
+    #         uri = ontology.get_uri_from_label(hit)
+    #         add_token(uri, ngram_tokens, position, ontology, form=form)
+    # tokens |= set(ngram_tokens.values())
 
+    # TODO remove the standalone ones
     return tokens
 
 
