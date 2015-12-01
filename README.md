@@ -1,1 +1,1 @@
-# magpie
+![image](docs/img/logo.jpeg)
