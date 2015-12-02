@@ -71,7 +71,7 @@ def get_related_concepts(anchors, relation, ontology, depth=None):
     nodes = set()
     queue = collections.deque([(0, a) for a in anchors])
 
-    while len(queue) != 0:
+    while queue:
         distance, node = queue.popleft()
         if not depth or distance < depth:
             for child_uri in ontology.get_children_of_node(node.uri, relation):
