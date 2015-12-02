@@ -41,19 +41,14 @@ def memoize(f):
     return memoized
 
 
-def parse_label(label):
-    if not label:
-        return None
-    else:
-        return ''.join(c for c in label if c not in ',:;').lower()
-
-
 # @memoize
 class Ontology(object):
     """ Holds the ontology. """
     def __init__(self, source):
         self.source = source
         self.graph = self.load_ontology_file(source)
+        self.uri2canonical = self._build_uri2canonical()
+        self.parsed2uri = self._build_parsed2uri()
         self.id_mapping = None  # defined in _build_tree()
         self.trie = self._build_trie()
 
@@ -69,12 +64,54 @@ class Ontology(object):
         node_id = self.trie[label]
         return self.id_mapping[node_id]
 
+    def get_children_of_node(self, node_uri, relation):
+        """ Get the children of a specific URI for a given relation type. """
+        return self.graph.objects(subject=node_uri, predicate=relation)
+
+    def get_all_uris(self):
+        """ Get all concept URIs """
+        return self.graph.subjects(predicate=SKOS.prefLabel)
+
+    def get_all_parsed_labels(self):
+        """ Get all ontology concepts in their preferred form (prefLabel). """
+        return {self.parse_label(x[1].value) for x
+                in self.graph.subject_objects(SKOS.prefLabel)}
+
+    def get_canonical_label_from_uri(self, uri):
+        """ Get a canonical label of a given URI. """
+        try:
+            return self.uri2canonical[uri]
+        except KeyError:
+            return '#'.join(str(uri).split('#')[1:])
+
+    def get_parsed_label_from_uri(self, uri):
+        """ Get a parsed label of a given URI. """
+        return self.parse_label(self.get_canonical_label_from_uri(uri))
+
+    def get_trie(self):
+        return self.trie
+
+    @staticmethod
+    def load_ontology_file(source):
+        graph = rdflib.Graph()
+
+        # TODO Add loading in different formats
+        graph.parse(source=source)
+        logging.info("File " + source + " successfully loaded!")
+        return graph
+
+    @staticmethod
+    def parse_label(label):
+        if not label:
+            return None
+        else:
+            return ''.join(c for c in label if c not in ',:;').lower()
+
     def _build_trie(self):
         """ Build the ontology trie """
-        uri_dict = self.get_uri2literal_mapping()
         uri_keys, tree_nodes = [], []
 
-        for uri, parsed_label in uri_dict.iteritems():
+        for parsed_label, uri in self.parsed2uri.iteritems():
             added_elements = 0
 
             # Permutations
@@ -101,45 +138,16 @@ class Ontology(object):
 
         return trie
 
-    @staticmethod
-    def load_ontology_file(source):
-        graph = rdflib.Graph()
-
-        # TODO Add loading in different formats
-        graph.parse(source=source)
-        logging.info("File " + source + " successfully loaded!")
-        return graph
-
-    def get_all_uris(self):
-        """ Get all concept URIs """
-        return self.graph.subjects(predicate=SKOS.prefLabel)
-
-    def get_all_parsed_labels(self):
-        """ Get all ontology concepts in their preferred form (prefLabel). """
-        return {parse_label(x[1].value) for x
-                in self.graph.subject_objects(SKOS.prefLabel)}
-
-    def get_canonical_label(self, uri):
-        """ Get a canonical label of a given URI """
-        for obj in self.graph.objects(subject=uri, predicate=SKOS.prefLabel):
-            return obj.value  # Return the first value found
-
-    def get_uri2literal_mapping(self):
-        """ Get a dictionary mapping all URIs to their parsed prefLabels. """
+    def _build_uri2canonical(self):
+        """ Build a dictionary mapping all URIs to their prefLabels. """
         mapping = dict()
-        for uri, label in self.graph.subject_objects(SKOS.prefLabel):
-            mapping[uri] = parse_label(label.value)
-
+        for uri, pref_label in self.graph.subject_objects(SKOS.prefLabel):
+            mapping[uri] = pref_label.value
         return mapping
 
-    def get_literal2uri_mapping(self):
-        """ Get a dictionary mapping parsed node values to their
-        canonical labels and full URIs. """
+    def _build_parsed2uri(self):
+        """ Build a dictionary mapping all parsed labels to their URIs. """
         mapping = dict()
-        for uri, label in self.graph.subject_objects(SKOS.prefLabel):
-            mapping[parse_label(label.value)] = (label, uri)
-
+        for uri, pref_label in self.graph.subject_objects(SKOS.prefLabel):
+            mapping[self.parse_label(pref_label.value)] = uri
         return mapping
-
-    def get_trie(self):
-        return self.trie

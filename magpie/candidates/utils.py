@@ -10,9 +10,9 @@ def get_anchors(words, ontology):
     anchors = dict()
 
     for position, word in enumerate(words):
-        if word in trie:
-            add_token(word, anchors, position, ontology)
-        elif stem(word) in trie:
-            add_token(stem(word), anchors, position, ontology, form=word)
+        for form in [word, stem(word)]:
+            if form in trie:
+                uri = ontology.get_uri_from_label(form)
+                add_token(uri, anchors, position, ontology, form=form)
 
     return anchors.values()

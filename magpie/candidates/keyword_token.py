@@ -1,5 +1,4 @@
 import bisect
-from magpie.base.ontology import parse_label
 
 
 class KeywordToken(object):
@@ -78,8 +77,8 @@ def add_token(uri, collection, position, ontology, form=None):
     if uri in collection:
         collection[uri].add_occurrence(position, form=form)
     else:
-        canonical_label = ontology.get_canonical_label(uri)
-        parsed_label = parse_label(canonical_label)
+        canonical_label = ontology.get_canonical_label_from_uri(uri)
+        parsed_label = ontology.get_parsed_label_from_uri(uri)
 
         collection[uri] = KeywordToken(
             uri,

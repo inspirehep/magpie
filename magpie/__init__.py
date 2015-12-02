@@ -10,6 +10,7 @@ HEP_ONTOLOGY = os.path.join(ONTOLOGY_DIR, 'HEPont.rdf')
 
 def calculate_recall_for_kw_candidates():
     average_recall = 0
+    total_kw_number = 0
     ontology = OntologyFactory(HEP_ONTOLOGY)
     hep_data_path = os.path.join(ROOT_DIR, 'data', 'hep')
     files = {fname[:-4] for fname in os.listdir(hep_data_path)}
@@ -22,30 +23,34 @@ def calculate_recall_for_kw_candidates():
 
         # print(document.get_meaningful_words())
 
-        print(u"Candidates:")
-        for kw in kw_candidates:
-            print(u"\t" + unicode(kw))
-        print
-
-        print(u"Answers:")
-        for kw in answers:
-            print(u"\t" + unicode(kw))
-        print
-
-        print(u"Conjunction:")
-        for kw in kw_candidates & answers:
-            print(u"\t" + unicode(kw))
-        print
+        # print(u"Candidates:")
+        # for kw in sorted(kw_candidates):
+        #     print(u"\t" + unicode(kw))
+        # print
+        #
+        # print(u"Answers:")
+        # for kw in sorted(answers):
+        #     print(u"\t" + unicode(kw))
+        # print
+        #
+        # print(u"Conjunction:")
+        # for kw in sorted(kw_candidates & answers):
+        #     print(u"\t" + unicode(kw))
+        # print
 
         recall = len(kw_candidates & answers) / (len(answers))
-        print(u"Recall: " + unicode(recall))
-        print
+        # print
+        # print(u"Paper: " + f)
+        # print(u"Candidates: " + str(len(kw_candidates)))
+        # print(u"Recall: " + unicode(recall))
 
         average_recall += recall
+        total_kw_number += len(kw_candidates)
 
     average_recall /= len(files)
 
     print
+    print(u"Total # of keywords: " + str(total_kw_number))
     print(u"Averaged recall: " + unicode(average_recall))
 
 
