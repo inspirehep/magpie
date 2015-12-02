@@ -11,7 +11,9 @@ def generate_keyword_candidates(document, ontology):
     :param ontology: Ontology object on which we match the keywords
     :return:
     """
-    return {
-        'NGRAMS': generate_ngram_candidates(document, ontology),
-        'SUBGRAPH': generate_subgraph_candidates(document, ontology),
-    }[STRATEGY]
+    if STRATEGY == 'NGRAMS':
+        return generate_ngram_candidates(document, ontology)
+    elif STRATEGY == 'SUBGRAPH':
+        return generate_subgraph_candidates(document, ontology)
+    else:
+        raise ValueError("Unknown STRATEGY = " + STRATEGY)

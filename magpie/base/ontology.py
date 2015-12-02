@@ -7,19 +7,34 @@ from magpie.config import ONTOLOGY_DIR
 from magpie.candidates.trie import OntologyTrie
 from magpie.utils.utils import get_all_permutations
 
+PUNCTUATION_TABLE = dict((ord(c), None) for c in u',:;')
+
+_ontology = dict()
+
 
 # TODO change into a decorator
 def OntologyFactory(source):
     """ A wrapper for Ontology class. Speeds up creation. """
+    global _ontology
+
+    # Cache L1 (memory)
+    if source in _ontology:
+        return _ontology[source]
+
+    # Cache L2 (pickle)
     filename = os.path.basename(source).split('.')[0]
     pickle_path = os.path.join(ONTOLOGY_DIR, filename + '.pickle')
     if os.path.exists(pickle_path):
-        return pickle.load(open(pickle_path, 'rb'))
-    else:
-        ontology = Ontology(source)
+        loaded = pickle.load(open(pickle_path, 'rb'))
+        _ontology[source] = loaded
+        return loaded
 
-        pickle.dump(ontology, open(pickle_path, 'wb'))
-        return ontology
+    # Sorry, have to recreate
+    ontology = Ontology(source)
+    logging.info("Ontology " + source + " successfully loaded!")
+    _ontology[source] = ontology  # dump to L1
+    pickle.dump(ontology, open(pickle_path, 'wb'))  # dump to L2
+    return ontology
 
 
 def memoize(f):
@@ -105,7 +120,7 @@ class Ontology(object):
         if not label:
             return None
         else:
-            return ''.join(c for c in label if c not in ',:;').lower()
+            return label.translate(PUNCTUATION_TABLE).lower()
 
     def _build_trie(self):
         """ Build the ontology trie """
