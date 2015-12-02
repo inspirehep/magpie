@@ -1,5 +1,5 @@
-from anchor import generate_anchor_candidates
 from ngram import generate_ngram_candidates
+from subgraph import generate_subgraph_candidates
 
 STRATEGY = 'NGRAMS'
 
@@ -13,5 +13,5 @@ def generate_keyword_candidates(document, ontology):
     """
     return {
         'NGRAMS': generate_ngram_candidates(document, ontology),
-        'ANCHOR': generate_anchor_candidates(document, ontology),
+        'SUBGRAPH': generate_subgraph_candidates(document, ontology),
     }[STRATEGY]

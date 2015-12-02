@@ -1,6 +1,6 @@
 from nltk.util import ngrams as nltk_ngrams
-from anchor import get_anchors
 from keyword_token import add_token
+from utils import get_anchors
 
 
 def generate_ngram_candidates(document, ontology):

@@ -1,13 +1,11 @@
-from keyword_token import add_token
+from magpie.candidates.keyword_token import add_token
 from magpie.utils.stemmer import stem
 
 
-def generate_anchor_candidates(document, ontology):
-    document_words = document.get_meaningful_words()
-    return get_anchors(document_words, ontology)
-
-
 def get_anchors(words, ontology):
+    """ Match single words in the document over the topology to find `anchors`
+    i.e. matches that later on can be used for ngram generation or
+    subgraph extraction """
     trie = ontology.get_trie()
     anchors = dict()
 

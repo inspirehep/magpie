@@ -5,7 +5,7 @@ import rdflib
 from rdflib.namespace import SKOS
 from magpie.config import ONTOLOGY_DIR
 from magpie.candidates.trie import OntologyTrie
-from magpie.utils.misc import get_all_permutations
+from magpie.utils.utils import get_all_permutations
 
 
 # TODO change into a decorator
