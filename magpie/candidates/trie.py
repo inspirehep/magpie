@@ -106,7 +106,7 @@ class OntologyTrie(object):
 class Trie(object):
     """ Class manually implementing a trie. Works faster than marisa-trie,
      because it enables walking it for fuzzy search. """
-    class TrieNode:
+    class TrieNode(object):
         def __init__(self):
             self.word = None
             self.children = {}
@@ -207,7 +207,7 @@ class Trie(object):
             self.cutoff = 2
 
     def __getitem__(self, item):
-        return self.word_dict.get(item, None)
+        return self.word_dict.get(item)
 
     def __len__(self):
         return self.node_count
