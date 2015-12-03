@@ -4,27 +4,28 @@ import os
 import rdflib
 from rdflib.namespace import SKOS
 from magpie.config import ONTOLOGY_DIR
-from magpie.candidates.trie import OntologyTrie
+from magpie.candidates.trie import OntologyTrie, Trie
 from magpie.utils.utils import get_all_permutations
 
 PUNCTUATION_TABLE = dict((ord(c), None) for c in u',:;')
+
 
 _ontology = dict()
 
 
 # TODO change into a decorator
-def OntologyFactory(source):
-    """ A wrapper for Ontology class. Speeds up creation. """
+def OntologyFactory(source, recreate=False):
+    """ A wrapper for Ontology class. Speeds up its creation. """
     global _ontology
 
     # Cache L1 (memory)
-    if source in _ontology:
+    if source in _ontology and not recreate:
         return _ontology[source]
 
     # Cache L2 (pickle)
     filename = os.path.basename(source).split('.')[0]
     pickle_path = os.path.join(ONTOLOGY_DIR, filename + '.pickle')
-    if os.path.exists(pickle_path):
+    if os.path.exists(pickle_path) and not recreate:
         loaded = pickle.load(open(pickle_path, 'rb'))
         _ontology[source] = loaded
         return loaded
@@ -66,6 +67,7 @@ class Ontology(object):
         self.parsed2uri = self._build_parsed2uri()
         self.id_mapping = None  # defined in _build_tree()
         self.trie = self._build_trie()
+        # self.nx = self._build_graph()
 
     def fuzzy_match(self, word):
         """ Fuzzy match a given word over the ontology. """
@@ -83,6 +85,13 @@ class Ontology(object):
         """ Get the children of a specific URI for a given relation type. """
         return self.graph.objects(subject=node_uri, predicate=relation)
 
+    # def get_children_of_node_nx(self, node_uri, relation):
+    #     try:
+    #         return [v for v, e in self.nx[node_uri].iteritems()
+    #                 if e['relation'] == relation]
+    #     except KeyError:
+    #         return []
+
     def get_all_uris(self):
         """ Get all concept URIs """
         return self.graph.subjects(predicate=SKOS.prefLabel)
@@ -97,7 +106,7 @@ class Ontology(object):
         try:
             return self.uri2canonical[uri]
         except KeyError:
-            return '#'.join(str(uri).split('#')[1:])
+            return unicode('#'.join(str(uri).split('#')[1:]))
 
     def get_parsed_label_from_uri(self, uri):
         """ Get a parsed label of a given URI. """
@@ -122,6 +131,23 @@ class Ontology(object):
         else:
             return label.translate(PUNCTUATION_TABLE).lower()
 
+    # def _build_graph(self):
+    #     import networkx as nx
+    #     g = nx.DiGraph()
+    #     relations = {
+    #         SKOS.composite,
+    #         SKOS.broader,
+    #         SKOS.narrower,
+    #         SKOS.compositeOf,
+    #         SKOS.related
+    #     }
+    #
+    #     for s, p, o in self.graph:
+    #         if p in relations:
+    #             g.add_edge(s, o, relation=p)
+    #
+    #     return g
+
     def _build_trie(self):
         """ Build the ontology trie """
         uri_keys, tree_nodes = [], []
@@ -142,7 +168,8 @@ class Ontology(object):
             uri_keys.extend([uri] * added_elements)
 
         # Build the tree
-        trie = OntologyTrie(tree_nodes)
+        # trie = OntologyTrie(tree_nodes)
+        trie = Trie(tree_nodes)
         node_mapping = dict()
 
         for i in xrange(len(tree_nodes)):

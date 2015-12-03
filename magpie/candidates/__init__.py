@@ -1,7 +1,7 @@
 from ngram import generate_ngram_candidates
 from subgraph import generate_subgraph_candidates
 
-STRATEGY = 'SUBGRAPH'
+STRATEGY = 'NGRAMS'
 
 
 def generate_keyword_candidates(document, ontology):

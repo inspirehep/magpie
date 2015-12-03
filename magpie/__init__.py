@@ -1,5 +1,6 @@
 from __future__ import division
 import os
+import time
 from candidates import generate_keyword_candidates
 from magpie.base.document import Document
 from magpie.base.ontology import OntologyFactory
@@ -8,12 +9,13 @@ from magpie.config import ONTOLOGY_DIR, ROOT_DIR
 HEP_ONTOLOGY = os.path.join(ONTOLOGY_DIR, 'HEPont.rdf')
 
 
-def calculate_recall_for_kw_candidates():
+def calculate_recall_for_kw_candidates(recreate_ontology=False):
     average_recall = 0
     total_kw_number = 0
-    ontology = OntologyFactory(HEP_ONTOLOGY)
+    ontology = OntologyFactory(HEP_ONTOLOGY, recreate=recreate_ontology)
     hep_data_path = os.path.join(ROOT_DIR, 'data', 'hep')
     files = {fname[:-4] for fname in os.listdir(hep_data_path)}
+    start_time = time.clock()
     for f in files:
         document = Document(os.path.join(hep_data_path, f + '.txt'))
         kw_candidates = {kw.get_canonical_form() for kw
@@ -52,6 +54,8 @@ def calculate_recall_for_kw_candidates():
     print
     print(u"Total # of keywords: " + str(total_kw_number))
     print(u"Averaged recall: " + unicode(average_recall))
+    end_time = time.clock()
+    print(u"Time elapsed: " + str(end_time - start_time))
 
 
 def get_ontology():

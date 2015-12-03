@@ -74,7 +74,8 @@ setup(
     install_requires=[
         'rdflib',
         'nltk',
-        'marisa-trie',
+        'marisa-trie',  # might actually be deprecated
+        # 'networkx', # not really needed
         # 'Click',
     ],
 

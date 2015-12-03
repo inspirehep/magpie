@@ -10,7 +10,7 @@ import marisa_trie
 class OntologyTrie(object):
     """
     Holds a trie containing all the ontology terms and enables to perform
-    fuzzy matching over it.
+    fuzzy matching over it. Implemented with marisa-trie.
     """
     def __init__(self, literals):
         self.trie = marisa_trie.Trie(literals)
@@ -68,7 +68,7 @@ class OntologyTrie(object):
         return item in self.trie
 
     def _recursive_match(self, prefix, word, prev_row=None):
-        """ Walks the trie computing the Levenshtein distace """
+        """ Walks the trie computing the Levenshtein distance """
         self.comparisons += 1
         if not prev_row:
             prev_row = range(len(word) + 1)
@@ -102,3 +102,115 @@ class OntologyTrie(object):
 
         return current_row
 
+
+class Trie(object):
+    """ Class manually implementing a trie. Works faster than marisa-trie,
+     because it enables walking it for fuzzy search. """
+    class TrieNode:
+        def __init__(self):
+            self.word = None
+            self.children = {}
+
+    def __init__(self, init_nodes=None):
+        self.root = Trie.TrieNode()
+        self.cutoff = 2
+        self.node_count = 0
+        self.word_dict = dict()
+
+        init_nodes = init_nodes or []
+        for node in init_nodes:
+            self.insert(node)
+
+    def insert(self, word):
+        node = self.root
+        for letter in word:
+            if letter not in node.children:
+                node.children[letter] = Trie.TrieNode()
+
+            node = node.children[letter]
+
+        node.word = word
+        self.node_count += 1
+        self.word_dict[word] = self.node_count
+
+    def fuzzy_match(self, word):
+        if word in self.word_dict:
+            return {word}
+
+        # For such short words we expect exact matches
+        if len(word) < 3:
+            return set()
+
+        self.adjust_cutoff(len(word))
+        self._hits = set()
+        try:
+            start_node = self.root.children[word[0]].children[word[1]]
+        except (KeyError, AttributeError):
+            return self._hits
+
+        first_row = [2, 1] + range(len(word) - 1)
+
+        # recursively search each branch of the trie
+        for letter in start_node.children:
+            self.search_recursive(
+                start_node.children[letter],
+                letter,
+                word,
+                first_row,  # first row
+            )
+
+        return {hit[0] for hit in self._hits}
+
+    def search_recursive(self, node, letter, word, previous_row):
+        # print letter, previous_row
+
+        current_row = [previous_row[0] + 1] * len(previous_row)
+
+        # Build one row for the letter, with a column for each letter in the target
+        # word, plus one for the empty string at column 0
+        for column in xrange(1, len(word) + 1):
+
+            insert_cost = current_row[column - 1] + 1
+            delete_cost = previous_row[column] + 1
+
+            if word[column - 1] != letter:
+                replace_cost = previous_row[column - 1] + 1
+            else:
+                replace_cost = previous_row[column - 1]
+
+            current_row[column] = min(insert_cost, delete_cost, replace_cost)
+
+        # if the last entry in the row indicates the optimal cost is less than the
+        # maximum cost, and there is a word in this trie node, then add it.
+        if current_row[-1] <= self.cutoff and node.word is not None:
+            self._hits.add((node.word, current_row[-1]))
+
+        # if any entries in the row are less than the maximum cost, then
+        # recursively search each branch of the trie
+        if min(current_row) <= self.cutoff:
+            for letter in node.children:
+                self.search_recursive(
+                    node.children[letter],
+                    letter,
+                    word,
+                    current_row
+                )
+
+    def adjust_cutoff(self, word_length):
+        """ Determine the allowed Levenshtein distance for fuzzy matching,
+         depending on the pattern length. """
+        if word_length < 3:
+            self.cutoff = 0
+        elif word_length < 6:  # maybe 5?
+            self.cutoff = 1
+        else:
+            self.cutoff = 2
+
+    def __getitem__(self, item):
+        return self.word_dict.get(item, None)
+
+    def __len__(self):
+        return self.node_count
+
+    def __contains__(self, item):
+        return item in self.word_dict
