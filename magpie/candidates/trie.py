@@ -103,16 +103,20 @@ class OntologyTrie(object):
         return current_row
 
 
+class TrieNode(object):
+    """ Class representing a node in the trie. If the node represents a word,
+     self.word != None, otherwise it's None. """
+    def __init__(self):
+        self.word = None
+        self.children = {}
+
+
 class Trie(object):
     """ Class manually implementing a trie. Works faster than marisa-trie,
      because it enables walking it for fuzzy search. """
-    class TrieNode(object):
-        def __init__(self):
-            self.word = None
-            self.children = {}
 
     def __init__(self, init_nodes=None):
-        self.root = Trie.TrieNode()
+        self.root = TrieNode()
         self.cutoff = 2
         self.node_count = 0
         self.word_dict = dict()
@@ -125,7 +129,7 @@ class Trie(object):
         node = self.root
         for letter in word:
             if letter not in node.children:
-                node.children[letter] = Trie.TrieNode()
+                node.children[letter] = TrieNode()
 
             node = node.children[letter]
 

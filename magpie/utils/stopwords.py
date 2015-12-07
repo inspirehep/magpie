@@ -1,6 +1,7 @@
 
 PUNCTUATION = '.,:;!?()/-<>[]{}|\\@#`$%^&*'
 
+# TODO try the nltk.corpus.stopwords
 STOPWORDS = {
     "a",
     "a's",

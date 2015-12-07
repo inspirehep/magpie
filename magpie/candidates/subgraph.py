@@ -61,6 +61,7 @@ def generate_subgraph_candidates(document, ontology):
         kw.canonical_label = ontology.get_canonical_label_from_uri(kw.uri)
         kw.parsed_label = ontology.get_parsed_label_from_uri(kw.uri)
 
+    # TODO remove the standalone ones
     return candidates
 
 

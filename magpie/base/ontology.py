@@ -4,7 +4,7 @@ import os
 import rdflib
 from rdflib.namespace import SKOS
 from magpie.config import ONTOLOGY_DIR
-from magpie.candidates.trie import OntologyTrie, Trie
+from magpie.candidates.trie import Trie
 from magpie.utils.utils import get_all_permutations
 
 PUNCTUATION_TABLE = dict((ord(c), None) for c in u',:;')
