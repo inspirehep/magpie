@@ -65,6 +65,7 @@ class Ontology(object):
         self.graph = self.load_ontology_file(source)
         self.uri2canonical = self._build_uri2canonical()
         self.parsed2uri = self._build_parsed2uri()
+        self.nostandalones = self._build_nostandalones()
         self.id_mapping = None  # defined in _build_tree()
         self.trie = self._build_trie()
         # self.nx = self._build_graph()
@@ -193,3 +194,14 @@ class Ontology(object):
         for uri, pref_label in self.graph.subject_objects(SKOS.prefLabel):
             mapping[self.parse_label(pref_label.value)] = uri
         return mapping
+
+    def _build_nostandalones(self):
+        """ Create a set of all the concepts that have a 'nostandalone'
+        attribute. """
+        generator = self.graph.subjects(
+            predicate=SKOS.note,
+            # TODO make it more general
+            object=rdflib.term.Literal(u'nostandalone', lang=u'en')
+        )
+
+        return {uri for uri in generator}

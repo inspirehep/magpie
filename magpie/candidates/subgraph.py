@@ -2,14 +2,13 @@ import collections
 import copy
 from rdflib.namespace import SKOS
 from magpie.candidates.keyword_token import KeywordToken
-from magpie.candidates.utils import get_anchors
+from magpie.candidates.utils import get_anchors, remove_nostandalone_candidates
 
 
 def generate_subgraph_candidates(document, ontology):
     all_words = document.get_meaningful_words()
     anchors = get_anchors(all_words, ontology)
 
-    # TODO Filter no standalone ones
     candidates = set(copy.copy(anchors))
 
     # Broader
@@ -57,12 +56,12 @@ def generate_subgraph_candidates(document, ontology):
     )
     candidates.update(related_nodes)
 
+    # Attach labels
     for kw in candidates:
         kw.canonical_label = ontology.get_canonical_label_from_uri(kw.uri)
         kw.parsed_label = ontology.get_parsed_label_from_uri(kw.uri)
 
-    # TODO remove the standalone ones
-    return candidates
+    return remove_nostandalone_candidates(candidates, ontology)
 
 
 def get_related_concepts(anchors, relation, ontology, depth=None):

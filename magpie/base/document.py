@@ -5,11 +5,13 @@ from magpie.utils.stopwords import STOPWORDS, PUNCTUATION
 
 class Document(object):
     """ Class representing a document that the keywords are extracted from """
-    def __init__(self, filepath):
+    def __init__(self, doc_id, filepath):
         if not os.path.exists(filepath):
             raise ValueError("The file " + filepath + " doesn't exist")
 
+        self.doc_id = doc_id
         self.filepath = filepath
+        self.filename = os.path.basename(filepath)
 
         with open(filepath, 'r') as f:
             self.text = f.read().decode('utf-8')
@@ -35,3 +37,4 @@ class Document(object):
         lines = self.text.split('\n')
         return [sentence for inner_list in lines
                 for sentence in sent_tokenize(inner_list)]
+
