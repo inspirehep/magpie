@@ -3,7 +3,17 @@ from sklearn.feature_extraction import DictVectorizer
 
 
 def extract_keyword_features(kw_candidates, inv_index, global_freqs):
-    """ Extract and return a matrix with keyword features only. """
+    """
+    Extract and return a matrix with keyword features only.
+    :param kw_candidates: an iterable containing KeywordTokens
+    :param inv_index: InvertedIndex object for a given document
+    :param global_freqs: GlobalFrequencyIndex object with a corpus word count
+
+    :return: pandas DataFrame with keyword features
+    """
+    if not kw_candidates:
+        return pd.DataFrame([])
+
     samples = []
     for kw in kw_candidates:
         feature_vector = build_feature_vector(kw, inv_index, global_freqs)
@@ -19,6 +29,14 @@ def extract_keyword_features(kw_candidates, inv_index, global_freqs):
 
 
 def build_feature_vector(kw, inv_index, global_freqs):
+    """
+    Build a feature vector for a given keyword
+    :param kw: KeywordToken object
+    :param inv_index: InvertedIndex object for a given document
+    :param global_freqs: GlobalFrequencyIndex object with a corpus word count
+
+    :return: dictionary with computed features
+    """
     parsed_label = kw.get_parsed_form()
 
     # TF, IDF etc

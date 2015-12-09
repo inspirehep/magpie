@@ -6,49 +6,72 @@ import logging
 
 import numpy as np
 import pandas as pd
-from sklearn import preprocessing
-from sklearn.ensemble import RandomForestClassifier
 
 from magpie.base.document import Document
 from magpie.base.global_index import GlobalFrequencyIndex
 from magpie.base.inverted_index import InvertedIndex
+from magpie.base.model import LearningModel
 from magpie.base.ontology import OntologyFactory
 from magpie.candidates import generate_keyword_candidates
-from magpie.config import ONTOLOGY_DIR, ROOT_DIR
+from magpie.config import ONTOLOGY_DIR, ROOT_DIR, MODEL_PATH, HEP_TRAIN_PATH, \
+    HEP_ONTOLOGY
 from magpie.feature_extraction.document_features import \
     extract_document_features
 from magpie.feature_extraction.keyword_features import extract_keyword_features
-
-HEP_ONTOLOGY = os.path.join(ONTOLOGY_DIR, 'HEPontCore.rdf')
-
-
-def get_ontology(recreate=False):
-    return OntologyFactory(HEP_ONTOLOGY, recreate=recreate)
+from magpie.utils.utils import save_to_disk
 
 
-def get_documents():
-    hep_data_path = os.path.join(ROOT_DIR, 'data', 'hep')
-    files = {fname[:-4] for fname in os.listdir(hep_data_path)}
-    return [Document(doc_id, os.path.join(hep_data_path, f + '.txt'))
+def get_ontology(path=HEP_ONTOLOGY, recreate=False):
+    """ Load or create the ontology from a given path """
+    return OntologyFactory(path, recreate=recreate)
+
+
+def get_documents(data_dir):
+    """ Extract documents from *.txt files in a given directory """
+    files = {filename[:-4] for filename in os.listdir(data_dir)}
+    return [Document(doc_id, os.path.join(data_dir, f + '.txt'))
             for doc_id, f in enumerate(files)]
 
 
-def get_answers():
-    hep_data_path = os.path.join(ROOT_DIR, 'data', 'hep')
+def get_all_answers(data_dir):
+    """ Extract ground truth answers from *.key files in a given directory """
     answers = dict()
 
-    files = {fname[:-4] for fname in os.listdir(hep_data_path)}
+    files = {filename[:-4] for filename in os.listdir(data_dir)}
     for f in files:
-        with open(os.path.join(hep_data_path, f + '.key'), 'rb') as answer_file:
+        with open(os.path.join(data_dir, f + '.key'), 'rb') as answer_file:
             answers[f] = {line.rstrip('\n') for line in answer_file}
 
     return answers
 
 
-def train(recreate_ontology=False):
+def get_answers_for_doc(doc_name, data_dir):
+    """
+    Read ground_truth answers from a .key file corresponding to the doc_name
+    :param doc_name: the name of the document, should end with .txt
+    :param data_dir: directory in which the documents and answer files are
+
+    :return: set of unicodes containing answers for this particular document
+    """
+    filename = os.path.join(data_dir, doc_name[:-4] + '.key')
+
+    if not os.path.exists(filename):
+        raise ValueError("Answer file " + filename + " does not exist")
+
+    with open(filename, 'rb') as f:
+        answers = {line.rstrip('\n') for line in f}
+
+    return answers
+
+
+def train(trainset_dir=HEP_TRAIN_PATH, recreate_ontology=False):
+    """
+    Train and save the model on a given dataset
+    :param trainset_dir: path to the directory with the training set
+    :param recreate_ontology: boolean whether to reload the ontology
+    """
     ontology = get_ontology(recreate=recreate_ontology)
-    docs = get_documents()
-    answers = get_answers()
+    docs = get_documents(trainset_dir)
 
     global_freqs = GlobalFrequencyIndex(docs)
     feature_matrices = []
@@ -77,7 +100,7 @@ def train(recreate_ontology=False):
         feature_matrix = pd.concat([kw_features, doc_features], axis=1)
 
         # Get ground truth answers
-        doc_answers = answers.get(doc.filename[:-4])
+        doc_answers = get_answers_for_doc(doc.filename, trainset_dir)
         if not doc_answers:
             logging.error(
                 "File {0} containing answers to the file {1} was not found"
@@ -100,32 +123,47 @@ def train(recreate_ontology=False):
     X = pd.concat(feature_matrices)
     y = np.array([x for inner in output_vectors for x in inner])  # flatten
 
+    features_time = time.clock()
+    print(u"Extracting candidates and features: " +
+          str(features_time - start_time))
+
     # Normalize features
-    scaler = preprocessing.StandardScaler()
-    X_scaled = scaler.fit_transform(X)
+    model = LearningModel()
+    x_scaled = model.fit_and_scale(X)
 
     # Train the model
-    classifier = RandomForestClassifier()
-    classifier = classifier.fit(X_scaled, y)
+    model.fit_classifier(x_scaled, y)
 
-    print
-    end_time = time.clock()
-    print(u"Time elapsed: " + str(end_time - start_time))
+    fit_time = time.clock()
+    print(u"Fitting the model: " + str(fit_time - features_time))
+
+    # Pickle the model
+    save_to_disk(MODEL_PATH, model, overwrite=True)
+
+    pickle_time = time.clock()
+    print(u"Pickling the model: " + str(pickle_time - fit_time))
 
 
-def calculate_recall_for_kw_candidates(recreate_ontology=False):
+def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
+                                       recreate_ontology=False):
+    """
+    Generate keyword candidates for files in a given directory
+    and compute their recall in reference to ground truth answers
+    :param data_dir: directory with .txt and .key files
+    :param recreate_ontology: boolean flag for recreating the ontology
+    """
     average_recall = 0
     total_kw_number = 0
-    ontology = OntologyFactory(HEP_ONTOLOGY, recreate=recreate_ontology)
-    hep_data_path = os.path.join(ROOT_DIR, 'data', 'hep')
-    files = {fname[:-4] for fname in os.listdir(hep_data_path)}
+
+    ontology = get_ontology(recreate=recreate_ontology)
+    docs = get_documents(data_dir)
+
     start_time = time.clock()
-    for f in files:
-        document = Document(os.path.join(hep_data_path, f + '.txt'))
+    for doc in docs:
         kw_candidates = {kw.get_canonical_form() for kw
-                         in generate_keyword_candidates(document, ontology)}
-        with open(os.path.join(hep_data_path, f + '.key'), 'rb') as answer_file:
-            answers = {line.rstrip('\n') for line in answer_file}
+                         in generate_keyword_candidates(doc, ontology)}
+
+        answers = get_answers_for_doc(doc.filename, data_dir)
 
         # print(document.get_meaningful_words())
 
@@ -146,14 +184,14 @@ def calculate_recall_for_kw_candidates(recreate_ontology=False):
 
         recall = len(kw_candidates & answers) / (len(answers))
         print
-        print(u"Paper: " + f)
+        print(u"Paper: " + doc.filename)
         print(u"Candidates: " + str(len(kw_candidates)))
         print(u"Recall: " + unicode(recall))
 
         average_recall += recall
         total_kw_number += len(kw_candidates)
 
-    average_recall /= len(files)
+    average_recall /= len(docs)
 
     print
     print(u"Total # of keywords: " + str(total_kw_number))

@@ -4,6 +4,10 @@ from magpie.utils.stemmer import stem
 
 
 class GlobalFrequencyIndex(object):
+    """
+    Holds the word count (bag of words) for the whole corpus.
+    Enables to calculate IDF and word occurences.
+    """
     def __init__(self, documents):
         from sklearn.feature_extraction.text import CountVectorizer,\
             TfidfTransformer
