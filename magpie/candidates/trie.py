@@ -1,5 +1,3 @@
-import marisa_trie
-
 # ALPHABET = {u' ', u'(', u')', u'*', u'+', u'-', u'/', u'0', u'1', u'2', u'3',
 #             u'4', u'5', u'6', u'8', u'9', u':', u'a', u'b', u'c', u'd', u'e',
 #             u'f', u'g', u'h', u'i', u'j', u'k', u'l', u'm', u'n', u'o', u'p',
@@ -13,6 +11,7 @@ class OntologyTrie(object):
     fuzzy matching over it. Implemented with marisa-trie.
     """
     def __init__(self, literals):
+        import marisa_trie
         self.trie = marisa_trie.Trie(literals)
         self.cutoff = 2
         self._second_row = self.get_trie_row(2)
