@@ -2,7 +2,6 @@ from __future__ import division
 
 import os
 import time
-import logging
 
 import numpy as np
 import pandas as pd
@@ -14,11 +13,12 @@ from magpie.base.model import LearningModel
 from magpie.base.ontology import OntologyFactory
 from magpie.candidates import generate_keyword_candidates
 from magpie.config import ONTOLOGY_DIR, ROOT_DIR, MODEL_PATH, HEP_TRAIN_PATH, \
-    HEP_ONTOLOGY
+    HEP_ONTOLOGY, HEP_TEST_PATH
+from magpie.evaluation.standard_evaluation import evaluate_results
 from magpie.feature_extraction.document_features import \
     extract_document_features
 from magpie.feature_extraction.keyword_features import extract_keyword_features
-from magpie.utils.utils import save_to_disk
+from magpie.utils.utils import save_to_disk, load_from_disk
 
 
 def get_ontology(path=HEP_ONTOLOGY, recreate=False):
@@ -40,7 +40,7 @@ def get_all_answers(data_dir):
     files = {filename[:-4] for filename in os.listdir(data_dir)}
     for f in files:
         with open(os.path.join(data_dir, f + '.key'), 'rb') as answer_file:
-            answers[f] = {line.rstrip('\n') for line in answer_file}
+            answers[f] = {unicode(line.rstrip('\n')) for line in answer_file}
 
     return answers
 
@@ -59,16 +59,99 @@ def get_answers_for_doc(doc_name, data_dir):
         raise ValueError("Answer file " + filename + " does not exist")
 
     with open(filename, 'rb') as f:
-        answers = {line.rstrip('\n') for line in f}
+        answers = {unicode(line.rstrip('\n')) for line in f}
 
     return answers
+
+
+def extract(path_to_file, recreate_ontology=False):
+    pass
+
+
+def test(testset_dir=HEP_TEST_PATH, recreate_ontology=False):
+    """
+    Test the trained model on a set under a given path
+    :param testset_dir: path to the directory with the test set
+    :param recreate_ontology: boolean flag whether to recreate the ontology
+    """
+    ontology = get_ontology(recreate=recreate_ontology)
+    docs = get_documents(testset_dir)
+
+    global_freqs = GlobalFrequencyIndex(docs)
+    feature_matrices = []
+    kw_vector = []
+    answers = dict()
+
+    start_time = time.clock()
+
+    for doc in docs:
+        inv_index = InvertedIndex(doc)
+
+        # Generate keyword candidates
+        kw_candidates = [kw for kw in
+                         generate_keyword_candidates(doc, ontology)]
+
+        # Extract features for keywords
+        kw_features = extract_keyword_features(
+            kw_candidates,
+            inv_index,
+            global_freqs
+        )
+
+        # Extract document features
+        doc_features = extract_document_features(inv_index, len(kw_candidates))
+
+        # Merge matrices
+        feature_matrix = pd.concat([kw_features, doc_features], axis=1)
+
+        # Get ground truth answers
+        answers[doc.doc_id] = get_answers_for_doc(doc.filename, testset_dir)
+
+        feature_matrices.append(feature_matrix)
+        kw_vector.extend([(doc.doc_id, kw) for kw in kw_candidates])
+
+    # Merge feature matrices from different documents
+    X = pd.concat(feature_matrices)
+
+    features_time = time.clock()
+    print(u"Extracting candidates and features: " +
+          str(features_time - start_time) + u"s")
+
+    # Load the model
+    model = load_from_disk(MODEL_PATH)
+
+    # Predict
+    y_predicted = model.scale_and_predict(X)
+
+    predict_time = time.clock()
+    print(u"Prediction time: " + str(predict_time - features_time) + u"s")
+
+    # Evaluate the results
+    precision, recall, accuracy = evaluate_results(
+        y_predicted,
+        kw_vector,
+        answers
+    )
+
+    evaluation_time = time.clock()
+    print(u"Evaluation time: " + str(evaluation_time - predict_time) + u"s")
+
+    print
+    print(u"Total time: " + str(evaluation_time - start_time) + u"s")
+
+    f1_score = (2 * precision * recall) / (precision + recall)
+    print
+    print(u"Precision: " + str(precision * 100) + u"%")
+    print(u"Recall: " + str(recall * 100) + u"%")
+    print(u"F1-score: " + unicode(f1_score * 100) + u"%")
+    print(u"Accuracy: " + str(accuracy * 100) + u"%")
 
 
 def train(trainset_dir=HEP_TRAIN_PATH, recreate_ontology=False):
     """
     Train and save the model on a given dataset
     :param trainset_dir: path to the directory with the training set
-    :param recreate_ontology: boolean whether to reload the ontology
+    :param recreate_ontology: boolean flag whether to recreate the ontology
     """
     ontology = get_ontology(recreate=recreate_ontology)
     docs = get_documents(trainset_dir)
@@ -101,13 +184,9 @@ def train(trainset_dir=HEP_TRAIN_PATH, recreate_ontology=False):
 
         # Get ground truth answers
         doc_answers = get_answers_for_doc(doc.filename, trainset_dir)
-        if not doc_answers:
-            logging.error(
-                "File {0} containing answers to the file {1} was not found"
-                .format(doc.filename[-4]) + '.key', doc.filename
-            )
-            continue
 
+        # TODO you need to learn also from the ground truth answers
+        # TODO that have not been generated as candidates
         # Create the output vector
         output_vector = []
         for kw in kw_candidates:
