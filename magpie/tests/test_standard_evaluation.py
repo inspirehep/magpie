@@ -1,12 +1,12 @@
 from __future__ import division
 
-from unittest import TestCase
+import unittest
 
 from magpie import evaluate_results
 from magpie.candidates.keyword_token import KeywordToken
 
 
-class TestEvaluateResults(TestCase):
+class TestEvaluateResults(unittest.TestCase):
     def test_evaluate_results1(self):
         kw_mask = [1, 1, 1, 1]
         kw_vector = [
