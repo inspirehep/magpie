@@ -1,4 +1,4 @@
-from magpie.candidates.keyword_token import add_token
+from magpie.candidates.keyword_token import add_token, KeywordToken
 from magpie.utils.stemmer import stem
 
 
@@ -37,3 +37,34 @@ def remove_nostandalone_candidates(kw_candidates, ontology):
     """
     nostandalones = ontology.nostandalones
     return {kw for kw in kw_candidates if kw.get_uri() not in nostandalones}
+
+
+def add_gt_answers_to_candidates_set(kw_candidates, gt_answers, ontology):
+    """
+    During training, sometimes the desirable answers are not generated as
+    candidate keywords in the first place. Nevertheless, they should be added
+    to the list, extracted features and learned on to improve performance.
+
+    This function adds the ground truth answers to the candidate set if they're
+    not there.
+    :param kw_candidates: a list of KeywordTokens
+    :param gt_answers: a set of unicodes with the canonical labels
+    :param ontology: an Ontology object
+
+    :return: None, the function operates on the candidate list passed as an arg
+    """
+    candidate_set = {kw.get_canonical_form() for kw in kw_candidates}
+    for keyword in gt_answers:
+        if keyword not in candidate_set:
+            parsed_label = ontology.parse_label(keyword)
+            uri = ontology.get_uri_from_label(parsed_label)
+
+            # if we can get the URI of the ground truth keyword
+            if uri:
+                kw_candidates.append(
+                    KeywordToken(
+                        uri,
+                        canonical_label=keyword,
+                        parsed_label=parsed_label
+                    )
+                )

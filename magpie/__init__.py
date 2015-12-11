@@ -12,6 +12,7 @@ from magpie.base.inverted_index import InvertedIndex
 from magpie.base.model import LearningModel
 from magpie.base.ontology import OntologyFactory
 from magpie.candidates import generate_keyword_candidates
+from magpie.candidates.utils import add_gt_answers_to_candidates_set
 from magpie.config import ONTOLOGY_DIR, ROOT_DIR, MODEL_PATH, HEP_TRAIN_PATH, \
     HEP_ONTOLOGY, HEP_TEST_PATH
 from magpie.evaluation.standard_evaluation import evaluate_results
@@ -26,7 +27,7 @@ def get_ontology(path=HEP_ONTOLOGY, recreate=False):
     return OntologyFactory(path, recreate=recreate)
 
 
-def get_documents(data_dir):
+def get_documents(data_dir=HEP_TRAIN_PATH):
     """ Extract documents from *.txt files in a given directory """
     files = {filename[:-4] for filename in os.listdir(data_dir)}
     return [Document(doc_id, os.path.join(data_dir, f + '.txt'))
@@ -68,28 +69,35 @@ def extract(path_to_file, recreate_ontology=False):
     pass
 
 
-def test(testset_dir=HEP_TEST_PATH, recreate_ontology=False):
+def test(
+        testset_path=HEP_TEST_PATH,
+        ontology_path=HEP_ONTOLOGY,
+        model_path=MODEL_PATH,
+        recreate_ontology=False
+):
     """
     Test the trained model on a set under a given path
     :param testset_dir: path to the directory with the test set
     :param recreate_ontology: boolean flag whether to recreate the ontology
     """
-    ontology = get_ontology(recreate=recreate_ontology)
-    docs = get_documents(testset_dir)
+    ontology = get_ontology(path=ontology_path, recreate=recreate_ontology)
+    docs = get_documents(testset_path)
 
     global_freqs = GlobalFrequencyIndex(docs)
     feature_matrices = []
     kw_vector = []
     answers = dict()
 
-    start_time = time.clock()
+    cand_gen_time = feature_ext_time = 0
 
     for doc in docs:
         inv_index = InvertedIndex(doc)
+        candidates_start = time.clock()
 
         # Generate keyword candidates
-        kw_candidates = [kw for kw in
-                         generate_keyword_candidates(doc, ontology)]
+        kw_candidates = list(generate_keyword_candidates(doc, ontology))
+
+        candidates_end = time.clock()
 
         # Extract features for keywords
         kw_features = extract_keyword_features(
@@ -104,21 +112,26 @@ def test(testset_dir=HEP_TEST_PATH, recreate_ontology=False):
         # Merge matrices
         feature_matrix = pd.concat([kw_features, doc_features], axis=1)
 
+        features_end = time.clock()
+
         # Get ground truth answers
-        answers[doc.doc_id] = get_answers_for_doc(doc.filename, testset_dir)
+        answers[doc.doc_id] = get_answers_for_doc(doc.filename, testset_path)
 
         feature_matrices.append(feature_matrix)
         kw_vector.extend([(doc.doc_id, kw) for kw in kw_candidates])
+
+        cand_gen_time += candidates_end - candidates_start
+        feature_ext_time += features_end - candidates_end
 
     # Merge feature matrices from different documents
     X = pd.concat(feature_matrices)
 
     features_time = time.clock()
-    print(u"Extracting candidates and features: " +
-          str(features_time - start_time) + u"s")
+    print(u"Candidate generation: " + str(cand_gen_time) + u"s")
+    print(u"Feature extraction: " + str(feature_ext_time) + u"s")
 
     # Load the model
-    model = load_from_disk(MODEL_PATH)
+    model = load_from_disk(model_path)
 
     # Predict
     y_predicted = model.scale_and_predict(X)
@@ -136,9 +149,6 @@ def test(testset_dir=HEP_TEST_PATH, recreate_ontology=False):
     evaluation_time = time.clock()
     print(u"Evaluation time: " + str(evaluation_time - predict_time) + u"s")
 
-    print
-    print(u"Total time: " + str(evaluation_time - start_time) + u"s")
-
     f1_score = (2 * precision * recall) / (precision + recall)
     print
     print(u"Precision: " + str(precision * 100) + u"%")
@@ -147,27 +157,40 @@ def test(testset_dir=HEP_TEST_PATH, recreate_ontology=False):
     print(u"Accuracy: " + str(accuracy * 100) + u"%")
 
 
-def train(trainset_dir=HEP_TRAIN_PATH, recreate_ontology=False):
+def train(
+        trainset_dir=HEP_TRAIN_PATH,
+        ontology_path=HEP_ONTOLOGY,
+        model_path=MODEL_PATH,
+        recreate_ontology=False
+):
     """
     Train and save the model on a given dataset
     :param trainset_dir: path to the directory with the training set
     :param recreate_ontology: boolean flag whether to recreate the ontology
     """
-    ontology = get_ontology(recreate=recreate_ontology)
+    ontology = get_ontology(path=ontology_path, recreate=recreate_ontology)
     docs = get_documents(trainset_dir)
 
     global_freqs = GlobalFrequencyIndex(docs)
     feature_matrices = []
     output_vectors = []
 
-    start_time = time.clock()
+    cand_gen_time = feature_ext_time = 0
 
     for doc in docs:
         inv_index = InvertedIndex(doc)
+        candidates_start = time.clock()
 
         # Generate keyword candidates
-        kw_candidates = [kw for kw in
-                         generate_keyword_candidates(doc, ontology)]
+        kw_candidates = list(generate_keyword_candidates(doc, ontology))
+
+        # Get ground truth answers
+        doc_answers = get_answers_for_doc(doc.filename, trainset_dir)
+
+        # If an answer was not generated, add it anyway
+        add_gt_answers_to_candidates_set(kw_candidates, doc_answers, ontology)
+
+        candidates_end = time.clock()
 
         # Extract features for keywords
         kw_features = extract_keyword_features(
@@ -182,11 +205,8 @@ def train(trainset_dir=HEP_TRAIN_PATH, recreate_ontology=False):
         # Merge matrices
         feature_matrix = pd.concat([kw_features, doc_features], axis=1)
 
-        # Get ground truth answers
-        doc_answers = get_answers_for_doc(doc.filename, trainset_dir)
+        features_end = time.clock()
 
-        # TODO you need to learn also from the ground truth answers
-        # TODO that have not been generated as candidates
         # Create the output vector
         output_vector = []
         for kw in kw_candidates:
@@ -198,13 +218,16 @@ def train(trainset_dir=HEP_TRAIN_PATH, recreate_ontology=False):
         feature_matrices.append(feature_matrix)
         output_vectors.append(output_vector)
 
+        cand_gen_time += candidates_end - candidates_start
+        feature_ext_time += features_end - candidates_end
+
     # Merge feature matrices and output vectors from different documents
     X = pd.concat(feature_matrices)
     y = np.array([x for inner in output_vectors for x in inner])  # flatten
 
-    features_time = time.clock()
-    print(u"Extracting candidates and features: " +
-          str(features_time - start_time))
+    print(u"Candidate generation: " + str(cand_gen_time) + u"s")
+    print(u"Feature extraction: " + str(feature_ext_time) + u"s")
+    fitting_time = time.clock()
 
     # Normalize features
     model = LearningModel()
@@ -213,14 +236,14 @@ def train(trainset_dir=HEP_TRAIN_PATH, recreate_ontology=False):
     # Train the model
     model.fit_classifier(x_scaled, y)
 
-    fit_time = time.clock()
-    print(u"Fitting the model: " + str(fit_time - features_time))
+    pickle_time = time.clock()
+    print(u"Fitting the model: " + str(pickle_time - fitting_time) + u"s")
 
     # Pickle the model
     save_to_disk(MODEL_PATH, model, overwrite=True)
 
-    pickle_time = time.clock()
-    print(u"Pickling the model: " + str(pickle_time - fit_time))
+    end_time = time.clock()
+    print(u"Pickling the model: " + str(end_time - pickle_time) + u"s")
 
 
 def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
@@ -278,3 +301,5 @@ def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
     end_time = time.clock()
     print(u"Time elapsed: " + str(end_time - start_time))
 
+if __name__ == '__main__':
+    test()

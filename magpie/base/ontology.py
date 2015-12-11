@@ -76,10 +76,11 @@ class Ontology(object):
 
     def get_uri_from_label(self, label):
         """ Get the full URI of a token if it's in the trie """
-        if label not in self.trie:
+        node_id = self.trie[label]
+
+        if not node_id:  # if not in the trie
             return None
 
-        node_id = self.trie[label]
         return self.id_mapping[node_id]
 
     def get_children_of_node(self, node_uri, relation):
