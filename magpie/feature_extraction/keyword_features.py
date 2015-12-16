@@ -43,14 +43,20 @@ def build_feature_vector(kw, inv_index, global_freqs):
     tf = inv_index.get_term_frequency(parsed_label)
     idf = global_freqs.get_term_idf(kw.get_parsed_form())
 
+    # Occurrences
+    first_occurrence = inv_index.get_first_phrase_occurrence(parsed_label)
+    last_occurrence = inv_index.get_last_phrase_occurrence(parsed_label)
+
     return {
         # 'kw': parsed_label,
-        'doc_occurrences': inv_index.get_term_occurrences(parsed_label),
-        'corpus_occurences': global_freqs.get_term_occurrences(parsed_label),
+
         'tf': tf,
         'idf': idf,  # in how many docs they occur
         'tfidf': tf * idf,
+        'first_occurrence': first_occurrence,
+        'last_occurrence': last_occurrence,
+        'spread': last_occurrence - first_occurrence,
         # count how close together in the occurrences are the kw terms
-        # 'no_of_words': len(parsed_label.split()),
-        # 'no_of_letters': len(parsed_label),
+        'no_of_words': len(parsed_label.split()),
+        'no_of_letters': len(parsed_label),
     }

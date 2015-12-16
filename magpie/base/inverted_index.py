@@ -26,12 +26,33 @@ class InvertedIndex(object):
     def add_occurrence(self, word, position):
         self.index[word].append(position)
 
-    def get_first_occurrence(self, word):
-        stemmed = stem(word)
+    def get_first_phrase_occurrence(self, phrase):
+        terms = phrase.split()
+        first_occ = [self._get_first_term_occurrence(term) for term in terms]
+
+        # TODO maybe a better function would do here
+        return sum(first_occ) / len(first_occ)
+
+    def _get_first_term_occurrence(self, term):
+        stemmed = stem(term)
         if stemmed not in self.index:
-            return None
+            return 1
         else:
-            return min(self.index[stemmed])
+            return min(self.index[stemmed]) / self.word_count
+
+    def get_last_phrase_occurrence(self, phrase):
+        terms = phrase.split()
+        first_occ = [self._get_last_term_occurrence(term) for term in terms]
+
+        # TODO maybe a better function would do here
+        return sum(first_occ) / len(first_occ)
+
+    def _get_last_term_occurrence(self, term):
+        stemmed = stem(term)
+        if stemmed not in self.index:
+            return 0
+        else:
+            return max(self.index[stemmed]) / self.word_count
 
     def get_term_occurrences(self, term):
         words = term.split()
