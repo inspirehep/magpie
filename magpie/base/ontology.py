@@ -70,6 +70,12 @@ class Ontology(object):
         self.trie = self._build_trie()
         # self.nx = self._build_graph()
 
+    def exact_match(self, word, already_parsed=False):
+        """ Look for a word (its canonical label) in the ontology """
+        if not already_parsed:
+            word = self.parse_label(word)
+        return self.trie.exact_match(word)
+
     def fuzzy_match(self, word):
         """ Fuzzy match a given word over the ontology. """
         return self.trie.fuzzy_match(word)

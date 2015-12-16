@@ -106,7 +106,7 @@ class TrieNode(object):
     """ Class representing a node in the trie. If the node represents a word,
      self.word != None, otherwise it's None. """
     def __init__(self):
-        self.word = None
+        self.phrase = None
         self.children = {}
 
 
@@ -118,65 +118,85 @@ class Trie(object):
         self.root = TrieNode()
         self.cutoff = 2
         self.node_count = 0
-        self.word_dict = dict()
+        self.phrase_dict = dict()
 
         init_nodes = init_nodes or []
         for node in init_nodes:
             self.insert(node)
 
-    def insert(self, word):
+    def insert(self, phrase):
+        """ Insert a phrase into the trie """
         node = self.root
-        for letter in word:
+        for letter in phrase:
             if letter not in node.children:
                 node.children[letter] = TrieNode()
 
             node = node.children[letter]
 
-        node.word = word
+        node.phrase = phrase
         self.node_count += 1
-        self.word_dict[word] = self.node_count
+        self.phrase_dict[phrase] = self.node_count
 
-    def fuzzy_match(self, word):
-        if word in self.word_dict:
-            return {word}
-
-        # For such short words we expect exact matches
-        if len(word) < 3:
+    def exact_match(self, phrase):
+        """ Look if there is a phrase exactly like the given one in the trie """
+        if phrase in self.phrase_dict:
+            return {phrase}
+        else:
             return set()
 
-        self.adjust_cutoff(len(word))
+    def fuzzy_match(self, phrase):
+        """ Walk the trie down while computing the Levenshtein distance
+        and find any fuzzy matches for the phrase """
+        if phrase in self.phrase_dict:
+            return {phrase}
+
+        # For such short phrases we expect exact matches
+        if len(phrase) < 3:
+            return set()
+
+        self.adjust_cutoff(len(phrase))
         self._hits = set()
         try:
-            start_node = self.root.children[word[0]].children[word[1]]
+            start_node = self.root.children[phrase[0]].children[phrase[1]]
         except (KeyError, AttributeError):
             return self._hits
 
-        first_row = [2, 1] + range(len(word) - 1)
+        first_row = [2, 1] + range(len(phrase) - 1)
 
         # recursively search each branch of the trie
         for letter in start_node.children:
             self.search_recursive(
                 start_node.children[letter],
                 letter,
-                word,
+                phrase,
                 first_row,  # first row
             )
 
         return {hit[0] for hit in self._hits}
 
-    def search_recursive(self, node, letter, word, previous_row):
-        # print letter, previous_row
+    def search_recursive(self, node, current_letter, phrase, previous_row):
+        """
+        Recursively search the trie and build a matrix for Levenshtein distance
+        :param node: TrieNode object representing the node to be examined
+        :param current_letter: the letter that we are computing for
+        :param phrase: unicode with the phrase we look for
+        :param previous_row: integer list with previously computed values
+
+        :return: Nothing, it iterates recursively while filling the self._hits
+        variable until it gets to the bottom of the trie or the allowed
+        Levenshtein distance is reached
+        """
 
         current_row = [previous_row[0] + 1] * len(previous_row)
 
         # Build one row for the letter, with a column for each letter in the target
-        # word, plus one for the empty string at column 0
-        for column in xrange(1, len(word) + 1):
+        # phrase, plus one for the empty string at column 0
+        for column in xrange(1, len(phrase) + 1):
 
             insert_cost = current_row[column - 1] + 1
             delete_cost = previous_row[column] + 1
 
-            if word[column - 1] != letter:
+            if phrase[column - 1] != current_letter:
                 replace_cost = previous_row[column - 1] + 1
             else:
                 replace_cost = previous_row[column - 1]
@@ -184,9 +204,9 @@ class Trie(object):
             current_row[column] = min(insert_cost, delete_cost, replace_cost)
 
         # if the last entry in the row indicates the optimal cost is less than the
-        # maximum cost, and there is a word in this trie node, then add it.
-        if current_row[-1] <= self.cutoff and node.word is not None:
-            self._hits.add((node.word, current_row[-1]))
+        # maximum cost, and there is a phrase in this trie node, then add it.
+        if current_row[-1] <= self.cutoff and node.phrase is not None:
+            self._hits.add((node.phrase, current_row[-1]))
 
         # if any entries in the row are less than the maximum cost, then
         # recursively search each branch of the trie
@@ -195,25 +215,25 @@ class Trie(object):
                 self.search_recursive(
                     node.children[letter],
                     letter,
-                    word,
+                    phrase,
                     current_row
                 )
 
-    def adjust_cutoff(self, word_length):
+    def adjust_cutoff(self, phrase_length):
         """ Determine the allowed Levenshtein distance for fuzzy matching,
          depending on the pattern length. """
-        if word_length < 3:
+        if phrase_length < 3:
             self.cutoff = 0
-        elif word_length < 6:  # maybe 5?
+        elif phrase_length < 6:  # maybe 5?
             self.cutoff = 1
         else:
             self.cutoff = 2
 
     def __getitem__(self, item):
-        return self.word_dict.get(item)
+        return self.phrase_dict.get(item)
 
     def __len__(self):
         return self.node_count
 
     def __contains__(self, item):
-        return item in self.word_dict
+        return item in self.phrase_dict

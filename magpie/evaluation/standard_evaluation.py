@@ -35,8 +35,13 @@ def evaluate_results(kw_mask, kw_vector, gt_answers):
         answers = answers_dict[doc_id]
         predictions = prediction_dict[doc_id]
 
-        if not predictions:
-            avg_precision += 1  # we assume 100% precision for no predictions
+        if not predictions or not answers:
+            if not predictions:
+                avg_precision += 1  # we assume 100% precision for no predictions
+
+            if not answers:
+                avg_recall += 1  # we assume 100% recall if there's no answers
+
             continue
 
         true_positives = predictions & answers

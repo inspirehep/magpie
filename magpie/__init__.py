@@ -16,6 +16,7 @@ from magpie.candidates.utils import add_gt_answers_to_candidates_set
 from magpie.config import ONTOLOGY_DIR, ROOT_DIR, MODEL_PATH, HEP_TRAIN_PATH, \
     HEP_ONTOLOGY, HEP_TEST_PATH
 from magpie.evaluation.standard_evaluation import evaluate_results
+from magpie.evaluation.utils import remove_unguessable_answers
 from magpie.feature_extraction.document_features import \
     extract_document_features
 from magpie.feature_extraction.keyword_features import extract_keyword_features
@@ -139,6 +140,9 @@ def test(
     predict_time = time.clock()
     print(u"Prediction time: " + str(predict_time - features_time) + u"s")
 
+    # Remove ground truth answers that are not in the ontology
+    remove_unguessable_answers(answers, ontology)
+
     # Evaluate the results
     precision, recall, accuracy = evaluate_results(
         y_predicted,
@@ -240,7 +244,7 @@ def train(
     print(u"Fitting the model: " + str(pickle_time - fitting_time) + u"s")
 
     # Pickle the model
-    save_to_disk(MODEL_PATH, model, overwrite=True)
+    save_to_disk(model_path, model, overwrite=True)
 
     end_time = time.clock()
     print(u"Pickling the model: " + str(end_time - pickle_time) + u"s")
