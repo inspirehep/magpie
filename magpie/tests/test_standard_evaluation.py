@@ -2,8 +2,8 @@ from __future__ import division
 
 import unittest
 
-from magpie import evaluate_results
 from magpie.candidates.keyword_token import KeywordToken
+from magpie.evaluation.standard_evaluation import evaluate_results
 
 
 class TestEvaluateResults(unittest.TestCase):
