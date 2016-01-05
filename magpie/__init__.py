@@ -28,11 +28,12 @@ def get_ontology(path=HEP_ONTOLOGY, recreate=False):
     return OntologyFactory(path, recreate=recreate)
 
 
-def get_documents(data_dir=HEP_TRAIN_PATH):
+def get_documents(data_dir=HEP_TRAIN_PATH, as_generator=True):
     """ Extract documents from *.txt files in a given directory """
     files = {filename[:-4] for filename in os.listdir(data_dir)}
-    return [Document(doc_id, os.path.join(data_dir, f + '.txt'))
-            for doc_id, f in enumerate(files)]
+    generator = (Document(doc_id, os.path.join(data_dir, f + '.txt'))
+                 for doc_id, f in enumerate(files))
+    return generator if as_generator else list(generator)
 
 
 def get_all_answers(data_dir):
@@ -66,8 +67,88 @@ def get_answers_for_doc(doc_name, data_dir):
     return answers
 
 
-def extract(path_to_file, recreate_ontology=False):
-    pass
+def extract(
+        path_to_file,
+        ontology_path=HEP_ONTOLOGY,
+        model_path=MODEL_PATH,
+        show_answers=False,
+        recreate_ontology=False
+):
+    """
+    Extract keywords from a given file
+    :param path_to_file: unicode with the filepath
+    :param ontology_path: unicode with the ontology path
+    :param model_path: unicode with the trained model path
+    :param recreate_ontology: boolean flag whether to recreate the ontology
+    :return:
+    """
+    doc = Document(0, path_to_file)
+    ontology = get_ontology(path=ontology_path, recreate=recreate_ontology)
+    inv_index = InvertedIndex(doc)
+
+    # Load the model
+    model = load_from_disk(model_path)
+
+    # Generate keyword candidates
+    kw_candidates = list(generate_keyword_candidates(doc, ontology))
+
+    # Extract features for keywords
+    kw_features = extract_keyword_features(
+        kw_candidates,
+        inv_index,
+        model.get_global_index()
+    )
+
+    # Extract document features
+    doc_features = extract_document_features(inv_index, len(kw_candidates))
+
+    # Merge matrices
+    X = pd.concat([kw_features, doc_features], axis=1)
+
+    # Predict
+    y_predicted = model.scale_and_predict(X)
+
+    kw_predicted = []
+    for bit, kw in zip(y_predicted, kw_candidates):
+        if bit == 1:
+            kw_predicted.append(kw)
+
+    # Print results
+    print(u"Document content:")
+    print doc
+
+    print(u"Predicted keywords:")
+    for kw in kw_predicted:
+        print(u"\t" + unicode(kw.get_canonical_form()))
+    print
+
+    if show_answers:
+        answers = get_answers_for_doc(doc.filename, os.path.dirname(doc.filepath))
+
+        answer_dict = dict(placeholder=answers)
+        remove_unguessable_answers(answer_dict, ontology)
+        answers = answer_dict['placeholder']
+
+        candidates = {kw.get_canonical_form() for kw in kw_candidates}
+        print(u"Ground truth keywords:")
+        for kw in answers:
+            in_candidates = u"(in candidates)" if kw in candidates else u""
+            print(u"\t" + kw.ljust(30, u' ') + in_candidates)
+        print
+
+        y = []
+        for kw in kw_candidates:
+            y.append(1 if kw.get_canonical_form() in answers else 0)
+
+        X['name'] = [kw.get_canonical_form() for kw in kw_candidates]
+        X['predicted'] = y_predicted
+        X['ground truth'] = y
+
+        pd.set_option('expand_frame_repr', False)
+        X = X[['name', 'predicted', 'ground truth', 'tf', 'idf', 'tfidf',
+               'first_occurrence', 'last_occurrence', 'spread', 'no_of_letters',
+               'no_of_words']]
+        print X[(X['ground truth'] == 1) | (X['predicted'])]
 
 
 def test(
@@ -82,16 +163,17 @@ def test(
     :param recreate_ontology: boolean flag whether to recreate the ontology
     """
     ontology = get_ontology(path=ontology_path, recreate=recreate_ontology)
-    docs = get_documents(testset_path)
 
-    global_freqs = GlobalFrequencyIndex(docs)
+    # Load the model
+    model = load_from_disk(model_path)
+
     feature_matrices = []
     kw_vector = []
     answers = dict()
 
     cand_gen_time = feature_ext_time = 0
 
-    for doc in docs:
+    for doc in get_documents(testset_path):
         inv_index = InvertedIndex(doc)
         candidates_start = time.clock()
 
@@ -104,7 +186,7 @@ def test(
         kw_features = extract_keyword_features(
             kw_candidates,
             inv_index,
-            global_freqs
+            model.get_global_index()
         )
 
         # Extract document features
@@ -130,9 +212,6 @@ def test(
     features_time = time.clock()
     print(u"Candidate generation: " + str(cand_gen_time) + u"s")
     print(u"Feature extraction: " + str(feature_ext_time) + u"s")
-
-    # Load the model
-    model = load_from_disk(model_path)
 
     # Predict
     y_predicted = model.scale_and_predict(X)
@@ -173,10 +252,10 @@ def train(
     :param recreate_ontology: boolean flag whether to recreate the ontology
     """
     ontology = get_ontology(path=ontology_path, recreate=recreate_ontology)
-    docs = get_documents(trainset_dir)
+    docs = get_documents(trainset_dir, as_generator=False)
 
     global_freqs = GlobalFrequencyIndex(docs)
-    feature_matrices = []
+    X = pd.DataFrame()
     output_vectors = []
 
     cand_gen_time = feature_ext_time = 0
@@ -208,10 +287,12 @@ def train(
 
         # Merge matrices
         feature_matrix = pd.concat([kw_features, doc_features], axis=1)
+        X = pd.concat([X, feature_matrix])
 
         features_end = time.clock()
 
         # Create the output vector
+        # TODO this vector is very sparse, we can make it more memory efficient
         output_vector = []
         for kw in kw_candidates:
             if kw.get_canonical_form() in doc_answers:
@@ -219,22 +300,21 @@ def train(
             else:
                 output_vector.append(0)  # False
 
-        feature_matrices.append(feature_matrix)
-        output_vectors.append(output_vector)
+        # feature_matrices.append(feature_matrix)
+        output_vectors.extend(output_vector)
 
         cand_gen_time += candidates_end - candidates_start
         feature_ext_time += features_end - candidates_end
 
-    # Merge feature matrices and output vectors from different documents
-    X = pd.concat(feature_matrices)
-    y = np.array([x for inner in output_vectors for x in inner])  # flatten
+    # Cast the output vector to scipy
+    y = np.array(output_vectors)
 
     print(u"Candidate generation: " + str(cand_gen_time) + u"s")
     print(u"Feature extraction: " + str(feature_ext_time) + u"s")
     fitting_time = time.clock()
 
     # Normalize features
-    model = LearningModel()
+    model = LearningModel(global_frequencies=global_freqs)
     x_scaled = model.fit_and_scale(X)
 
     # Train the model
@@ -292,7 +372,7 @@ def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
         print
         print(u"Paper: " + doc.filename)
         print(u"Candidates: " + str(len(kw_candidates)))
-        print(u"Recall: " + unicode(recall))
+        print(u"Recall: " + unicode(recall * 100) + u"%")
 
         average_recall += recall
         total_kw_number += len(kw_candidates)
@@ -301,7 +381,7 @@ def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
 
     print
     print(u"Total # of keywords: " + str(total_kw_number))
-    print(u"Averaged recall: " + unicode(average_recall))
+    print(u"Averaged recall: " + unicode(average_recall * 100) + u"%")
     end_time = time.clock()
     print(u"Time elapsed: " + str(end_time - start_time))
 

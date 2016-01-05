@@ -19,7 +19,7 @@ def extract_keyword_features(kw_candidates, inv_index, global_freqs):
         feature_vector = build_feature_vector(kw, inv_index, global_freqs)
         samples.append((kw.get_parsed_form(), feature_vector))
 
-    # TODO might be faster to convert dicts directly to the DataFrame
+    # TODO might be faster to convert lists directly to the DataFrame
     dv = DictVectorizer()
     matrix = dv.fit_transform([s[1] for s in samples])
 
@@ -55,7 +55,7 @@ def build_feature_vector(kw, inv_index, global_freqs):
         'tfidf': tf * idf,
         'first_occurrence': first_occurrence,
         'last_occurrence': last_occurrence,
-        'spread': last_occurrence - first_occurrence,
+        'spread': max(0, last_occurrence - first_occurrence),
         # count how close together in the occurrences are the kw terms
         'no_of_words': len(parsed_label.split()),
         'no_of_letters': len(parsed_label),

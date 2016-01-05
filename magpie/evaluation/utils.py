@@ -9,6 +9,6 @@ def remove_unguessable_answers(answers, ontology):
     for doc_id, kw_set in answers.items():
         to_remove = set()
         for kw in kw_set:
-            if ontology.exact_match(kw):
+            if not ontology.exact_match(kw):
                 to_remove.add(kw)
         answers[doc_id] = kw_set - to_remove

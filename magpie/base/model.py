@@ -7,9 +7,10 @@ class LearningModel(object):
     Represents the model that can be trained and later used to predict
     keywords for unknown data
     """
-    def __init__(self):
+    def __init__(self, global_frequencies=None):
         self.scaler = StandardScaler()
-        self.classifier = RandomForestClassifier(n_estimators=100)
+        self.classifier = RandomForestClassifier()
+        self.global_index = global_frequencies
 
     def fit_and_scale(self, matrix):
         return self.scaler.fit_transform(matrix)
@@ -23,3 +24,6 @@ class LearningModel(object):
     def scale_and_predict(self, input_vector):
         scaled_vec = self.scale(input_vector)
         return self.classifier.predict(scaled_vec)
+
+    def get_global_index(self):
+        return self.global_index
