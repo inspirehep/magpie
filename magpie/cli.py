@@ -8,6 +8,7 @@ from magpie.config import HEP_ONTOLOGY, MODEL_PATH
 
 @click.group()
 def cli():
+    """ A dummy function for grouping other commands """
     pass
 
 
