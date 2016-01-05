@@ -76,9 +76,9 @@ setup(
         'nltk',
         'pandas',
         'sklearn',
+        'Click',
         # 'marisa-trie',
         # 'networkx', # not really needed
-        # 'Click',
     ],
 
     # List additional groups of dependencies here (e.g. development
@@ -111,4 +111,8 @@ setup(
     #         'sample=sample:main',
     #     ],
     # },
+    entry_points='''
+        [console_scripts]
+        magpie=magpie.cli:cli
+    ''',
 )

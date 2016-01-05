@@ -22,6 +22,8 @@ from magpie.feature_extraction.document_features import \
 from magpie.feature_extraction.keyword_features import extract_keyword_features
 from magpie.utils.utils import save_to_disk, load_from_disk
 
+__all__ = ['extract', 'train', 'test']
+
 
 def get_ontology(path=HEP_ONTOLOGY, recreate=False):
     """ Load or create the ontology from a given path """
@@ -343,6 +345,7 @@ def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
 
     ontology = get_ontology(recreate=recreate_ontology)
     docs = get_documents(data_dir)
+    total_docs = 0
 
     start_time = time.clock()
     for doc in docs:
@@ -376,12 +379,12 @@ def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
 
         average_recall += recall
         total_kw_number += len(kw_candidates)
+        total_docs += 1
 
-    average_recall /= len(docs)
+    average_recall /= total_docs
 
     print
     print(u"Total # of keywords: " + str(total_kw_number))
     print(u"Averaged recall: " + unicode(average_recall * 100) + u"%")
     end_time = time.clock()
     print(u"Time elapsed: " + str(end_time - start_time))
-
