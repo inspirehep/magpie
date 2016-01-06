@@ -109,6 +109,48 @@ def test(testset_dir, ontology, model, recreate_ontology):
         recreate_ontology=recreate_ontology
     )
 
+@cli.command()
+@click.argument('trainset_dir')
+@click.argument('testset_dir')
+@click.option(
+    '--ontology',
+    '-o',
+    # prompt='Path to the ontology',
+    default=HEP_ONTOLOGY,
+    help='path to the ontology'
+)
+@click.option(
+    '--model',
+    '-m',
+    default=MODEL_PATH,
+    help='path to the pickled model'
+)
+@click.option(
+    '--recreate-ontology',
+    default=False,
+    help='whether to recreate the ontology'
+)
+def train_and_test(
+    trainset_dir,
+    testset_dir,
+    ontology,
+    model,
+    recreate_ontology
+):
+    api.train(
+        trainset_dir=os.path.abspath(trainset_dir),
+        ontology_path=os.path.abspath(ontology),
+        model_path=os.path.abspath(model),
+        recreate_ontology=recreate_ontology
+    )
+    click.echo("")
+    api.test(
+        testset_path=os.path.abspath(testset_dir),
+        ontology_path=os.path.abspath(ontology),
+        model_path=os.path.abspath(model),
+        recreate_ontology=recreate_ontology
+    )
+
 
 @cli.command()
 @click.argument('dataset_dir')
