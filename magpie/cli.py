@@ -29,11 +29,6 @@ def cli():
     help='path to the pickled model'
 )
 @click.option(
-    '--show-answers',
-    default=False,
-    help='whether to load and show ground truth answers'
-)
-@click.option(
     '--recreate-ontology',
     default=False,
     help='whether to recreate the ontology'
@@ -44,7 +39,7 @@ def cli():
     default=True,
     help='whether to display additional information e.g. computation time',
 )
-def extract(document, ontology, model, show_answers, recreate, verbose):
+def extract(document, ontology, model, recreate, verbose):
     """ Extract keywords from a document """
     api.extract(
         os.path.abspath(document),
