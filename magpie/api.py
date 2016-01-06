@@ -212,14 +212,14 @@ def test(
     X = pd.concat(feature_matrices)
 
     features_time = time.clock()
-    print(u"Candidate generation: " + str(cand_gen_time) + u"s")
-    print(u"Feature extraction: " + str(feature_ext_time) + u"s")
+    print(u"Candidate generation: {0:.2f}s".format(cand_gen_time))
+    print(u"Feature extraction: {0:.2f}s".format(feature_ext_time))
 
     # Predict
     y_predicted = model.scale_and_predict(X)
 
     predict_time = time.clock()
-    print(u"Prediction time: " + str(predict_time - features_time) + u"s")
+    print(u"Prediction time: {0:.2f}s".format(predict_time - features_time))
 
     # Remove ground truth answers that are not in the ontology
     remove_unguessable_answers(answers, ontology)
@@ -232,14 +232,14 @@ def test(
     )
 
     evaluation_time = time.clock()
-    print(u"Evaluation time: " + str(evaluation_time - predict_time) + u"s")
+    print(u"Evaluation time: {0:.2f}s".format(evaluation_time - predict_time))
 
     f1_score = (2 * precision * recall) / (precision + recall)
     print
-    print(u"Precision: " + str(precision * 100) + u"%")
-    print(u"Recall: " + str(recall * 100) + u"%")
-    print(u"F1-score: " + unicode(f1_score * 100) + u"%")
-    print(u"Accuracy: " + str(accuracy * 100) + u"%")
+    print(u"Precision: {0:.2f}%".format(precision * 100))
+    print(u"Recall: {0:.2f}%".format(recall * 100))
+    print(u"F1-score: {0:.2f}%".format(f1_score * 100))
+    print(u"Accuracy: {0:.2f}%".format(accuracy * 100))
 
 
 def train(
@@ -311,8 +311,8 @@ def train(
     # Cast the output vector to scipy
     y = np.array(output_vectors)
 
-    print(u"Candidate generation: " + str(cand_gen_time) + u"s")
-    print(u"Feature extraction: " + str(feature_ext_time) + u"s")
+    print(u"Candidate generation: {0:.2f}s".format(cand_gen_time))
+    print(u"Feature extraction: {0:.2f}s".format(feature_ext_time))
     fitting_time = time.clock()
 
     # Normalize features
@@ -323,13 +323,13 @@ def train(
     model.fit_classifier(x_scaled, y)
 
     pickle_time = time.clock()
-    print(u"Fitting the model: " + str(pickle_time - fitting_time) + u"s")
+    print(u"Fitting the model: {0:.2f}s".format(pickle_time - fitting_time))
 
     # Pickle the model
     save_to_disk(model_path, model, overwrite=True)
 
     end_time = time.clock()
-    print(u"Pickling the model: " + str(end_time - pickle_time) + u"s")
+    print(u"Pickling the model: {0:.2f}s".format(end_time - pickle_time))
 
 
 def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
