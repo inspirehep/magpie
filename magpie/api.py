@@ -73,8 +73,8 @@ def extract(
     path_to_file,
     ontology_path=HEP_ONTOLOGY,
     model_path=MODEL_PATH,
-    show_answers=False,
-    recreate_ontology=False
+    recreate_ontology=False,
+    verbose=False,
 ):
     """
     Extract keywords from a given file
@@ -82,7 +82,9 @@ def extract(
     :param ontology_path: unicode with the ontology path
     :param model_path: unicode with the trained model path
     :param recreate_ontology: boolean flag whether to recreate the ontology
-    :return:
+    :param verbose: whether to print additional info
+
+    :return: set of predicted keywords
     """
     doc = Document(0, path_to_file)
     ontology = get_ontology(path=ontology_path, recreate=recreate_ontology)
@@ -116,15 +118,15 @@ def extract(
             kw_predicted.append(kw)
 
     # Print results
-    print(u"Document content:")
-    print doc
+    if verbose:
+        print(u"Document content:")
+        print doc
 
-    print(u"Predicted keywords:")
-    for kw in kw_predicted:
-        print(u"\t" + unicode(kw.get_canonical_form()))
-    print
+        print(u"Predicted keywords:")
+        for kw in kw_predicted:
+            print(u"\t" + unicode(kw.get_canonical_form()))
+        print
 
-    if show_answers:
         answers = get_answers_for_doc(doc.filename, os.path.dirname(doc.filepath))
 
         answer_dict = dict(placeholder=answers)
@@ -152,17 +154,25 @@ def extract(
                'no_of_words']]
         print X[(X['ground truth'] == 1) | (X['predicted'])]
 
+    return {kw.get_canonical_form() for kw in kw_predicted}
+
 
 def test(
     testset_path=HEP_TEST_PATH,
     ontology_path=HEP_ONTOLOGY,
     model_path=MODEL_PATH,
-    recreate_ontology=False
+    recreate_ontology=False,
+    verbose=False,
 ):
     """
-    Test the trained model on a set under a given path
-    :param testset_dir: path to the directory with the test set
+    Test the trained model on a set under a given path.
+    :param testset_path: path to the directory with the test set
+    :param ontology_path: path to the ontology
+    :param model_path: path where the model is pickled
     :param recreate_ontology: boolean flag whether to recreate the ontology
+    :param verbose: whether to print computation times
+
+    :return tuple of four floats (precision, recall, f1_score, accuracy)
     """
     ontology = get_ontology(path=ontology_path, recreate=recreate_ontology)
 
@@ -211,15 +221,18 @@ def test(
     # Merge feature matrices from different documents
     X = pd.concat(feature_matrices)
 
+    if verbose:
+        print(u"Candidate generation: {0:.2f}s".format(cand_gen_time))
+        print(u"Feature extraction: {0:.2f}s".format(feature_ext_time))
+
     features_time = time.clock()
-    print(u"Candidate generation: {0:.2f}s".format(cand_gen_time))
-    print(u"Feature extraction: {0:.2f}s".format(feature_ext_time))
 
     # Predict
     y_predicted = model.scale_and_predict(X)
 
     predict_time = time.clock()
-    print(u"Prediction time: {0:.2f}s".format(predict_time - features_time))
+    if verbose:
+        print(u"Prediction time: {0:.2f}s".format(predict_time - features_time))
 
     # Remove ground truth answers that are not in the ontology
     remove_unguessable_answers(answers, ontology)
@@ -231,27 +244,29 @@ def test(
         answers
     )
 
-    evaluation_time = time.clock()
-    print(u"Evaluation time: {0:.2f}s".format(evaluation_time - predict_time))
+    if verbose:
+        print(u"Evaluation time: {0:.2f}s".format(time.clock() - predict_time))
 
     f1_score = (2 * precision * recall) / (precision + recall)
-    print
-    print(u"Precision: {0:.2f}%".format(precision * 100))
-    print(u"Recall: {0:.2f}%".format(recall * 100))
-    print(u"F1-score: {0:.2f}%".format(f1_score * 100))
-    print(u"Accuracy: {0:.2f}%".format(accuracy * 100))
+    return precision, recall, f1_score, accuracy
 
 
 def train(
     trainset_dir=HEP_TRAIN_PATH,
     ontology_path=HEP_ONTOLOGY,
     model_path=MODEL_PATH,
-    recreate_ontology=False
+    recreate_ontology=False,
+    verbose=False,
 ):
     """
     Train and save the model on a given dataset
     :param trainset_dir: path to the directory with the training set
+    :param ontology_path:
+    :param model_path:
     :param recreate_ontology: boolean flag whether to recreate the ontology
+    :param verbose: whether to print computation times
+
+    :return None if everything goes fine, error otherwise
     """
     ontology = get_ontology(path=ontology_path, recreate=recreate_ontology)
     docs = get_documents(trainset_dir, as_generator=False)
@@ -311,8 +326,9 @@ def train(
     # Cast the output vector to scipy
     y = np.array(output_vectors)
 
-    print(u"Candidate generation: {0:.2f}s".format(cand_gen_time))
-    print(u"Feature extraction: {0:.2f}s".format(feature_ext_time))
+    if verbose:
+        print(u"Candidate generation: {0:.2f}s".format(cand_gen_time))
+        print(u"Feature extraction: {0:.2f}s".format(feature_ext_time))
     fitting_time = time.clock()
 
     # Normalize features
@@ -323,22 +339,28 @@ def train(
     model.fit_classifier(x_scaled, y)
 
     pickle_time = time.clock()
-    print(u"Fitting the model: {0:.2f}s".format(pickle_time - fitting_time))
+    if verbose:
+        print(u"Fitting the model: {0:.2f}s".format(pickle_time - fitting_time))
 
     # Pickle the model
     save_to_disk(model_path, model, overwrite=True)
 
-    end_time = time.clock()
-    print(u"Pickling the model: {0:.2f}s".format(end_time - pickle_time))
+    if verbose:
+        end_time = time.clock()
+        print(u"Pickling the model: {0:.2f}s".format(end_time - pickle_time))
 
 
 def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
-                                       recreate_ontology=False):
+                                       recreate_ontology=False,
+                                       verbose=False):
     """
     Generate keyword candidates for files in a given directory
     and compute their recall in reference to ground truth answers
     :param data_dir: directory with .txt and .key files
     :param recreate_ontology: boolean flag for recreating the ontology
+    :param verbose: whether to print computation times
+
+    :return average_recall: float
     """
     average_recall = 0
     total_kw_number = 0
@@ -372,10 +394,11 @@ def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
         # print
 
         recall = len(kw_candidates & answers) / (len(answers))
-        print
-        print(u"Paper: " + doc.filename)
-        print(u"Candidates: " + str(len(kw_candidates)))
-        print(u"Recall: " + unicode(recall * 100) + u"%")
+        if verbose:
+            print
+            print(u"Paper: " + doc.filename)
+            print(u"Candidates: " + str(len(kw_candidates)))
+            print(u"Recall: " + unicode(recall * 100) + u"%")
 
         average_recall += recall
         total_kw_number += len(kw_candidates)
@@ -383,8 +406,9 @@ def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
 
     average_recall /= total_docs
 
-    print
-    print(u"Total # of keywords: " + str(total_kw_number))
-    print(u"Averaged recall: " + unicode(average_recall * 100) + u"%")
-    end_time = time.clock()
-    print(u"Time elapsed: " + str(end_time - start_time))
+    if verbose:
+        print
+        print(u"Total # of keywords: " + str(total_kw_number))
+        print(u"Time elapsed: " + str(time.clock() - start_time))
+
+    return average_recall
