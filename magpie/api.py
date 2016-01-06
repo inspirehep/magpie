@@ -70,11 +70,11 @@ def get_answers_for_doc(doc_name, data_dir):
 
 
 def extract(
-        path_to_file,
-        ontology_path=HEP_ONTOLOGY,
-        model_path=MODEL_PATH,
-        show_answers=False,
-        recreate_ontology=False
+    path_to_file,
+    ontology_path=HEP_ONTOLOGY,
+    model_path=MODEL_PATH,
+    show_answers=False,
+    recreate_ontology=False
 ):
     """
     Extract keywords from a given file
@@ -154,10 +154,10 @@ def extract(
 
 
 def test(
-        testset_path=HEP_TEST_PATH,
-        ontology_path=HEP_ONTOLOGY,
-        model_path=MODEL_PATH,
-        recreate_ontology=False
+    testset_path=HEP_TEST_PATH,
+    ontology_path=HEP_ONTOLOGY,
+    model_path=MODEL_PATH,
+    recreate_ontology=False
 ):
     """
     Test the trained model on a set under a given path
@@ -243,10 +243,10 @@ def test(
 
 
 def train(
-        trainset_dir=HEP_TRAIN_PATH,
-        ontology_path=HEP_ONTOLOGY,
-        model_path=MODEL_PATH,
-        recreate_ontology=False
+    trainset_dir=HEP_TRAIN_PATH,
+    ontology_path=HEP_ONTOLOGY,
+    model_path=MODEL_PATH,
+    recreate_ontology=False
 ):
     """
     Train and save the model on a given dataset

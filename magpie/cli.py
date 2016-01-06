@@ -109,6 +109,7 @@ def test(testset_dir, ontology, model, recreate_ontology):
         recreate_ontology=recreate_ontology
     )
 
+
 @cli.command()
 @click.argument('trainset_dir')
 @click.argument('testset_dir')
@@ -137,6 +138,7 @@ def train_and_test(
     model,
     recreate_ontology
 ):
+    """ An aggregate command for both training and testing. """
     api.train(
         trainset_dir=os.path.abspath(trainset_dir),
         ontology_path=os.path.abspath(ontology),
