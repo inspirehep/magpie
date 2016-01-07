@@ -39,13 +39,13 @@ def cli():
     default=True,
     help='whether to display additional information e.g. computation time',
 )
-def extract(document, ontology, model, recreate, verbose):
+def extract(document, ontology, model, recreate_ontology, verbose):
     """ Extract keywords from a document """
     api.extract(
         os.path.abspath(document),
         ontology_path=os.path.abspath(ontology),
         model_path=os.path.abspath(model),
-        recreate_ontology=recreate,
+        recreate_ontology=recreate_ontology,
         verbose=verbose,
     )
 

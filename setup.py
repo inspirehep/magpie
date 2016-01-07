@@ -74,6 +74,7 @@ setup(
     install_requires=[
         'rdflib',
         'nltk',
+        'scipy',
         'pandas',
         'sklearn',
         'Click',

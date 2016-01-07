@@ -2,61 +2,34 @@ import pandas as pd
 from sklearn.feature_extraction import DictVectorizer
 
 
-def extract_keyword_features(kw_candidates, inv_index, global_freqs):
+def extract_keyword_features(kw_candidates, X, inv_index, global_freqs):
     """
     Extract and return a matrix with keyword features only.
     :param kw_candidates: an iterable containing KeywordTokens
+    :param X: preallocated pandas matrix
     :param inv_index: InvertedIndex object for a given document
     :param global_freqs: GlobalFrequencyIndex object with a corpus word count
 
-    :return: pandas DataFrame with keyword features
+    :return: None, operates in place on the X matrix
     """
-    if not kw_candidates:
-        return pd.DataFrame([])
+    for i in xrange(len(kw_candidates)):
 
-    samples = []
-    for kw in kw_candidates:
-        feature_vector = build_feature_vector(kw, inv_index, global_freqs)
-        samples.append((kw.get_parsed_form(), feature_vector))
+        parsed_label = kw_candidates[i].get_parsed_form()
 
-    # TODO might be faster to convert lists directly to the DataFrame
-    dv = DictVectorizer()
-    matrix = dv.fit_transform([s[1] for s in samples])
+        # TF, IDF etc
+        tf = inv_index.get_term_frequency(parsed_label)
+        idf = global_freqs.get_term_idf(parsed_label)
 
-    df = pd.DataFrame(matrix.toarray(), columns=dv.get_feature_names())
-    # df['kw'] = [s[0] for s in samples]
-    return df
+        # Occurrences
+        first_occurrence = inv_index.get_first_phrase_occurrence(parsed_label)
+        last_occurrence = inv_index.get_last_phrase_occurrence(parsed_label)
 
+        X['tf'][i] = tf
+        X['idf'][i] = idf
+        X['tfidf'][i] = tf * idf
+        X['first_occurrence'][i] = first_occurrence
+        X['last_occurrence'][i] = last_occurrence
+        X['spread'][i] = max(0, last_occurrence - first_occurrence)
+        X['no_of_words'][i] = len(parsed_label.split())
+        X['no_of_letters'][i] = len(parsed_label)
 
-def build_feature_vector(kw, inv_index, global_freqs):
-    """
-    Build a feature vector for a given keyword
-    :param kw: KeywordToken object
-    :param inv_index: InvertedIndex object for a given document
-    :param global_freqs: GlobalFrequencyIndex object with a corpus word count
-
-    :return: dictionary with computed features
-    """
-    parsed_label = kw.get_parsed_form()
-
-    # TF, IDF etc
-    tf = inv_index.get_term_frequency(parsed_label)
-    idf = global_freqs.get_term_idf(kw.get_parsed_form())
-
-    # Occurrences
-    first_occurrence = inv_index.get_first_phrase_occurrence(parsed_label)
-    last_occurrence = inv_index.get_last_phrase_occurrence(parsed_label)
-
-    return {
-        # 'kw': parsed_label,
-
-        'tf': tf,
-        'idf': idf,  # in how many docs they occur
-        'tfidf': tf * idf,
-        'first_occurrence': first_occurrence,
-        'last_occurrence': last_occurrence,
-        'spread': max(0, last_occurrence - first_occurrence),
-        # count how close together in the occurrences are the kw terms
-        'no_of_words': len(parsed_label.split()),
-        'no_of_letters': len(parsed_label),
-    }

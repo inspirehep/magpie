@@ -17,6 +17,7 @@ from magpie.config import MODEL_PATH, HEP_TRAIN_PATH, HEP_ONTOLOGY, \
     HEP_TEST_PATH
 from magpie.evaluation.standard_evaluation import evaluate_results
 from magpie.evaluation.utils import remove_unguessable_answers
+from magpie.feature_extraction import FEATURE_VECTOR
 from magpie.feature_extraction.document_features import \
     extract_document_features
 from magpie.feature_extraction.keyword_features import extract_keyword_features
@@ -96,18 +97,21 @@ def extract(
     # Generate keyword candidates
     kw_candidates = list(generate_keyword_candidates(doc, ontology))
 
+    X = {k: np.zeros(len(kw_candidates), dtype=v)
+         for k, v in FEATURE_VECTOR.iteritems()}
+
     # Extract features for keywords
-    kw_features = extract_keyword_features(
+    extract_keyword_features(
         kw_candidates,
+        X,
         inv_index,
-        model.get_global_index()
+        model.get_global_index(),
     )
 
     # Extract document features
-    doc_features = extract_document_features(inv_index, len(kw_candidates))
+    extract_document_features(inv_index, X)
 
-    # Merge matrices
-    X = pd.concat([kw_features, doc_features], axis=1)
+    X = pd.DataFrame(X)
 
     # Predict
     y_predicted = model.scale_and_predict(X)
@@ -194,25 +198,27 @@ def test(
 
         candidates_end = time.clock()
 
+        # Preallocate the feature matrix
+        X = {k: np.zeros(len(kw_candidates), dtype=v)
+             for k, v in FEATURE_VECTOR.iteritems()}
+
         # Extract features for keywords
-        kw_features = extract_keyword_features(
+        extract_keyword_features(
             kw_candidates,
+            X,
             inv_index,
             model.get_global_index()
         )
 
         # Extract document features
-        doc_features = extract_document_features(inv_index, len(kw_candidates))
-
-        # Merge matrices
-        feature_matrix = pd.concat([kw_features, doc_features], axis=1)
+        extract_document_features(inv_index, X)
 
         features_end = time.clock()
 
         # Get ground truth answers
         answers[doc.doc_id] = get_answers_for_doc(doc.filename, testset_path)
 
-        feature_matrices.append(feature_matrix)
+        feature_matrices.append(pd.DataFrame(X))
         kw_vector.extend([(doc.doc_id, kw) for kw in kw_candidates])
 
         cand_gen_time += candidates_end - candidates_start
@@ -272,8 +278,8 @@ def train(
     docs = get_documents(trainset_dir, as_generator=False)
 
     global_freqs = GlobalFrequencyIndex(docs)
-    X = pd.DataFrame()
     output_vectors = []
+    feature_matrices = []
 
     cand_gen_time = feature_ext_time = 0
 
@@ -292,19 +298,21 @@ def train(
 
         candidates_end = time.clock()
 
+        # Preallocate the feature matrix
+        X = {k: np.zeros(len(kw_candidates), dtype=v)
+             for k, v in FEATURE_VECTOR.iteritems()}
+
         # Extract features for keywords
-        kw_features = extract_keyword_features(
+        extract_keyword_features(
             kw_candidates,
+            X,
             inv_index,
             global_freqs
         )
 
         # Extract document features
-        doc_features = extract_document_features(inv_index, len(kw_candidates))
-
-        # Merge matrices
-        feature_matrix = pd.concat([kw_features, doc_features], axis=1)
-        X = pd.concat([X, feature_matrix])
+        extract_document_features(inv_index, X)
+        feature_matrices.append(pd.DataFrame(X))
 
         features_end = time.clock()
 
@@ -322,6 +330,9 @@ def train(
 
         cand_gen_time += candidates_end - candidates_start
         feature_ext_time += features_end - candidates_end
+
+    # Merge the pandas
+    X = pd.concat(feature_matrices)
 
     # Cast the output vector to scipy
     y = np.array(output_vectors)
@@ -412,3 +423,6 @@ def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
         print(u"Time elapsed: " + str(time.clock() - start_time))
 
     return average_recall
+
+if __name__ == '__main__':
+    train()
