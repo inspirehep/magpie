@@ -1,0 +1,2 @@
+Inflation, moduli (de)stabilization and supersymmetry breaking
+We study the cosmological inflation from the viewpoint of the moduli stabilization. We study the scenario that the superpotential has a large value during the inflation era enough to stabilize moduli, but it is small in the true vacuum. This scenario is discussed by using a simple model, one type of hybrid models.

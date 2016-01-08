@@ -1,0 +1,2 @@
+The BiHermitian topological sigma model
+BiHermitian geometry, discovered long ago by Gates, Hull and Roceck, is the most general sigma model target space geometry allowing for (2,2) world sheet supersymmetry. By using the twisting procedure proposed by Kapustin and Li, we work out the type A and B topological sigma models for a general biHermtian target space, we write down the explicit expression of the sigma model's action and BRST transformations and present a computation of the topological gauge fermion and the topological action.

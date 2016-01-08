@@ -1,0 +1,2 @@
+Zone methods and the fermion sign problem
+We review a recently proposed approach to the problem of alternating signs for fermionic many body Monte Carlo simulations in finite temperature simulations. We derive an estimate for fermion wandering lengths and introduce the notion of permutation zones, special regions of the lattice where identical fermions may interchange and outside of which they may not. Using successively larger permutation zones, one can extrapolate to obtain thermodynamic observables in regimes where direct simulation is impossible.
