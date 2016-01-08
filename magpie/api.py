@@ -132,10 +132,7 @@ def extract(
         print
 
         answers = get_answers_for_doc(doc.filename, os.path.dirname(doc.filepath))
-
-        answer_dict = dict(placeholder=answers)
-        remove_unguessable_answers(answer_dict, ontology)
-        answers = answer_dict['placeholder']
+        answers = remove_unguessable_answers(answers, ontology)
 
         candidates = {kw.get_canonical_form() for kw in kw_candidates}
         print(u"Ground truth keywords:")
@@ -241,7 +238,8 @@ def test(
         print(u"Prediction time: {0:.2f}s".format(predict_time - features_time))
 
     # Remove ground truth answers that are not in the ontology
-    remove_unguessable_answers(answers, ontology)
+    for doc_id, kw_set in answers.items():
+        answers[doc_id] = remove_unguessable_answers(kw_set, ontology)
 
     # Evaluate the results
     precision, recall, accuracy = evaluate_results(
