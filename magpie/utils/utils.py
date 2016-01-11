@@ -30,10 +30,7 @@ def save_to_disk(path_to_disk, obj, overwrite=False):
     if not overwrite and os.path.exists(path_to_disk):
         raise ValueError("File " + path_to_disk + "already exists")
 
-    try:
-        pickle.dump(obj, open(path_to_disk, 'wb'))
-    except pickle.PickleError:
-        raise ValueError("Failed to save model to " + path_to_disk)
+    pickle.dump(obj, open(path_to_disk, 'wb'))
 
 
 def load_from_disk(path_to_disk):
@@ -41,8 +38,4 @@ def load_from_disk(path_to_disk):
     if not os.path.exists(path_to_disk):
         raise ValueError("File " + path_to_disk + " does not exist")
 
-    try:
-        obj = pickle.load(open(path_to_disk, 'rb'))
-    except pickle.PickleError:
-        raise ValueError("Failed to load the model from " + path_to_disk)
-    return obj
+    return pickle.load(open(path_to_disk, 'rb'))

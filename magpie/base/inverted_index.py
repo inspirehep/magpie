@@ -1,5 +1,8 @@
 from __future__ import division
 from collections import defaultdict
+
+import numpy as np
+
 from magpie.utils.stemmer import stem
 
 
@@ -26,53 +29,44 @@ class InvertedIndex(object):
     def add_occurrence(self, word, position):
         self.index[word].append(position)
 
-    def get_first_phrase_occurrence(self, phrase):
-        terms = phrase.split()
-        first_occ = [self._get_first_term_occurrence(term) for term in terms]
-
+    def get_first_phrase_occurrence(self, keyphrase):
         # TODO maybe a better function would do here
-        return sum(first_occ) / len(first_occ)
+        return np.mean([self._get_first_term_occurrence(term)
+                        for term in keyphrase])
 
     def _get_first_term_occurrence(self, term):
-        stemmed = stem(term)
-        if stemmed not in self.index:
+        if term not in self.index:
             return 1
         else:
-            return min(self.index[stemmed]) / self.word_count
+            return min(self.index[term]) / self.word_count
 
-    def get_last_phrase_occurrence(self, phrase):
-        terms = phrase.split()
-        first_occ = [self._get_last_term_occurrence(term) for term in terms]
-
+    def get_last_phrase_occurrence(self, keyphrase):
         # TODO maybe a better function would do here
-        return sum(first_occ) / len(first_occ)
+        return np.mean([self._get_last_term_occurrence(term)
+                        for term in keyphrase])
 
     def _get_last_term_occurrence(self, term):
-        stemmed = stem(term)
-        if stemmed not in self.index:
+        if term not in self.index:
             return 0
         else:
-            return max(self.index[stemmed]) / self.word_count
+            return max(self.index[term]) / self.word_count
 
     def get_term_occurrences(self, term):
         words = term.split()
         word_scores = [self._get_word_occurrences(w) for w in words]
 
         # TODO maybe a better function than sum would do here
-        return sum(word_scores)
+        return np.mean(word_scores)
 
     def _get_word_occurrences(self, word):
         return len(self.index.get(stem(word), []))
 
-    def get_term_frequency(self, term):
-        words = term.split()
-        word_scores = [self._get_word_frequency(w) for w in words]
-
+    def get_term_frequency(self, keyphrase):
         # TODO maybe a better function than sum would do here
-        return sum(word_scores)
+        return np.mean([self._get_word_frequency(w) for w in keyphrase])
 
     def _get_word_frequency(self, word):
-        term_count = len(self.index.get(stem(word), []))
+        term_count = len(self.index.get(word, []))
         return term_count / self.word_count
 
 

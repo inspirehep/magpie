@@ -10,7 +10,7 @@ class LearningModel(object):
     """
     def __init__(self, global_frequencies=None):
         self.scaler = StandardScaler()
-        self.classifier = RandomForestClassifier()
+        self.classifier = RandomForestClassifier(class_weight='balanced')
         self.global_index = global_frequencies
 
     def fit_and_scale(self, matrix):

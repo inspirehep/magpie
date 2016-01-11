@@ -3,6 +3,8 @@ from __future__ import division
 import collections
 import math
 
+import numpy as np
+
 from magpie.utils.stemmer import stem
 
 
@@ -38,16 +40,12 @@ class GlobalFrequencyIndex(object):
     #     else:
     #         return 0
 
-    def get_term_idf(self, term):
-        words = term.split()
-        scores = [self._get_word_idf(w) for w in words]
-
+    def get_term_idf(self, keyphrase):
         # TODO another function could do here
-        return sum(scores)
+        return np.mean([self._get_word_idf(w) for w in keyphrase])
 
     def _get_word_idf(self, word):
-        stemmed = stem(word)
-        return math.log(self.total_docs / (1 + len(self.index[stemmed])))
+        return math.log(self.total_docs / (1 + len(self.index[word])))
         # word_id = self.vectorizer.vocabulary_.get(stemmed)
         # if word_id:
         #     return self.transformer.idf_[word_id]

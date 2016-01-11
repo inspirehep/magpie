@@ -163,7 +163,7 @@ def test(
     ontology_path=HEP_ONTOLOGY,
     model_path=MODEL_PATH,
     recreate_ontology=False,
-    verbose=False,
+    verbose=True,
 ):
     """
     Test the trained model on a set under a given path.
@@ -245,7 +245,7 @@ def test(
     precision, recall, accuracy = evaluate_results(
         y_predicted,
         kw_vector,
-        answers
+        answers,
     )
 
     if verbose:
@@ -260,7 +260,7 @@ def train(
     ontology_path=HEP_ONTOLOGY,
     model_path=MODEL_PATH,
     recreate_ontology=False,
-    verbose=False,
+    verbose=True,
 ):
     """
     Train and save the model on a given dataset

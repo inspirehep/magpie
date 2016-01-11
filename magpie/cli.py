@@ -3,7 +3,8 @@ import os
 import click
 
 from magpie import api
-from magpie.config import HEP_ONTOLOGY, MODEL_PATH
+from magpie.config import HEP_ONTOLOGY, MODEL_PATH, HEP_TEST_PATH, \
+    HEP_TRAIN_PATH
 
 
 @click.group()
@@ -67,7 +68,7 @@ def extract(document, ontology, model, recreate_ontology, verbose):
 )
 @click.option(
     '--recreate-ontology',
-    default=False,
+    is_flag=True,
     help='whether to recreate the ontology'
 )
 @click.option(
@@ -106,7 +107,7 @@ def train(trainset_dir, ontology, model, recreate_ontology, verbose):
 )
 @click.option(
     '--recreate-ontology',
-    default=False,
+    is_flag=True,
     help='whether to recreate the ontology'
 )
 @click.option(
@@ -135,7 +136,7 @@ def test(testset_dir, ontology, model, recreate_ontology, verbose):
 @click.argument('dataset_dir')
 @click.option(
     '--recreate-ontology',
-    default=False,
+    is_flag=True,
     help='whether to recreate the ontology'
 )
 @click.option(
@@ -155,8 +156,20 @@ def candidate_recall(dataset_dir, recreate_ontology, verbose):
 
 
 @cli.command()
-@click.argument('trainset_dir')
-@click.argument('testset_dir')
+@click.option(
+    '--train_set',
+    '-train',
+    # prompt='Path to the training set',
+    default=HEP_TRAIN_PATH,
+    help='path to the training set'
+)
+@click.option(
+    '--test_set',
+    '-test',
+    # prompt='Path to the test set',
+    default=HEP_TEST_PATH,
+    help='path to the test set'
+)
 @click.option(
     '--ontology',
     '-o',
@@ -172,7 +185,7 @@ def candidate_recall(dataset_dir, recreate_ontology, verbose):
 )
 @click.option(
     '--recreate-ontology',
-    default=False,
+    is_flag=True,
     help='whether to recreate the ontology'
 )
 @click.option(
@@ -182,14 +195,14 @@ def candidate_recall(dataset_dir, recreate_ontology, verbose):
     help='whether to display additional information e.g. computation time',
 )
 def train_and_test(
-    trainset_dir,
-    testset_dir,
+    train_set,
+    test_set,
     ontology,
     model,
     recreate_ontology,
     verbose,
 ):
     """ An aggregate command for both training and testing. """
-    train(trainset_dir, ontology, model, recreate_ontology, verbose)
+    train(train_set, ontology, model, recreate_ontology, verbose)
     click.echo()
-    test(testset_dir, ontology, model, recreate_ontology, verbose)
+    test(test_set, ontology, model, recreate_ontology, verbose)
