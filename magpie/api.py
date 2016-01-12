@@ -28,7 +28,10 @@ __all__ = ['extract', 'train', 'test']
 
 def get_ontology(path=HEP_ONTOLOGY, recreate=False):
     """ Load or create the ontology from a given path """
-    return OntologyFactory(path, recreate=recreate)
+    start_time = time.clock()
+    ontology = OntologyFactory(path, recreate=recreate)
+    print(u"Ontology loading time: {0:.2f}s".format(time.clock() - start_time))
+    return ontology
 
 
 def get_documents(data_dir=HEP_TRAIN_PATH, as_generator=True):

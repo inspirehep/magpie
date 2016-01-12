@@ -59,3 +59,7 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Magpie
+data/hep/test/
+data/hep/train/

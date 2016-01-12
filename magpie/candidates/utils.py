@@ -35,8 +35,7 @@ def remove_nostandalone_candidates(kw_candidates, ontology):
 
     :return new set of KeywordTokens after filtration
     """
-    nostandalones = ontology.nostandalones
-    return {kw for kw in kw_candidates if kw.get_uri() not in nostandalones}
+    return {k for k in kw_candidates if ontology.can_exist_alone(k.get_uri())}
 
 
 def add_gt_answers_to_candidates_set(kw_candidates, gt_answers, ontology):

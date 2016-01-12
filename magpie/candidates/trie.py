@@ -1,22 +1,28 @@
-# ALPHABET = {u' ', u'(', u')', u'*', u'+', u'-', u'/', u'0', u'1', u'2', u'3',
-#             u'4', u'5', u'6', u'8', u'9', u':', u'a', u'b', u'c', u'd', u'e',
-#             u'f', u'g', u'h', u'i', u'j', u'k', u'l', u'm', u'n', u'o', u'p',
-#             u'q', u'r', u's', u't', u'u', u'v', u'w', u'x', u'y', u'z', u'|',
-#             u'.', u',', u'\'', u'[', u']'}
+import marisa_trie
 
 
-class OntologyTrie(object):
+class MarisaTrie(object):
     """
     Holds a trie containing all the ontology terms and enables to perform
     fuzzy matching over it. Implemented with marisa-trie.
     """
     def __init__(self, literals):
-        import marisa_trie
         self.trie = marisa_trie.Trie(literals)
         self.cutoff = 2
         self._second_row = self.get_trie_row(2)
         self._hits = set()
         self.comparisons = 0
+
+    def exact_match(self, word):
+        """
+        Look if a word is in the trie
+        :param word: word to match on
+        :return: Set of hits
+        """
+        if word in self.trie:
+            return {word}
+        else:
+            return set()
 
     def fuzzy_match(self, word):
         """ Fuzzy match a word over the trie. The allowed fuzziness is
@@ -58,7 +64,7 @@ class OntologyTrie(object):
         return {key[:row_number] for key in self.trie.keys(prefix)} - exclude
 
     def __getitem__(self, item):
-        return self.trie[item]
+        return self.trie.get(item)
 
     def __len__(self):
         return len(self.trie)
@@ -72,7 +78,7 @@ class OntologyTrie(object):
         if not prev_row:
             prev_row = range(len(word) + 1)
 
-        distance_row = OntologyTrie.iter_levenshtein(prefix, word, prev_row)
+        distance_row = MarisaTrie.iter_levenshtein(prefix, word, prev_row)
 
         if min(distance_row) <= self.cutoff:
             if prefix in self.trie and distance_row[-1] <= self.cutoff:
