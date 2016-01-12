@@ -151,8 +151,8 @@ def extract(
 
         pd.set_option('expand_frame_repr', False)
         X = X[['name', 'predicted', 'ground truth', 'tf', 'idf', 'tfidf',
-               'first_occurrence', 'last_occurrence', 'spread', 'no_of_letters',
-               'no_of_words']]
+               'first_occurrence', 'last_occurrence', 'spread',
+               'hops_from_anchor', 'no_of_letters', 'no_of_words']]
         print X[(X['ground truth'] == 1) | (X['predicted'])]
 
     return {kw.get_canonical_form() for kw in kw_predicted}

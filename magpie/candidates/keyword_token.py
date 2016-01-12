@@ -11,9 +11,11 @@ class KeywordToken(object):
                  position=-1,
                  parsed_label=None,
                  canonical_label=None,
+                 hops_from_anchor=0,
                  form=None):
         self.canonical_label = canonical_label
         self.parsed_label = parsed_label
+        self.hops_from_anchor = hops_from_anchor
         self.uri = uri
         self.occurrences = [position]
         self._hash = hash(self.uri)

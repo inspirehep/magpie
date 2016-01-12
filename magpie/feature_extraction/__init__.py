@@ -9,6 +9,7 @@ FEATURE_VECTOR = {
     'spread': 'float64',
     'no_of_words': 'uint8',
     'no_of_letters': 'uint16',
+    'hops_from_anchor': 'uint16',
 
     # Document features
     'total_words_in_doc': 'uint32',

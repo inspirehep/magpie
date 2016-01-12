@@ -203,6 +203,24 @@ def train_and_test(
     verbose,
 ):
     """ An aggregate command for both training and testing. """
-    train(train_set, ontology, model, recreate_ontology, verbose)
+    api.train(
+        trainset_dir=os.path.abspath(train_set),
+        ontology_path=os.path.abspath(ontology),
+        model_path=os.path.abspath(model),
+        recreate_ontology=recreate_ontology,
+        verbose=verbose,
+    )
+    click.echo(u"Training completed successfully!")
+
+    precision, recall, f1_score, accuracy = api.test(
+        testset_path=os.path.abspath(test_set),
+        ontology_path=os.path.abspath(ontology),
+        model_path=os.path.abspath(model),
+        recreate_ontology=recreate_ontology,
+        verbose=verbose,
+    )
     click.echo()
-    test(test_set, ontology, model, recreate_ontology, verbose)
+    click.echo(u"Precision: {0:.2f}%".format(precision * 100))
+    click.echo(u"Recall: {0:.2f}%".format(recall * 100))
+    click.echo(u"F1-score: {0:.2f}%".format(f1_score * 100))
+    click.echo(u"Accuracy: {0:.2f}%".format(accuracy * 100))

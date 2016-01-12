@@ -75,7 +75,7 @@ def get_related_concepts(anchors, relation, ontology, depth=None):
         distance, node = queue.popleft()
         if not depth or distance < depth:
             for child_uri in ontology.get_children_of_node(node.uri, relation):
-                token = KeywordToken(child_uri)
+                token = KeywordToken(child_uri, hops_from_anchor=distance + 1)
                 if token not in nodes:
                     queue.append((distance + 1, token))
                     nodes.add(token)

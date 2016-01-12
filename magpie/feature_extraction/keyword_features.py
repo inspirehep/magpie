@@ -30,6 +30,7 @@ def extract_keyword_features(kw_candidates, X, inv_index, global_freqs):
         X['spread'][i] = max(0, last_occurrence - first_occurrence)
         X['no_of_words'][i] = len(keyphrase)
         X['no_of_letters'][i] = len(kw_candidates[i].get_parsed_form())
+        X['hops_from_anchor'][i] = kw_candidates[i].hops_from_anchor
 
 
 def tokenize_keyword(kw_token):
