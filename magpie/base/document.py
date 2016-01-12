@@ -32,14 +32,18 @@ class Document(object):
         return set(lowercase) - {',', '.', '!', ';', ':', '-', '', None}
 
     def get_all_words(self):
-        return word_tokenize(self.text)
+        """ Return all words tokenized, in lowercase and without punctuation """
+        return [w.lower() for w in word_tokenize(self.text)
+                if w not in PUNCTUATION]
 
     def get_meaningful_words(self):
-        return [w.lower() for w in word_tokenize(self.text)
-                if w.lower() not in STOPWORDS and w not in PUNCTUATION]
+        """ Return only non-stopwords, tokenized, in lowercase and without
+        punctuation """
+        return [w for w in self.get_all_words() if w not in STOPWORDS]
 
     def read_sentences(self):
         lines = self.text.split('\n')
-        return [sentence for inner_list in lines
-                for sentence in sent_tokenize(inner_list)]
-
+        raw = [sentence for inner_list in lines
+               for sentence in sent_tokenize(inner_list)]
+        return [[w.lower() for w in word_tokenize(s) if w not in PUNCTUATION]
+                for s in raw]

@@ -78,6 +78,7 @@ setup(
         'nltk',
         'scipy',
         'pandas',
+        'gensim',
         'sklearn',
         'Click',
     ],

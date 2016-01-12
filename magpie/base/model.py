@@ -2,16 +2,19 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.preprocessing import StandardScaler
 
+from magpie.base.word2vec import train_word2vec
+
 
 class LearningModel(object):
     """
     Represents the model that can be trained and later used to predict
     keywords for unknown data
     """
-    def __init__(self, global_frequencies=None):
+    def __init__(self, global_frequencies=None, w2v_docs=None):
         self.scaler = StandardScaler()
         self.classifier = RandomForestClassifier(class_weight='balanced')
         self.global_index = global_frequencies
+        self.word2vec = train_word2vec(w2v_docs) if w2v_docs else None
 
     def fit_and_scale(self, matrix):
         return self.scaler.fit_transform(matrix)

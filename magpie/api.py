@@ -335,31 +335,34 @@ def train(
     # Merge the pandas
     X = pd.concat(feature_matrices)
 
-    # Cast the output vector to scipy
+    # Cast the output vector to numpy
     y = np.array(output_vectors)
 
     if verbose:
         print("Candidate generation: {0:.2f}s".format(cand_gen_time))
         print("Feature extraction: {0:.2f}s".format(feature_ext_time))
-    fitting_time = time.clock()
+    t1 = time.clock()
 
     # Normalize features
-    model = LearningModel(global_frequencies=global_freqs)
+    model = LearningModel(global_frequencies=global_freqs, w2v_docs=docs)
     x_scaled = model.fit_and_scale(X)
+
+    t2 = time.clock()
+    if verbose:
+        print("Word2Vec and feature scaling: {0:.2f}s".format(t2 - t1))
 
     # Train the model
     model.fit_classifier(x_scaled, y)
 
-    pickle_time = time.clock()
+    t3 = time.clock()
     if verbose:
-        print("Fitting the model: {0:.2f}s".format(pickle_time - fitting_time))
+        print("Fitting the model: {0:.2f}s".format(t3 - t2))
 
     # Pickle the model
     save_to_disk(model_path, model, overwrite=True)
 
     if verbose:
-        end_time = time.clock()
-        print("Pickling the model: {0:.2f}s".format(end_time - pickle_time))
+        print("Pickling the model: {0:.2f}s".format(time.clock() - t3))
 
 
 def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
