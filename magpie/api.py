@@ -1,4 +1,4 @@
-from __future__ import division
+from __future__ import division, unicode_literals
 
 import os
 import time
@@ -30,7 +30,7 @@ def get_ontology(path=HEP_ONTOLOGY, recreate=False):
     """ Load or create the ontology from a given path """
     start_time = time.clock()
     ontology = OntologyFactory(path, recreate=recreate)
-    print(u"Ontology loading time: {0:.2f}s".format(time.clock() - start_time))
+    print("Ontology loading time: {0:.2f}s".format(time.clock() - start_time))
     return ontology
 
 
@@ -126,10 +126,10 @@ def extract(
 
     # Print results
     if verbose:
-        print(u"Document content:")
+        print("Document content:")
         print doc
 
-        print(u"Predicted keywords:")
+        print("Predicted keywords:")
         for kw in kw_predicted:
             print(u"\t" + unicode(kw.get_canonical_form()))
         print
@@ -138,10 +138,10 @@ def extract(
         answers = remove_unguessable_answers(answers, ontology)
 
         candidates = {kw.get_canonical_form() for kw in kw_candidates}
-        print(u"Ground truth keywords:")
+        print("Ground truth keywords:")
         for kw in answers:
-            in_candidates = u"(in candidates)" if kw in candidates else u""
-            print(u"\t" + kw.ljust(30, u' ') + in_candidates)
+            in_candidates = "(in candidates)" if kw in candidates else ""
+            print("\t" + kw.ljust(30, ' ') + in_candidates)
         print
 
         y = []
@@ -228,8 +228,8 @@ def test(
     X = pd.concat(feature_matrices)
 
     if verbose:
-        print(u"Candidate generation: {0:.2f}s".format(cand_gen_time))
-        print(u"Feature extraction: {0:.2f}s".format(feature_ext_time))
+        print("Candidate generation: {0:.2f}s".format(cand_gen_time))
+        print("Feature extraction: {0:.2f}s".format(feature_ext_time))
 
     features_time = time.clock()
 
@@ -238,7 +238,7 @@ def test(
 
     predict_time = time.clock()
     if verbose:
-        print(u"Prediction time: {0:.2f}s".format(predict_time - features_time))
+        print("Prediction time: {0:.2f}s".format(predict_time - features_time))
 
     # Remove ground truth answers that are not in the ontology
     for doc_id, kw_set in answers.items():
@@ -252,7 +252,7 @@ def test(
     )
 
     if verbose:
-        print(u"Evaluation time: {0:.2f}s".format(time.clock() - predict_time))
+        print("Evaluation time: {0:.2f}s".format(time.clock() - predict_time))
 
     f1_score = (2 * precision * recall) / (precision + recall)
     return precision, recall, f1_score, accuracy
@@ -339,8 +339,8 @@ def train(
     y = np.array(output_vectors)
 
     if verbose:
-        print(u"Candidate generation: {0:.2f}s".format(cand_gen_time))
-        print(u"Feature extraction: {0:.2f}s".format(feature_ext_time))
+        print("Candidate generation: {0:.2f}s".format(cand_gen_time))
+        print("Feature extraction: {0:.2f}s".format(feature_ext_time))
     fitting_time = time.clock()
 
     # Normalize features
@@ -352,14 +352,14 @@ def train(
 
     pickle_time = time.clock()
     if verbose:
-        print(u"Fitting the model: {0:.2f}s".format(pickle_time - fitting_time))
+        print("Fitting the model: {0:.2f}s".format(pickle_time - fitting_time))
 
     # Pickle the model
     save_to_disk(model_path, model, overwrite=True)
 
     if verbose:
         end_time = time.clock()
-        print(u"Pickling the model: {0:.2f}s".format(end_time - pickle_time))
+        print("Pickling the model: {0:.2f}s".format(end_time - pickle_time))
 
 
 def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
@@ -408,9 +408,9 @@ def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
         recall = len(kw_candidates & answers) / (len(answers))
         if verbose:
             print
-            print(u"Paper: " + doc.filename)
-            print(u"Candidates: " + str(len(kw_candidates)))
-            print(u"Recall: " + unicode(recall * 100) + u"%")
+            print("Paper: " + doc.filename)
+            print("Candidates: " + str(len(kw_candidates)))
+            print("Recall: " + unicode(recall * 100) + "%")
 
         average_recall += recall
         total_kw_number += len(kw_candidates)
@@ -420,8 +420,8 @@ def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
 
     if verbose:
         print
-        print(u"Total # of keywords: " + str(total_kw_number))
-        print(u"Time elapsed: " + str(time.clock() - start_time))
+        print("Total # of keywords: " + str(total_kw_number))
+        print("Time elapsed: " + str(time.clock() - start_time))
 
     return average_recall
 
