@@ -21,52 +21,89 @@ class InvertedIndex(object):
             self.add_occurrence(stemmed_word, position)
 
     def get_number_of_unique_words(self):
+        """ Get the number of unique words in the document """
         return len(self.index)
 
     def get_total_number_of_words(self):
+        """ Get the total number of words in the document """
         return self.word_count
 
     def add_occurrence(self, word, position):
+        """
+        Add a word occurrence to the index
+        :param word: unicode, stemmed word
+        :param position: integer
+        """
         self.index[word].append(position)
 
-    def get_first_phrase_occurrence(self, keyphrase):
-        # TODO maybe a better function would do here
-        return np.mean([self._get_first_term_occurrence(term)
-                        for term in keyphrase])
+    def get_first_phrase_occurrence(self, phrase):
+        """
+        Get first occurrences for a list of words
+        :param phrase: list of unicodes
+        :return: list of floats
+        """
+        return [self.get_first_word_occurrence(w) for w in phrase]
 
-    def _get_first_term_occurrence(self, term):
+    def get_first_word_occurrence(self, term):
+        """
+        Get a normalized first occurrence value for a given word
+        :param term: unicode
+        :return: float between 0 and 1
+        """
         if term not in self.index:
             return 1
         else:
             return min(self.index[term]) / self.word_count
 
-    def get_last_phrase_occurrence(self, keyphrase):
-        # TODO maybe a better function would do here
-        return np.mean([self._get_last_term_occurrence(term)
-                        for term in keyphrase])
+    def get_last_phrase_occurrence(self, phrase):
+        """
+        Get last occurrences for a list of words
+        :param phrase: list of unicodes
+        :return: list of floats
+        """
+        return [self.get_last_word_occurrence(w) for w in phrase]
 
-    def _get_last_term_occurrence(self, term):
+    def get_last_word_occurrence(self, term):
+        """
+        Get a normalized last occurrence value for a given word
+        :param term: unicode
+        :return: float between 0 and 1
+        """
         if term not in self.index:
             return 0
         else:
             return max(self.index[term]) / self.word_count
 
-    def get_term_occurrences(self, term):
-        words = term.split()
-        word_scores = [self._get_word_occurrences(w) for w in words]
+    def get_phrase_occurrences(self, phrase):
+        """
+        Get the number of occurrences in the document for a list of words
+        :param phrase: list of unicodes
+        :return: list of ints
+        """
+        return [self.get_word_occurrences(w) for w in phrase]
 
-        # TODO maybe a better function than sum would do here
-        return np.mean(word_scores)
+    def get_word_occurrences(self, word):
+        """
+        Get the number of occurrences of a given word in the document
+        :param word: unicode
+        :return: int
+        """
+        return len(self.index.get(word, []))
 
-    def _get_word_occurrences(self, word):
-        return len(self.index.get(stem(word), []))
+    def get_phrase_frequency(self, phrase):
+        """
+        Get the document frequencies for a list of words
+        :param phrase: list of unicodes
+        :return: list of floats between 0 and 1
+        """
+        return [self.get_word_frequency(w) for w in phrase]
 
-    def get_term_frequency(self, keyphrase):
-        # TODO maybe a better function than sum would do here
-        return np.mean([self._get_word_frequency(w) for w in keyphrase])
-
-    def _get_word_frequency(self, word):
-        term_count = len(self.index.get(word, []))
-        return term_count / self.word_count
+    def get_word_frequency(self, word):
+        """
+        Get the word frequency in the document
+        :param word: unicode
+        :return: float
+        """
+        return self.get_word_occurrences(word) / self.word_count
 
 

@@ -40,11 +40,20 @@ class GlobalFrequencyIndex(object):
     #     else:
     #         return 0
 
-    def get_term_idf(self, keyphrase):
-        # TODO another function could do here
-        return np.mean([self._get_word_idf(w) for w in keyphrase])
+    def get_phrase_idf(self, phrase):
+        """
+        Compute idf values for a list of words
+        :param phrase: list of unicodes
+        :return: list of floats: idfs
+        """
+        return [self.get_word_idf(w) for w in phrase]
 
-    def _get_word_idf(self, word):
+    def get_word_idf(self, word):
+        """
+        Compute idf for a given word
+        :param word: unicode
+        :return: float: idf value
+        """
         return math.log(self.total_docs / (1 + len(self.index[word])))
         # word_id = self.vectorizer.vocabulary_.get(stemmed)
         # if word_id:
