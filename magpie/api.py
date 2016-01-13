@@ -7,7 +7,6 @@ import numpy as np
 import pandas as pd
 
 from magpie.base.document import Document
-from magpie.base.global_index import GlobalFrequencyIndex
 from magpie.base.inverted_index import InvertedIndex
 from magpie.base.model import LearningModel
 from magpie.base.ontology import OntologyFactory
@@ -108,7 +107,7 @@ def extract(
         kw_candidates,
         X,
         inv_index,
-        model.get_global_index(),
+        model,
     )
 
     # Extract document features
@@ -207,7 +206,7 @@ def test(
             kw_candidates,
             X,
             inv_index,
-            model.get_global_index()
+            model,
         )
 
         # Extract document features
@@ -278,7 +277,7 @@ def train(
     ontology = get_ontology(path=ontology_path, recreate=recreate_ontology)
     docs = get_documents(trainset_dir, as_generator=False)
 
-    global_freqs = GlobalFrequencyIndex(docs)
+    model = LearningModel(docs=docs)
     output_vectors = []
     feature_matrices = []
 
@@ -308,7 +307,7 @@ def train(
             kw_candidates,
             X,
             inv_index,
-            global_freqs
+            model,
         )
 
         # Extract document features
@@ -344,15 +343,14 @@ def train(
     t1 = time.clock()
 
     # Normalize features
-    model = LearningModel(global_frequencies=global_freqs, w2v_docs=docs)
-    x_scaled = model.fit_and_scale(X)
+    X = model.fit_and_scale(X)
 
     t2 = time.clock()
     if verbose:
         print("Word2Vec and feature scaling: {0:.2f}s".format(t2 - t1))
 
     # Train the model
-    model.fit_classifier(x_scaled, y)
+    model.fit_classifier(X, y)
 
     t3 = time.clock()
     if verbose:

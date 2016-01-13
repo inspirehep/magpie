@@ -1,13 +1,13 @@
 from magpie.utils.stemmer import stem
 
 
-def extract_keyword_features(kw_candidates, X, inv_index, global_freqs):
+def extract_keyword_features(kw_candidates, X, inv_index, model):
     """
     Extract and return a matrix with keyword features only.
     :param kw_candidates: an iterable containing KeywordTokens
     :param X: preallocated pandas matrix
     :param inv_index: InvertedIndex object for a given document
-    :param global_freqs: GlobalFrequencyIndex object with a corpus word count
+    :param model: LearningModel object
 
     :return: None, operates in place on the X matrix
     """
@@ -16,7 +16,7 @@ def extract_keyword_features(kw_candidates, X, inv_index, global_freqs):
 
         # TF, IDF etc
         tf = inv_index.get_term_frequency(keyphrase)
-        idf = global_freqs.get_term_idf(keyphrase)
+        idf = model.get_global_index().get_term_idf(keyphrase)
 
         # Occurrences
         first_occurrence = inv_index.get_first_phrase_occurrence(keyphrase)
