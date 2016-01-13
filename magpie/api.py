@@ -16,10 +16,11 @@ from magpie.config import MODEL_PATH, HEP_TRAIN_PATH, HEP_ONTOLOGY, \
     HEP_TEST_PATH
 from magpie.evaluation.standard_evaluation import evaluate_results
 from magpie.evaluation.utils import remove_unguessable_answers
-from magpie.feature_extraction import FEATURE_VECTOR
+from magpie.feature_extraction import preallocate_feature_matrix
 from magpie.feature_extraction.document_features import \
     extract_document_features
-from magpie.feature_extraction.keyword_features import extract_keyword_features
+from magpie.feature_extraction.keyword_features import extract_keyword_features, \
+    rebuild_feature_matrix
 from magpie.utils.utils import save_to_disk, load_from_disk
 
 __all__ = ['extract', 'train', 'test']
@@ -99,9 +100,7 @@ def extract(
     # Generate keyword candidates
     kw_candidates = list(generate_keyword_candidates(doc, ontology))
 
-    X = {k: np.zeros(len(kw_candidates), dtype=v)
-         for k, v in FEATURE_VECTOR.iteritems()}
-
+    X = preallocate_feature_matrix(len(kw_candidates))
     # Extract features for keywords
     extract_keyword_features(
         kw_candidates,
@@ -113,7 +112,7 @@ def extract(
     # Extract document features
     extract_document_features(inv_index, X)
 
-    X = pd.DataFrame(X)
+    X = rebuild_feature_matrix(X)
 
     # Predict
     y_predicted = model.scale_and_predict(X)
@@ -198,8 +197,7 @@ def test(
         candidates_end = time.clock()
 
         # Preallocate the feature matrix
-        X = {k: np.zeros(len(kw_candidates), dtype=v)
-             for k, v in FEATURE_VECTOR.iteritems()}
+        X = preallocate_feature_matrix(len(kw_candidates))
 
         # Extract features for keywords
         extract_keyword_features(
@@ -217,7 +215,9 @@ def test(
         # Get ground truth answers
         answers[doc.doc_id] = get_answers_for_doc(doc.filename, testset_path)
 
-        feature_matrices.append(pd.DataFrame(X))
+        X = rebuild_feature_matrix(X)
+        feature_matrices.append(X)
+
         kw_vector.extend([(doc.doc_id, kw) for kw in kw_candidates])
 
         cand_gen_time += candidates_end - candidates_start
@@ -235,9 +235,8 @@ def test(
     # Predict
     y_predicted = model.scale_and_predict(X)
 
-    predict_time = time.clock()
     if verbose:
-        print("Prediction time: {0:.2f}s".format(predict_time - features_time))
+        print("Prediction time: {0:.2f}s".format(time.clock() - features_time))
 
     # Remove ground truth answers that are not in the ontology
     for doc_id, kw_set in answers.items():
@@ -249,9 +248,6 @@ def test(
         kw_vector,
         answers,
     )
-
-    if verbose:
-        print("Evaluation time: {0:.2f}s".format(time.clock() - predict_time))
 
     f1_score = (2 * precision * recall) / (precision + recall)
     return precision, recall, f1_score, accuracy
@@ -277,7 +273,11 @@ def train(
     ontology = get_ontology(path=ontology_path, recreate=recreate_ontology)
     docs = get_documents(trainset_dir, as_generator=False)
 
+    t_start = time.clock()
     model = LearningModel(docs=docs)
+    if verbose:
+        print("Building the model: {0:.2f}s".format(time.clock() - t_start))
+
     output_vectors = []
     feature_matrices = []
 
@@ -299,8 +299,7 @@ def train(
         candidates_end = time.clock()
 
         # Preallocate the feature matrix
-        X = {k: np.zeros(len(kw_candidates), dtype=v)
-             for k, v in FEATURE_VECTOR.iteritems()}
+        X = preallocate_feature_matrix(len(kw_candidates))
 
         # Extract features for keywords
         extract_keyword_features(
@@ -312,7 +311,9 @@ def train(
 
         # Extract document features
         extract_document_features(inv_index, X)
-        feature_matrices.append(pd.DataFrame(X))
+
+        X = rebuild_feature_matrix(X)
+        feature_matrices.append(X)
 
         features_end = time.clock()
 
@@ -345,22 +346,14 @@ def train(
     # Normalize features
     X = model.fit_and_scale(X)
 
-    t2 = time.clock()
-    if verbose:
-        print("Word2Vec and feature scaling: {0:.2f}s".format(t2 - t1))
-
     # Train the model
     model.fit_classifier(X, y)
 
-    t3 = time.clock()
     if verbose:
-        print("Fitting the model: {0:.2f}s".format(t3 - t2))
+        print("Fitting the model: {0:.2f}s".format(time.clock() - t1))
 
     # Pickle the model
     save_to_disk(model_path, model, overwrite=True)
-
-    if verbose:
-        print("Pickling the model: {0:.2f}s".format(time.clock() - t3))
 
 
 def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,

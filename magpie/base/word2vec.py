@@ -1,6 +1,8 @@
 import numpy as np
 from gensim.models import Word2Vec
 
+from magpie.feature_extraction import WORD2VEC_LENGTH
+
 
 def train_word2vec(docs):
     """
@@ -13,7 +15,7 @@ def train_word2vec(docs):
     all_sentences = reduce(lambda d1, d2: d1 + d2, doc_sentences)
 
     # Set values for various parameters
-    num_features = 100    # Word vector dimensionality
+    num_features = WORD2VEC_LENGTH    # Word vector dimensionality
     min_word_count = 5   # Minimum word count
     num_workers = 4       # Number of threads to run in parallel
     context = 5           # Context window size
@@ -42,7 +44,7 @@ def compute_word2vec_for_phrase(phrase, model):
 
     :return: numpy array
     """
-    result = np.zeros(model.vector_size)
+    result = np.zeros(model.vector_size, dtype='float32')
     for word in phrase.split():
         if word in model:
             result += model[word]

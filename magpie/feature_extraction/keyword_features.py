@@ -1,3 +1,6 @@
+import pandas as pd
+
+from magpie.base.word2vec import compute_word2vec_for_phrase
 from magpie.utils.stemmer import stem
 
 
@@ -12,7 +15,8 @@ def extract_keyword_features(kw_candidates, X, inv_index, model):
     :return: None, operates in place on the X matrix
     """
     for i in xrange(len(kw_candidates)):
-        keyphrase = tokenize_keyword(kw_candidates[i])
+        parsed_form = kw_candidates[i].get_parsed_form()
+        keyphrase = tokenize_keyword(parsed_form)
 
         # TF, IDF etc
         tf = inv_index.get_term_frequency(keyphrase)
@@ -29,17 +33,32 @@ def extract_keyword_features(kw_candidates, X, inv_index, model):
         X['last_occurrence'][i] = last_occurrence
         X['spread'][i] = max(0, last_occurrence - first_occurrence)
         X['no_of_words'][i] = len(keyphrase)
-        X['no_of_letters'][i] = len(kw_candidates[i].get_parsed_form())
+        X['no_of_letters'][i] = len(parsed_form)
         X['hops_from_anchor'][i] = kw_candidates[i].hops_from_anchor
+        X['word2vec'][i] = compute_word2vec_for_phrase(parsed_form, model.word2vec)
 
 
-def tokenize_keyword(kw_token):
+def tokenize_keyword(kw_parsed):
     """
-    Preprocess a keyword token for feature computing. Extract a parsed label,
-    split into words and stem each one.
-    :param kw_token: KeywordToken object
+    Preprocess a keyword for feature computing. Split a parsed label into words
+    and stem each one.
+    :param kw_parsed: parsed form of a KeywordToken object
 
     :return: list of strings/unicodes
     """
-    words = kw_token.get_parsed_form().split()
-    return [stem(w) for w in words]
+    return [stem(w) for w in kw_parsed.split()]
+
+
+def rebuild_feature_matrix(matrix):
+    """
+    Create a pandas object from the matrix dictionary and combine word2vec
+    embeddings with other features
+    :param matrix: dictionary of arrays, structure used for building X
+
+    :return: pandas object with restructured information from matrix
+    """
+    w2v = matrix['word2vec']
+    del matrix['word2vec']
+
+    m1, m2 = pd.DataFrame(matrix), pd.DataFrame(w2v)
+    return pd.concat([m1, m2], axis=1)
