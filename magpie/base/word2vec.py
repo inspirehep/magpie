@@ -1,3 +1,5 @@
+from itertools import chain
+
 import numpy as np
 from gensim.models import Word2Vec
 
@@ -50,3 +52,35 @@ def compute_word2vec_for_phrase(phrase, model):
             result += model[word]
 
     return result
+
+
+def create_sentence_iterator(doc_directory):
+    """
+    Return an iterator over tokenized sentences from different files.
+    :param doc_directory: directory with the files
+    :return: iterator over sentences (lists of strings)
+    """
+    from magpie import api
+    doc_gen = api.get_documents(data_dir=doc_directory)
+    sentence_gen = (d.read_sentences() for d in doc_gen)
+    return chain.from_iterable(sentence_gen)
+
+
+def batch_train(doc_directory):
+    """
+    Train the Word2Vec object iteratively, loading stuff to memory one by one.
+    :param doc_directory: directory with the documents
+
+    :return: Word2Vec object
+    """
+    model = Word2Vec()
+
+    flat_iterator = create_sentence_iterator(doc_directory)
+    model.build_vocab(flat_iterator)
+
+    flat_iterator = create_sentence_iterator(doc_directory)
+    model.train(flat_iterator)
+
+    model.init_sims(replace=True)
+
+    return model
