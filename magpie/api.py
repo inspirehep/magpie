@@ -9,7 +9,6 @@ import pandas as pd
 from magpie.base.document import Document
 from magpie.base.inverted_index import InvertedIndex
 from magpie.base.model import LearningModel
-from magpie.base.ontology import OntologyFactory
 from magpie.candidates import generate_keyword_candidates
 from magpie.candidates.utils import add_gt_answers_to_candidates_set
 from magpie.config import MODEL_PATH, HEP_TRAIN_PATH, HEP_ONTOLOGY, \
@@ -21,56 +20,8 @@ from magpie.feature_extraction.document_features import \
     extract_document_features
 from magpie.feature_extraction.keyword_features import extract_keyword_features, \
     rebuild_feature_matrix
-from magpie.utils.utils import save_to_disk, load_from_disk
-
-__all__ = ['extract', 'train', 'test']
-
-
-def get_ontology(path=HEP_ONTOLOGY, recreate=False):
-    """ Load or create the ontology from a given path """
-    start_time = time.clock()
-    ontology = OntologyFactory(path, recreate=recreate)
-    print("Ontology loading time: {0:.2f}s".format(time.clock() - start_time))
-    return ontology
-
-
-def get_documents(data_dir=HEP_TRAIN_PATH, as_generator=True):
-    """ Extract documents from *.txt files in a given directory """
-    files = {filename[:-4] for filename in os.listdir(data_dir)}
-    generator = (Document(doc_id, os.path.join(data_dir, f + '.txt'))
-                 for doc_id, f in enumerate(files))
-    return generator if as_generator else list(generator)
-
-
-def get_all_answers(data_dir):
-    """ Extract ground truth answers from *.key files in a given directory """
-    answers = dict()
-
-    files = {filename[:-4] for filename in os.listdir(data_dir)}
-    for f in files:
-        with open(os.path.join(data_dir, f + '.key'), 'rb') as answer_file:
-            answers[f] = {unicode(line.rstrip('\n')) for line in answer_file}
-
-    return answers
-
-
-def get_answers_for_doc(doc_name, data_dir):
-    """
-    Read ground_truth answers from a .key file corresponding to the doc_name
-    :param doc_name: the name of the document, should end with .txt
-    :param data_dir: directory in which the documents and answer files are
-
-    :return: set of unicodes containing answers for this particular document
-    """
-    filename = os.path.join(data_dir, doc_name[:-4] + '.key')
-
-    if not os.path.exists(filename):
-        raise ValueError("Answer file " + filename + " does not exist")
-
-    with open(filename, 'rb') as f:
-        answers = {unicode(line.rstrip('\n')) for line in f}
-
-    return answers
+from magpie.misc.utils import save_to_disk, load_from_disk
+from magpie.utils import get_ontology, get_answers_for_doc, get_documents
 
 
 def extract(
@@ -343,6 +294,9 @@ def train(
         print("Feature extraction: {0:.2f}s".format(feature_ext_time))
     t1 = time.clock()
 
+    if verbose:
+        print("X size: {}".format(X.shape))
+
     # Normalize features
     X = model.fit_and_scale(X)
 
@@ -355,69 +309,6 @@ def train(
     # Pickle the model
     save_to_disk(model_path, model, overwrite=True)
 
-
-def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
-                                       recreate_ontology=False,
-                                       verbose=False):
-    """
-    Generate keyword candidates for files in a given directory
-    and compute their recall in reference to ground truth answers
-    :param data_dir: directory with .txt and .key files
-    :param recreate_ontology: boolean flag for recreating the ontology
-    :param verbose: whether to print computation times
-
-    :return average_recall: float
-    """
-    average_recall = 0
-    total_kw_number = 0
-
-    ontology = get_ontology(recreate=recreate_ontology)
-    docs = get_documents(data_dir)
-    total_docs = 0
-
-    start_time = time.clock()
-    for doc in docs:
-        kw_candidates = {kw.get_canonical_form() for kw
-                         in generate_keyword_candidates(doc, ontology)}
-
-        answers = get_answers_for_doc(doc.filename, data_dir)
-
-        # print(document.get_meaningful_words())
-
-        # print(u"Candidates:")
-        # for kw in sorted(kw_candidates):
-        #     print(u"\t" + unicode(kw))
-        # print
-        #
-        # print(u"Answers:")
-        # for kw in sorted(answers):
-        #     print(u"\t" + unicode(kw))
-        # print
-        #
-        # print(u"Conjunction:")
-        # for kw in sorted(kw_candidates & answers):
-        #     print(u"\t" + unicode(kw))
-        # print
-
-        recall = len(kw_candidates & answers) / (len(answers))
-        if verbose:
-            print
-            print("Paper: " + doc.filename)
-            print("Candidates: " + str(len(kw_candidates)))
-            print("Recall: " + unicode(recall * 100) + "%")
-
-        average_recall += recall
-        total_kw_number += len(kw_candidates)
-        total_docs += 1
-
-    average_recall /= total_docs
-
-    if verbose:
-        print
-        print("Total # of keywords: " + str(total_kw_number))
-        print("Time elapsed: " + str(time.clock() - start_time))
-
-    return average_recall
 
 if __name__ == '__main__':
     train()

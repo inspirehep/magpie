@@ -7,7 +7,7 @@ from rdflib.namespace import SKOS
 
 from magpie.config import ONTOLOGY_DIR
 from magpie.candidates.trie import Trie, MarisaTrie
-from magpie.utils.utils import get_all_permutations
+from magpie.misc.utils import get_all_permutations
 
 PUNCTUATION_TABLE = dict((ord(c), None) for c in u',:;')
 

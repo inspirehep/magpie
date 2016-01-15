@@ -1,9 +1,7 @@
 from __future__ import division
 from collections import defaultdict
 
-import numpy as np
-
-from magpie.utils.stemmer import stem
+from magpie.misc.stemmer import stem
 
 
 class InvertedIndex(object):

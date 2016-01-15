@@ -1,5 +1,5 @@
 from magpie.candidates.keyword_token import add_token, KeywordToken
-from magpie.utils.stemmer import stem
+from magpie.misc.stemmer import stem
 
 
 def get_anchors(words, ontology):

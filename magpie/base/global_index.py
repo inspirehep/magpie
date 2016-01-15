@@ -3,9 +3,7 @@ from __future__ import division
 import collections
 import math
 
-import numpy as np
-
-from magpie.utils.stemmer import stem
+from magpie.misc.stemmer import stem
 
 
 class GlobalFrequencyIndex(object):

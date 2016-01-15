@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 from magpie.base.word2vec import compute_word2vec_for_phrase
-from magpie.utils.stemmer import stem
+from magpie.misc.stemmer import stem
 
 
 def extract_keyword_features(kw_candidates, X, inv_index, model):

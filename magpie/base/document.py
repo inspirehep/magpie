@@ -3,7 +3,7 @@ import os
 import nltk
 
 from nltk.tokenize import WordPunctTokenizer, sent_tokenize, word_tokenize
-from magpie.utils.stopwords import STOPWORDS, PUNCTUATION
+from magpie.misc.stopwords import STOPWORDS, PUNCTUATION
 
 nltk.download('punkt', quiet=True)  # make sure it's downloaded before using
 
