@@ -3,6 +3,7 @@ import unittest
 
 from magpie import api
 from magpie.config import HEP_TEST_PATH, MODEL_PATH
+from magpie.utils import calculate_recall_for_kw_candidates
 
 
 def train_model_if_necessary(model_path):
@@ -30,5 +31,5 @@ class TestAPI(unittest.TestCase):
         self.assertGreaterEqual(len(candidates), 0)
 
     def test_candidate_recall(self):
-        recall = api.calculate_recall_for_kw_candidates(verbose=False)
+        recall = calculate_recall_for_kw_candidates(verbose=False)
         self.assertGreater(recall, 0)
