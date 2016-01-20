@@ -1,8 +1,10 @@
+import os
 from itertools import chain
 
 import numpy as np
 from gensim.models import Word2Vec
 
+from magpie.base.document import Document
 from magpie.feature_extraction import WORD2VEC_LENGTH
 
 
@@ -54,16 +56,16 @@ def compute_word2vec_for_phrase(phrase, model):
     return result
 
 
-def create_sentence_iterator(doc_directory):
-    """
-    Return an iterator over tokenized sentences from different files.
-    :param doc_directory: directory with the files
-    :return: iterator over sentences (lists of strings)
-    """
-    from magpie import api
-    doc_gen = api.get_documents(data_dir=doc_directory)
-    sentence_gen = (d.read_sentences() for d in doc_gen)
-    return chain.from_iterable(sentence_gen)
+# def create_sentence_iterator(doc_directory):
+#     """
+#     Return an iterator over tokenized sentences from different files.
+#     :param doc_directory: directory with the files
+#     :return: iterator over sentences (lists of strings)
+#     """
+#     from magpie import api
+#     doc_gen = api.get_documents(data_dir=doc_directory)
+#     sentence_gen = (d.read_sentences() for d in doc_gen)
+#     return chain.from_iterable(sentence_gen)
 
 
 def batch_train(doc_directory):
@@ -73,14 +75,34 @@ def batch_train(doc_directory):
 
     :return: Word2Vec object
     """
-    model = Word2Vec()
+    class SentenceIterator(object):
+        def __init__(self, dirname):
+            self.dirname = dirname
 
-    flat_iterator = create_sentence_iterator(doc_directory)
-    model.build_vocab(flat_iterator)
+        def __iter__(self):
+            files = {filename[:-4] for filename in os.listdir(self.dirname)}
+            for doc_id, fname in enumerate(files):
+                d = Document(doc_id, os.path.join(self.dirname, fname + '.txt'))
+                for sentence in d.read_sentences():
+                    yield sentence
 
-    flat_iterator = create_sentence_iterator(doc_directory)
-    model.train(flat_iterator)
+    # Set values for various parameters
+    num_features = WORD2VEC_LENGTH    # Word vector dimensionality
+    min_word_count = 5   # Minimum word count
+    num_workers = 4       # Number of threads to run in parallel
+    context = 5           # Context window size
 
+    # Initialize and train the model
+    model = Word2Vec(
+        SentenceIterator(doc_directory),
+        workers=num_workers,
+        size=num_features,
+        min_count=min_word_count,
+        window=context,
+    )
+
+    # If you don't plan to train the model any further, calling
+    # init_sims will make the model much more memory-efficient.
     model.init_sims(replace=True)
 
     return model

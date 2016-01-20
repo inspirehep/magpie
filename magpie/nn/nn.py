@@ -8,7 +8,7 @@ from sklearn.metrics import average_precision_score, mean_squared_error, log_los
 
 from magpie.nn.config import BATCH_SIZE, NB_EPOCHS
 from magpie.nn.input_data import prepare_data
-from magpie.nn.models import build_rnn_model, get_model_filename
+from magpie.nn.models import build_rnn_model, build_cnn_model, get_model_filename
 
 
 def main():
@@ -37,6 +37,8 @@ def main():
     history.history['ll'] = logger.ll_list
     history.history['mse'] = logger.mse_list
 
+    save_results(history)
+
     return history, model
 
     # accuracy = 1 - hamming_loss(y_test, y_pred)
@@ -51,6 +53,14 @@ def main():
     # print('Recall: {}'.format(recall / samples))
     # print('Precision: {}'.format(precision / samples))
     # print('F1: {}'.format(f1 / samples))
+
+
+def save_results(history):
+    for name, val_list in history.history.iteritems():
+        filename = os.path.join(os.environ['HOME'], 'keras-results', name)
+        with open(filename, 'wb') as f:
+            for v in val_list:
+                f.write("%s\n" % v)
 
 
 def compare_results(X_test, y_test, model, i):
