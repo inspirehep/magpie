@@ -66,8 +66,36 @@ def compare_results(X_test, y_test, model, i):
     else:
         y_pred = model.predict(X_test[i - 1:i])
     sorted_indices = np.argsort(-y_pred[0])
-    correct_indices = np.where(y_test[i])
+    correct_indices = np.where(y_test[i])[0]
     return sorted_indices, correct_indices
+
+
+def compute_threshold_distance(y_tests, y_preds):
+    """
+    Compute the threshold distance error between two output vectors.
+    :param y_preds: matrix with predicted float vectors for each sample
+    :param y_tests: matrix with ground truth output vectors for each sample
+
+    :return: float with the score
+    """
+    assert len(y_tests) == len(y_preds)
+
+    matrix_sums = []
+    for i in xrange(len(y_preds)):
+        y_pred, y_test = y_preds[i], y_tests[i]
+        sorted_indices = np.argsort(-y_pred)
+        correct_indices = np.where(y_test)[0]
+
+        vector_sum = 0
+        for i in correct_indices:
+            position = np.where(sorted_indices == i)[0][0]
+            distance = max(0, position - len(correct_indices) + 1)
+            vector_sum += distance / len(correct_indices)
+
+        # if len(correct_indices) > 0:
+        matrix_sums.append(vector_sum)
+
+    return np.mean(matrix_sums)
 
 
 class CustomLogger(Callback):
@@ -80,6 +108,7 @@ class CustomLogger(Callback):
         self.aps_list = []
         self.mse_list = []
         self.ll_list = []
+        self.td_list = []
         self.verbose = verbose
         self.nn_type = nn_type
         self.log_dir = self.create_log_dir()
@@ -112,17 +141,20 @@ class CustomLogger(Callback):
         aps = average_precision_score(y_test, y_pred)
         mse = mean_squared_error(y_test, y_pred)
         ll = log_loss(y_test, y_pred)
+        td = compute_threshold_distance(y_test, y_pred)
         val_acc = logs.get('val_acc', -1)
         val_loss = logs.get('val_loss', -1)
 
         self.aps_list.append(aps)
         self.mse_list.append(mse)
         self.ll_list.append(ll)
+        self.td_list.append(td)
 
         log_dictionary = {
             'aps': aps,
             'mse': mse,
             'll': ll,
+            'td': td,
             'val_acc': val_acc,
             'val_loss': val_loss
         }
@@ -133,5 +165,6 @@ class CustomLogger(Callback):
         if self.verbose:
             print('Average precision score: {}'.format(aps))
             print('MSE: {}'.format(mse))
+            print('Threshold distance: {}'.format(td))
             print('Log loss: {}'.format(ll))
             print('')
