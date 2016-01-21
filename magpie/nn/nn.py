@@ -3,31 +3,31 @@ from __future__ import division
 import os
 
 import numpy as np
+import time
 from keras.callbacks import Callback, ModelCheckpoint
 from sklearn.metrics import average_precision_score, mean_squared_error, log_loss
 
-from magpie.nn.config import BATCH_SIZE, NB_EPOCHS
+from magpie.nn.config import BATCH_SIZE, NB_EPOCHS, LOG_FOLDER
 from magpie.nn.input_data import prepare_data
-from magpie.nn.models import build_rnn_model, build_cnn_model, get_model_filename
+from magpie.nn.models import get_nn_model
 
 
-def main():
+def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn_type='cnn'):
     (X_train, y_train), (X_test, y_test) = prepare_data()
-    model = build_rnn_model()
+    model = get_nn_model(nn_type)
 
     # Create callbacks
-    logger = CustomLogger(X_test, y_test)
-    model_filename = get_model_filename('rnn', len(X_train) + len(X_test))
+    logger = CustomLogger(X_test, y_test, nn_type)
     model_checkpoint = ModelCheckpoint(
-        os.path.join(os.environ['HOME'], model_filename),
+        os.path.join(logger.log_dir, 'keras_model'),
         save_best_only=True,
     )
 
     history = model.fit(
         X_train,
         y_train,
-        batch_size=BATCH_SIZE,
-        nb_epoch=NB_EPOCHS,
+        batch_size=batch_size,
+        nb_epoch=nb_epochs,
         show_accuracy=True,
         validation_data=(X_test, y_test),
         callbacks=[logger, model_checkpoint],
@@ -37,7 +37,11 @@ def main():
     history.history['ll'] = logger.ll_list
     history.history['mse'] = logger.mse_list
 
-    save_results(history)
+    # Write acc and loss to file
+    for metric in ['acc', 'loss']:
+        with open(os.path.join(logger.log_dir, metric), 'wb') as f:
+            for val in history.history[metric]:
+                f.write(str(val) + "\n")
 
     return history, model
 
@@ -55,14 +59,6 @@ def main():
     # print('F1: {}'.format(f1 / samples))
 
 
-def save_results(history):
-    for name, val_list in history.history.iteritems():
-        filename = os.path.join(os.environ['HOME'], 'keras-results', name)
-        with open(filename, 'wb') as f:
-            for v in val_list:
-                f.write("%s\n" % v)
-
-
 def compare_results(X_test, y_test, model, i):
     """ Helper function for inspecting the results """
     if i == 0:
@@ -78,13 +74,35 @@ class CustomLogger(Callback):
     """
     A Keras callback logging additional metrics after every epoch
     """
-    def __init__(self, X, y, verbose=True):
+    def __init__(self, X, y, nn_type, verbose=True):
         super(CustomLogger, self).__init__()
         self.test_data = (X, y)
         self.aps_list = []
         self.mse_list = []
         self.ll_list = []
         self.verbose = verbose
+        self.nn_type = nn_type
+        self.log_dir = self.create_log_dir()
+
+    def create_log_dir(self):
+        """ Create a directory where all the logs would be stored  """
+        dir_name = 'run_{}_{}'.format(self.nn_type, time.strftime('%d%m%H%M%S'))
+        log_dir = os.path.join(LOG_FOLDER, dir_name)
+        os.mkdir(log_dir)
+        return log_dir
+
+    def log_to_file(self, filename, value):
+        """ Write a value to the file """
+        with open(os.path.join(self.log_dir, filename), 'a') as f:
+            f.write(str(value) + "\n")
+
+    def on_train_begin(self, *args, **kwargs):
+        """ Create a config file and write down the run parameters """
+        with open(os.path.join(self.log_dir, 'config'), 'wb') as f:
+            f.write("Model parameters:\n")
+            f.write(str(self.params) + "\n\n")
+            f.write("Model YAML:\n")
+            f.write(self.model.to_yaml())
 
     def on_epoch_end(self, epoch, logs=None):
         """ Compute custom metrics at the end of the epoch """
@@ -94,14 +112,26 @@ class CustomLogger(Callback):
         aps = average_precision_score(y_test, y_pred)
         mse = mean_squared_error(y_test, y_pred)
         ll = log_loss(y_test, y_pred)
+        val_acc = logs.get('val_acc', -1)
+        val_loss = logs.get('val_loss', -1)
 
         self.aps_list.append(aps)
         self.mse_list.append(mse)
         self.ll_list.append(ll)
+
+        log_dictionary = {
+            'aps': aps,
+            'mse': mse,
+            'll': ll,
+            'val_acc': val_acc,
+            'val_loss': val_loss
+        }
+
+        for metric_name, metric_value in log_dictionary.iteritems():
+            self.log_to_file(metric_name, metric_value)
 
         if self.verbose:
             print('Average precision score: {}'.format(aps))
             print('MSE: {}'.format(mse))
             print('Log loss: {}'.format(ll))
             print('')
-

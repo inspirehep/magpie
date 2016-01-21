@@ -11,3 +11,4 @@ BATCH_SIZE = 64
 NB_EPOCHS = 1000
 
 WORD2VEC_MODELPATH = os.path.join(os.environ['HOME'], 'word2vec_gensim_model')
+LOG_FOLDER = os.path.join(os.environ['HOME'], 'keras-results')

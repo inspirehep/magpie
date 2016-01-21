@@ -14,6 +14,15 @@ NGRAM_LENGTH = 3
 HIDDEN_LAYER_SIZE = 200
 
 
+def get_nn_model(nn_model):
+    if nn_model == 'cnn':
+        return build_cnn_model()
+    elif nn_model == 'rnn':
+        return build_rnn_model()
+    else:
+        raise ValueError("Unknown NN type: {}".format(nn_model))
+
+
 def build_cnn_model():
     """
     Create and return a keras model of a CNN
@@ -71,8 +80,8 @@ def build_rnn_model():
     model.add(Dropout(0.5))
 
     # We add a vanilla hidden layer:
-    # model.add(Dense(250, activation='relu'))
-    # model.add(Dropout(0.25))
+    model.add(Dense(250, activation='relu'))
+    model.add(Dropout(0.25))
 
     model.add(Dense(OUTPUT_UNITS, activation='sigmoid'))
 
@@ -85,28 +94,28 @@ def build_rnn_model():
     return model
 
 
-def get_model_filename(nn_type, no_of_samples):
-    """
-    Generate a name for the keras model given the network type and # of samples
-    :param nn_type: 'cnn' or 'rnn'
-    :param no_of_samples: how big the whole dataset is (training + test)
-
-    :return: unicode with the name
-    """
-    if nn_type == 'cnn':
-        return u'keras_cnn_model_{}_{}_{}_{}_{}'.format(
-            OUTPUT_UNITS,
-            NB_EPOCHS,
-            no_of_samples,
-            NGRAM_LENGTH,
-            NB_FILTER,
-        )
-    elif nn_type == 'rnn':
-        return u'keras_rnn_model_{}_{}_{}_{}'.format(
-            OUTPUT_UNITS,
-            NB_EPOCHS,
-            no_of_samples,
-            HIDDEN_LAYER_SIZE,
-        )
-    else:
-        raise ValueError("Unknown type of a NN: {}".format(nn_type))
+# def get_model_filename(nn_type, no_of_samples):
+#     """
+#     Generate a name for the keras model given the network type and # of samples
+#     :param nn_type: 'cnn' or 'rnn'
+#     :param no_of_samples: how big the whole dataset is (training + test)
+#
+#     :return: unicode with the name
+#     """
+#     if nn_type == 'cnn':
+#         return u'keras_cnn_model_{}_{}_{}_{}_{}'.format(
+#             OUTPUT_UNITS,
+#             NB_EPOCHS,
+#             no_of_samples,
+#             NGRAM_LENGTH,
+#             NB_FILTER,
+#         )
+#     elif nn_type == 'rnn':
+#         return u'keras_rnn_model_{}_{}_{}_{}'.format(
+#             OUTPUT_UNITS,
+#             NB_EPOCHS,
+#             no_of_samples,
+#             HIDDEN_LAYER_SIZE,
+#         )
+#     else:
+#         raise ValueError("Unknown type of a NN: {}".format(nn_type))
