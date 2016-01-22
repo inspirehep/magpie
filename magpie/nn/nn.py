@@ -7,13 +7,15 @@ import time
 from keras.callbacks import Callback, ModelCheckpoint
 from sklearn.metrics import average_precision_score, mean_squared_error, log_loss
 
+from magpie.config import HEP_TEST_PATH, HEP_TRAIN_PATH
 from magpie.nn.config import BATCH_SIZE, NB_EPOCHS, LOG_FOLDER
-from magpie.nn.input_data import prepare_data
+from magpie.nn.input_data import batch_generator, get_train_and_test_data, \
+    get_data_from
 from magpie.nn.models import get_nn_model
 
 
 def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn'):
-    (X_train, y_train), (X_test, y_test) = prepare_data()
+    (X_train, y_train), (X_test, y_test) = get_train_and_test_data()
     model = get_nn_model(nn)
 
     # Create callbacks
@@ -58,6 +60,70 @@ def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn'):
     # print('Recall: {}'.format(recall / samples))
     # print('Precision: {}'.format(precision / samples))
     # print('F1: {}'.format(f1 / samples))
+
+
+# def run_in_minibatches(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn'):
+#     model = get_nn_model(nn)
+#
+#     for epoch in xrange(nb_epochs):
+#         train_batch_generator = get_batch_generator(train_dir, batch_size=batch_size)
+#         test_batch_generator = get_batch_generator(test_dir, batch_size=batch_size)
+#         train_loss, train_acc = [], []
+#         for X, y in train_batch_generator:
+#             loss, acc = model.train_on_batch(X, y, accuracy=True)
+#             train_loss.append(loss)
+#             train_acc.append(acc)
+#         train_loss, train_acc = np.mean(train_loss), np.mean(train_acc)
+#
+#         test_loss, test_acc = [], []
+#         for X, y in test_batch_generator:
+#             loss, acc = model.test_on_batch(X, y, accuracy=True)
+#             test_loss.append(loss)
+#             test_acc.append(acc)
+#         test_loss, test_acc = np.mean(test_loss), np.mean(test_acc)
+#
+#         X_test, y_test = self.test_data
+#         y_pred = self.model.predict(X_test)
+#
+#         aps = average_precision_score(y_test, y_pred)
+#         mse = mean_squared_error(y_test, y_pred)
+#         ll = log_loss(y_test, y_pred)
+#         td = compute_threshold_distance(y_test, y_pred)
+
+
+def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn', nb_worker=1):
+    train_batch_generator = batch_generator(HEP_TRAIN_PATH, batch_size)
+    X_test, y_test = get_data_from(HEP_TEST_PATH)
+    model = get_nn_model(nn)
+
+    # Create callbacks
+    logger = CustomLogger(X_test, y_test, nn)
+    model_checkpoint = ModelCheckpoint(
+        os.path.join(logger.log_dir, 'keras_model'),
+        save_best_only=True,
+    )
+
+    history = model.fit_generator(
+        train_batch_generator,
+        len({filename[:-4] for filename in os.listdir(HEP_TRAIN_PATH)}),
+        nb_epochs,
+        show_accuracy=True,
+        validation_data=(X_test, y_test),
+        callbacks=[logger, model_checkpoint],
+        nb_worker=nb_worker,
+    )
+
+    history.history['aps'] = logger.aps_list
+    history.history['ll'] = logger.ll_list
+    history.history['mse'] = logger.mse_list
+
+    # Write acc and loss to file
+    for metric in ['acc', 'loss']:
+        with open(os.path.join(logger.log_dir, metric), 'wb') as f:
+            for val in history.history[metric]:
+                f.write(str(val) + "\n")
+
+    return history, model
 
 
 def compare_results(X_test, y_test, model, i):
