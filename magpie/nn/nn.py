@@ -12,12 +12,12 @@ from magpie.nn.input_data import prepare_data
 from magpie.nn.models import get_nn_model
 
 
-def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn_type='cnn'):
+def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn'):
     (X_train, y_train), (X_test, y_test) = prepare_data()
-    model = get_nn_model(nn_type)
+    model = get_nn_model(nn)
 
     # Create callbacks
-    logger = CustomLogger(X_test, y_test, nn_type)
+    logger = CustomLogger(X_test, y_test, nn)
     model_checkpoint = ModelCheckpoint(
         os.path.join(logger.log_dir, 'keras_model'),
         save_best_only=True,
@@ -36,6 +36,7 @@ def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn_type='cnn'):
     history.history['aps'] = logger.aps_list
     history.history['ll'] = logger.ll_list
     history.history['mse'] = logger.mse_list
+    history.history['td'] = logger.td_list
 
     # Write acc and loss to file
     for metric in ['acc', 'loss']:
@@ -80,22 +81,18 @@ def compute_threshold_distance(y_tests, y_preds):
     """
     assert len(y_tests) == len(y_preds)
 
-    matrix_sums = []
+    distances = []
     for i in xrange(len(y_preds)):
         y_pred, y_test = y_preds[i], y_tests[i]
         sorted_indices = np.argsort(-y_pred)
         correct_indices = np.where(y_test)[0]
 
-        vector_sum = 0
         for i in correct_indices:
             position = np.where(sorted_indices == i)[0][0]
             distance = max(0, position - len(correct_indices) + 1)
-            vector_sum += distance / len(correct_indices)
+            distances.append(distance)
 
-        # if len(correct_indices) > 0:
-        matrix_sums.append(vector_sum)
-
-    return np.mean(matrix_sums)
+    return np.mean(distances)
 
 
 class CustomLogger(Callback):
