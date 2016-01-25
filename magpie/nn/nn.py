@@ -14,6 +14,43 @@ from magpie.nn.input_data import batch_generator, get_train_and_test_data, \
 from magpie.nn.models import get_nn_model
 
 
+def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn',
+                  nb_worker=1):
+    train_batch_generator = batch_generator(HEP_TRAIN_PATH, batch_size)
+    X_test, y_test = get_data_from(HEP_TEST_PATH)
+    model = get_nn_model(nn)
+
+    # Create callbacks
+    logger = CustomLogger(X_test, y_test, nn)
+    model_checkpoint = ModelCheckpoint(
+        os.path.join(logger.log_dir, 'keras_model'),
+        save_best_only=True,
+    )
+
+    history = model.fit_generator(
+        train_batch_generator,
+        len({filename[:-4] for filename in os.listdir(HEP_TRAIN_PATH)}),
+        nb_epochs,
+        show_accuracy=True,
+        validation_data=(X_test, y_test),
+        callbacks=[logger, model_checkpoint],
+        nb_worker=nb_worker,
+    )
+
+    history.history['aps'] = logger.aps_list
+    history.history['ll'] = logger.ll_list
+    history.history['mse'] = logger.mse_list
+    history.history['td'] = logger.td_list
+
+    # Write acc and loss to file
+    for metric in ['acc', 'loss']:
+        with open(os.path.join(logger.log_dir, metric), 'wb') as f:
+            for val in history.history[metric]:
+                f.write(str(val) + "\n")
+
+    return history, model
+
+
 def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn'):
     (X_train, y_train), (X_test, y_test) = get_train_and_test_data()
     model = get_nn_model(nn)
@@ -89,41 +126,6 @@ def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn'):
 #         mse = mean_squared_error(y_test, y_pred)
 #         ll = log_loss(y_test, y_pred)
 #         td = compute_threshold_distance(y_test, y_pred)
-
-
-def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn', nb_worker=1):
-    train_batch_generator = batch_generator(HEP_TRAIN_PATH, batch_size)
-    X_test, y_test = get_data_from(HEP_TEST_PATH)
-    model = get_nn_model(nn)
-
-    # Create callbacks
-    logger = CustomLogger(X_test, y_test, nn)
-    model_checkpoint = ModelCheckpoint(
-        os.path.join(logger.log_dir, 'keras_model'),
-        save_best_only=True,
-    )
-
-    history = model.fit_generator(
-        train_batch_generator,
-        len({filename[:-4] for filename in os.listdir(HEP_TRAIN_PATH)}),
-        nb_epochs,
-        show_accuracy=True,
-        validation_data=(X_test, y_test),
-        callbacks=[logger, model_checkpoint],
-        nb_worker=nb_worker,
-    )
-
-    history.history['aps'] = logger.aps_list
-    history.history['ll'] = logger.ll_list
-    history.history['mse'] = logger.mse_list
-
-    # Write acc and loss to file
-    for metric in ['acc', 'loss']:
-        with open(os.path.join(logger.log_dir, metric), 'wb') as f:
-            for val in history.history[metric]:
-                f.write(str(val) + "\n")
-
-    return history, model
 
 
 def compare_results(X_test, y_test, model, i):

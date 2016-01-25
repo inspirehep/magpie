@@ -44,12 +44,12 @@ def build_cnn_model():
     pool_length = SAMPLE_LENGTH - NGRAM_LENGTH + 1
     model.add(MaxPooling1D(pool_length=pool_length))
 
-    model.add(Dropout(0.4))
+    model.add(Dropout(0.5))
     model.add(Flatten())
 
     # We add a vanilla hidden layer:
     model.add(Dense(250, activation='relu'))
-    model.add(Dropout(0.4))
+    model.add(Dropout(0.5))
 
     model.add(Dense(OUTPUT_UNITS, activation='sigmoid'))
 
@@ -80,8 +80,8 @@ def build_rnn_model():
     model.add(Dropout(0.5))
 
     # We add a vanilla hidden layer:
-    model.add(Dense(250, activation='relu'))
-    model.add(Dropout(0.25))
+    # model.add(Dense(250, activation='relu'))
+    # model.add(Dropout(0.5))
 
     model.add(Dense(OUTPUT_UNITS, activation='sigmoid'))
 
