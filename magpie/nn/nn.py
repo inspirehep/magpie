@@ -11,7 +11,7 @@ from magpie.config import HEP_TEST_PATH, HEP_TRAIN_PATH
 from magpie.nn.config import BATCH_SIZE, NB_EPOCHS, LOG_FOLDER
 from magpie.nn.input_data import get_train_and_test_data, get_data_from,\
     FilenameIterator, iterate_over_batches
-from magpie.nn.models import get_nn_model
+from magpie.nn.models import get_nn_model, NGRAM_LENGTHS
 
 
 def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn',
@@ -55,6 +55,10 @@ def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn',
 def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn'):
     (X_train, y_train), (X_test, y_test) = get_train_and_test_data()
     model = get_nn_model(nn)
+
+    if nn == 'cnn':
+        X_train = [X_train] * len(NGRAM_LENGTHS)
+        X_test = [X_test] * len(NGRAM_LENGTHS)
 
     # Create callbacks
     logger = CustomLogger(X_test, y_test, nn)

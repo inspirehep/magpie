@@ -1,5 +1,5 @@
 from keras.layers.convolutional import MaxPooling1D, Convolution1D
-from keras.layers.core import Flatten, Dropout, Dense
+from keras.layers.core import Flatten, Dropout, Dense, Merge
 from keras.layers.recurrent import GRU
 from keras.models import Sequential
 
@@ -8,7 +8,7 @@ from magpie.nn.config import OUTPUT_UNITS, SAMPLE_LENGTH, NB_EPOCHS
 
 # Convolutional parameters
 NB_FILTER = 100
-NGRAM_LENGTH = 3
+NGRAM_LENGTHS = [1, 2, 3, 4]
 
 # Recurrent parameters
 HIDDEN_LAYER_SIZE = 200
@@ -29,27 +29,30 @@ def build_cnn_model():
 
     :return: keras model
     """
+    conv_layers = []
+    for ngram_length in NGRAM_LENGTHS:
+        ngram_layer = Sequential()
+        ngram_layer.add(Convolution1D(
+            NB_FILTER,
+            ngram_length,
+            input_dim=WORD2VEC_LENGTH,
+            input_length=SAMPLE_LENGTH,
+            init='lecun_uniform',
+            activation='tanh',
+        ))
+        pool_length = SAMPLE_LENGTH - ngram_length + 1
+        ngram_layer.add(MaxPooling1D(pool_length=pool_length))
+        conv_layers.append(ngram_layer)
+
     model = Sequential()
-
-    model.add(Convolution1D(
-        NB_FILTER,
-        NGRAM_LENGTH,
-        input_dim=WORD2VEC_LENGTH,
-        input_length=SAMPLE_LENGTH,
-        init='lecun_uniform',
-        activation='tanh',
-    ))
-    # TODO try merging different convolution layers
-
-    pool_length = SAMPLE_LENGTH - NGRAM_LENGTH + 1
-    model.add(MaxPooling1D(pool_length=pool_length))
+    model.add(Merge(conv_layers, mode='concat'))
 
     model.add(Dropout(0.5))
     model.add(Flatten())
 
     # We add a vanilla hidden layer:
-    model.add(Dense(250, activation='relu'))
-    model.add(Dropout(0.5))
+    # model.add(Dense(250, activation='relu'))
+    # model.add(Dropout(0.5))
 
     model.add(Dense(OUTPUT_UNITS, activation='sigmoid'))
 
