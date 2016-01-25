@@ -9,14 +9,15 @@ from sklearn.metrics import average_precision_score, mean_squared_error, log_los
 
 from magpie.config import HEP_TEST_PATH, HEP_TRAIN_PATH
 from magpie.nn.config import BATCH_SIZE, NB_EPOCHS, LOG_FOLDER
-from magpie.nn.input_data import batch_generator, get_train_and_test_data, \
-    get_data_from
+from magpie.nn.input_data import get_train_and_test_data, get_data_from,\
+    FilenameIterator, iterate_over_batches
 from magpie.nn.models import get_nn_model
 
 
 def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn',
                   nb_worker=1):
-    train_batch_generator = batch_generator(HEP_TRAIN_PATH, batch_size)
+    filename_it = FilenameIterator(HEP_TRAIN_PATH, batch_size)
+    train_batch_generator = iterate_over_batches(filename_it)
     X_test, y_test = get_data_from(HEP_TEST_PATH)
     model = get_nn_model(nn)
 
