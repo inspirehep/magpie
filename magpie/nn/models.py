@@ -90,7 +90,7 @@ def build_rnn_model():
 
     model.compile(
         loss='binary_crossentropy',
-        optimizer='rmsprop',
+        optimizer='adam',
         class_mode='binary',
     )
 
