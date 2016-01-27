@@ -1,9 +1,30 @@
-from __future__ import division
+from __future__ import division, unicode_literals
 
 import collections
 import math
 
+import time
+
 from magpie.misc.stemmer import stem
+from magpie.utils import get_documents
+
+
+def build_global_frequency_index(trainset_dir, verbose=True):
+    """
+    Build the GlobalFrequencyIndex object from the files in a given directory
+    :param trainset_dir: path to the directory with files for training
+    :return: GlobalFrequencyIndex object
+    """
+    tick = time.clock()
+
+    global_index = GlobalFrequencyIndex()
+    for doc in get_documents(trainset_dir):
+        global_index.add_document(doc)
+
+    if verbose:
+        print("Global index built in : {0:.2f}s".format(time.clock() - tick))
+
+    return global_index
 
 
 class GlobalFrequencyIndex(object):
@@ -11,32 +32,22 @@ class GlobalFrequencyIndex(object):
     Holds the word count (bag of words) for the whole corpus.
     Enables to calculate IDF and word occurrences.
     """
-    def __init__(self, documents):
+    def __init__(self, docs=None):
         self.index = collections.defaultdict(set)
-        self.total_docs = len(documents)
+        self.total_docs = 0
+        documents = docs or []
+        for doc in documents:
+            self.add_document(doc)
+            self.total_docs += 1
 
-        contents = [(d.doc_id, d.get_meaningful_words())
-                    for d in documents]
-
-        # Build the index
-        for doc_id, words in contents:
-            for w in words:
-                self.index[stem(w)].add(doc_id)
-
-    # def get_term_occurrences(self, term):
-    #     words = term.split()
-    #     scores = [self._get_word_occurrences(w) for w in words]
-    #
-    #     # TODO another function could do here
-    #     return sum(scores)
-    #
-    # def _get_word_occurrences(self, word):
-    #     stemmed = stem(word)
-    #     word_id = self.vectorizer.vocabulary_.get(stemmed)
-    #     if word_id:
-    #         return self.X[:, word_id].sum()
-    #     else:
-    #         return 0
+    def add_document(self, doc):
+        """
+        Add the contents of a document to the index
+        :param doc: Document object
+        """
+        for w in doc.get_meaningful_words():
+            self.index[stem(w)].add(doc.doc_id)
+        self.total_docs += 1
 
     def get_phrase_idf(self, phrase):
         """
@@ -53,9 +64,3 @@ class GlobalFrequencyIndex(object):
         :return: float: idf value
         """
         return math.log(self.total_docs / (1 + len(self.index[word])))
-        # word_id = self.vectorizer.vocabulary_.get(stemmed)
-        # if word_id:
-        #     return self.transformer.idf_[word_id]
-        # else:
-        #     # This word is not in the index
-        #     return 1

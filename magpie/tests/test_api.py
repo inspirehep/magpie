@@ -9,13 +9,13 @@ from magpie.utils import calculate_recall_for_kw_candidates
 def train_model_if_necessary(model_path):
     """ If the model under a given path does not exist, create one. """
     if not os.path.exists(model_path):
-        api.train(model_path=model_path, verbose=False)
+        api.train(model_path=model_path, word2vec_path=None, verbose=False)
 
 
 class TestAPI(unittest.TestCase):
     """ Basic tests for making sure that the API works """
     def test_train(self):
-        api.train(verbose=False)
+        api.train(verbose=False, word2vec_path=None)
 
     def test_test(self):
         train_model_if_necessary(MODEL_PATH)

@@ -2,13 +2,13 @@ import os
 import threading
 
 from gensim.models import Word2Vec
-from theano.gradient import np
+import numpy as np
 
 from magpie.base.document import Document
-from magpie.config import HEP_TRAIN_PATH, HEP_TEST_PATH
+from magpie.config import HEP_TRAIN_PATH, HEP_TEST_PATH, BATCH_SIZE, \
+    WORD2VEC_MODELPATH
 from magpie.feature_extraction import WORD2VEC_LENGTH
-from magpie.nn.config import OUTPUT_UNITS, SAMPLE_LENGTH, WORD2VEC_MODELPATH, \
-    BATCH_SIZE
+from magpie.nn.config import OUTPUT_UNITS, SAMPLE_LENGTH
 from magpie.nn.considered_keywords import get_n_most_popular_keywords
 from magpie.utils import get_documents, get_all_answers, get_answers_for_doc
 

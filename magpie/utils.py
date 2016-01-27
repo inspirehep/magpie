@@ -1,6 +1,7 @@
 from __future__ import division
 
 import os
+import random
 import time
 from collections import Counter, defaultdict
 
@@ -24,15 +25,21 @@ def get_ontology(path=HEP_ONTOLOGY, recreate=False):
     return ontology
 
 
-def get_documents(data_dir=HEP_TRAIN_PATH, as_generator=True):
+def get_documents(data_dir=HEP_TRAIN_PATH, as_generator=True, shuffle=False):
     """
     Extract documents from *.txt files in a given directory
     :param data_dir: path to the directory with .txt files
     :param as_generator: flag whether to return a document generator or a list
+    :param shuffle: flag whether to return the documents
+    in a shuffled vs sorted order
 
     :return: generator or a list of Document objects
     """
-    files = {filename[:-4] for filename in os.listdir(data_dir)}
+    files = list({filename[:-4] for filename in os.listdir(data_dir)})
+    files.sort()
+    if shuffle:
+        random.shuffle(files)
+
     generator = (Document(doc_id, os.path.join(data_dir, f + '.txt'))
                  for doc_id, f in enumerate(files))
     return generator if as_generator else list(generator)

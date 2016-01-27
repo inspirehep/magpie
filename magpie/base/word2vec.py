@@ -2,10 +2,32 @@ import os
 from itertools import chain
 
 import numpy as np
+import time
 from gensim.models import Word2Vec
 
 from magpie.base.document import Document
 from magpie.feature_extraction import WORD2VEC_LENGTH
+
+
+def get_word2vec_model(model_path, train_dir, verbose=True):
+    """
+    Build or read from disk a word2vec trained model
+    :param model_path: path to the trained model, None or 'retrain'
+    :param train_dir: path to the training set
+
+    :return: gensim Word2Vec object
+    """
+    tick = time.clock()
+
+    if not model_path:
+        res = out_of_core_train(train_dir)
+    else:
+        res = Word2Vec.load(model_path)
+
+    if verbose:
+        print("Getting word2vec model: {0:.2f}s".format(time.clock() - tick))
+
+    return res
 
 
 def train_word2vec(docs):
@@ -68,7 +90,7 @@ def compute_word2vec_for_phrase(phrase, model):
 #     return chain.from_iterable(sentence_gen)
 
 
-def batch_train(doc_directory):
+def out_of_core_train(doc_directory):
     """
     Train the Word2Vec object iteratively, loading stuff to memory one by one.
     :param doc_directory: directory with the documents

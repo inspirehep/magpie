@@ -7,8 +7,8 @@ import time
 from keras.callbacks import Callback, ModelCheckpoint
 from sklearn.metrics import average_precision_score, mean_squared_error, log_loss
 
-from magpie.config import HEP_TEST_PATH, HEP_TRAIN_PATH
-from magpie.nn.config import BATCH_SIZE, NB_EPOCHS, LOG_FOLDER
+from magpie.config import HEP_TEST_PATH, HEP_TRAIN_PATH, NB_EPOCHS, BATCH_SIZE
+from magpie.nn.config import LOG_FOLDER
 from magpie.nn.input_data import get_train_and_test_data, get_data_from,\
     FilenameIterator, iterate_over_batches
 from magpie.nn.models import get_nn_model, NGRAM_LENGTHS
