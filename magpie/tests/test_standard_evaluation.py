@@ -22,7 +22,7 @@ class TestEvaluateResults(unittest.TestCase):
             4: {u"Not predicted"},
         }
 
-        precision, recall, accuracy = evaluate_results(
+        precision, recall = evaluate_results(
             kw_mask,
             kw_vector,
             gt_answers
@@ -30,7 +30,7 @@ class TestEvaluateResults(unittest.TestCase):
 
         self.assertEqual(precision, 2.5 / 4)
         self.assertEqual(recall, 1.5 / 4)
-        self.assertAlmostEqual(accuracy, 2 / 4)
+        # self.assertAlmostEqual(accuracy, 2 / 4)
 
     def test_evaluate_results2(self):
         kw_mask = [1, 1, 0, 1, 0, 1, 1]
@@ -51,7 +51,7 @@ class TestEvaluateResults(unittest.TestCase):
             5: {u"Not predicted Keyword1", u"Not predicted keyword2"},
         }
 
-        precision, recall, accuracy = evaluate_results(
+        precision, recall = evaluate_results(
             kw_mask,
             kw_vector,
             gt_answers
@@ -59,4 +59,4 @@ class TestEvaluateResults(unittest.TestCase):
 
         self.assertEqual(precision, 4.5 / 5)
         self.assertEqual(recall, 2 / 5)
-        self.assertAlmostEqual(accuracy, 5 / 7)
+        # self.assertAlmostEqual(accuracy, 5 / 7)

@@ -1,4 +1,5 @@
-import numpy as np
+from __future__ import division
+
 import pandas as pd
 
 from magpie.base.word2vec import compute_word2vec_for_phrase
@@ -23,17 +24,17 @@ def extract_keyword_features(kw_candidates, X, inv_index, model):
         tf_vec = inv_index.get_phrase_frequency(keyphrase)
         idf_vec = model.get_global_index().get_phrase_idf(keyphrase)
 
-        X['tf_mean'][i] = np.mean(tf_vec)
         X['tf_sum'][i] = sum(tf_vec)
+        X['tf_mean'][i] = X['tf_sum'][i] / len(tf_vec)
         X['tf_max'][i] = max(tf_vec)
         X['tf_min'][i] = min(tf_vec)
-        X['tf_var'][i] = np.var(tf_vec)
+        # X['tf_var'][i] = np.var(tf_vec)
 
-        X['idf_mean'][i] = np.mean(idf_vec)
         X['idf_sum'][i] = sum(idf_vec)
+        X['idf_mean'][i] = X['idf_sum'][i] / len(idf_vec)
         X['idf_max'][i] = max(idf_vec)
         X['idf_min'][i] = min(idf_vec)
-        X['idf_var'][i] = np.var(idf_vec)
+        # X['idf_var'][i] = np.var(idf_vec)
 
         X['tfidf'][i] = X['tf_mean'][i] * X['idf_mean'][i]
 
@@ -41,11 +42,11 @@ def extract_keyword_features(kw_candidates, X, inv_index, model):
         first_occurrence_vec = inv_index.get_first_phrase_occurrence(keyphrase)
         last_occurrence_vec = inv_index.get_last_phrase_occurrence(keyphrase)
 
-        X['first_occurrence_mean'][i] = np.mean(first_occurrence_vec)
+        X['first_occurrence_mean'][i] = sum(first_occurrence_vec) / len(first_occurrence_vec)
         X['first_occurrence_min'][i] = min(first_occurrence_vec)
         X['first_occurrence_max'][i] = max(first_occurrence_vec)
 
-        X['last_occurrence_mean'][i] = np.mean(last_occurrence_vec)
+        X['last_occurrence_mean'][i] = sum(last_occurrence_vec) / len(last_occurrence_vec)
         X['last_occurrence_min'][i] = min(last_occurrence_vec)
         X['last_occurrence_max'][i] = max(last_occurrence_vec)
 

@@ -6,7 +6,7 @@ import time
 from collections import Counter, defaultdict
 
 from magpie.base.document import Document
-from magpie.base.ontology import OntologyFactory
+from magpie.base.ontology import OntologyFactory, Ontology
 from magpie.candidates import generate_keyword_candidates
 from magpie.config import HEP_ONTOLOGY, HEP_TRAIN_PATH
 
@@ -61,7 +61,7 @@ def get_all_answers(data_dir):
     return answers
 
 
-def get_answers_for_doc(doc_name, data_dir):
+def get_answers_for_doc(doc_name, data_dir, filtered_by=None):
     """
     Read ground_truth answers from a .key file corresponding to the doc_name
     :param doc_name: the name of the document, should end with .txt
@@ -76,6 +76,10 @@ def get_answers_for_doc(doc_name, data_dir):
 
     with open(filename, 'rb') as f:
         answers = {line.decode('utf-8').rstrip('\n') for line in f}
+
+    if filtered_by:
+        assert type(filtered_by) == Ontology
+        answers = {kw for kw in answers if filtered_by.exact_match(kw)}
 
     return answers
 

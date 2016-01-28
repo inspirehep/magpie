@@ -25,13 +25,12 @@ def evaluate_results(kw_mask, kw_vector, gt_answers):
     # Create the dictionary with ground truth answers
     answers_dict = dict()
     for doc_id, keywords in gt_answers.iteritems():
-        answers_dict[doc_id] = {Ontology.parse_label(kw)
-                                for kw in gt_answers[doc_id]}
+        answers_dict[doc_id] = {Ontology.parse_label(kw) for kw in keywords}
 
     # Recall and precision computation
     avg_recall = avg_precision = 0
 
-    for doc_id, gt_keywords in gt_answers.iteritems():
+    for doc_id in gt_answers.keys():
         answers = answers_dict[doc_id]
         predictions = prediction_dict[doc_id]
 
@@ -49,23 +48,23 @@ def evaluate_results(kw_mask, kw_vector, gt_answers):
         avg_recall += len(true_positives) / len(answers)
         avg_precision += len(true_positives) / len(predictions)
 
-        # print doc_id, len(true_positives) / len(answers), len(true_positives) / len(predictions)
-
     avg_recall /= len(gt_answers)
     avg_precision /= len(gt_answers)
 
     # Accuracy computation
-    avg_accuracy = 0
-    for i in xrange(len(kw_vector)):
-        doc_id, kw = kw_vector[i]
-        parsed_lab = kw.get_parsed_form()
+    # TODO incorrect computation, skips ground truth kw
+    # TODO that have not been even recognized as candidates
+    # avg_accuracy = 0
+    # for i, kw_vector_elem in enumerate(kw_vector):
+    #     doc_id, kw = kw_vector_elem
+    #     parsed_lab = kw.get_parsed_form()
+    #
+    #     true_pos = kw_mask[i] == 1 and parsed_lab in answers_dict[doc_id]
+    #     true_neg = kw_mask[i] == 0 and parsed_lab not in answers_dict[doc_id]
+    #
+    #     if true_pos or true_neg:
+    #         avg_accuracy += 1
+    #
+    # avg_accuracy /= len(kw_vector)
 
-        true_pos = kw_mask[i] == 1 and parsed_lab in answers_dict[doc_id]
-        true_neg = kw_mask[i] == 0 and parsed_lab not in answers_dict[doc_id]
-
-        if true_pos or true_neg:
-            avg_accuracy += 1
-
-    avg_accuracy /= len(kw_vector)
-
-    return avg_precision, avg_recall, avg_accuracy
+    return avg_precision, avg_recall  # , avg_accuracy

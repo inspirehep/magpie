@@ -7,22 +7,17 @@ import numpy as np
 import pandas as pd
 import sys
 
+from magpie.base.build_matrices import build_train_matrices, build_test_matrices, \
+    build_feature_matrix
 from magpie.base.document import Document
 from magpie.base.global_index import build_global_frequency_index
 from magpie.base.inverted_index import InvertedIndex
 from magpie.base.model import LearningModel
 from magpie.base.word2vec import get_word2vec_model
 from magpie.candidates import generate_keyword_candidates
-from magpie.candidates.utils import add_gt_answers_to_candidates_set
 from magpie.config import MODEL_PATH, HEP_TRAIN_PATH, HEP_ONTOLOGY, \
     HEP_TEST_PATH, BATCH_SIZE, NB_EPOCHS, WORD2VEC_MODELPATH
 from magpie.evaluation.standard_evaluation import evaluate_results
-from magpie.evaluation.utils import remove_unguessable_answers
-from magpie.feature_extraction import preallocate_feature_matrix
-from magpie.feature_extraction.document_features import \
-    extract_document_features
-from magpie.feature_extraction.keyword_features import extract_keyword_features, \
-    rebuild_feature_matrix
 from magpie.misc.utils import save_to_disk, load_from_disk
 from magpie.utils import get_ontology, get_answers_for_doc, get_documents
 
@@ -54,19 +49,7 @@ def extract(
     # Generate keyword candidates
     kw_candidates = list(generate_keyword_candidates(doc, ontology))
 
-    X = preallocate_feature_matrix(len(kw_candidates))
-    # Extract features for keywords
-    extract_keyword_features(
-        kw_candidates,
-        X,
-        inv_index,
-        model,
-    )
-
-    # Extract document features
-    extract_document_features(inv_index, X)
-
-    X = rebuild_feature_matrix(X)
+    X = build_feature_matrix(kw_candidates, inv_index, model)
 
     # Predict
     y_predicted = model.scale_and_predict(X)
@@ -86,8 +69,11 @@ def extract(
             print(u"\t" + unicode(kw.get_canonical_form()))
         print()
 
-        answers = get_answers_for_doc(doc.filename, os.path.dirname(doc.filepath))
-        answers = remove_unguessable_answers(answers, ontology)
+        answers = get_answers_for_doc(
+            doc.filename,
+            os.path.dirname(doc.filepath),
+            filtered_by=ontology,
+        )
 
         candidates = {kw.get_canonical_form() for kw in kw_candidates}
         print("Ground truth keywords:")
@@ -115,96 +101,49 @@ def extract(
 
 def test(
     testset_path=HEP_TEST_PATH,
-    ontology_path=HEP_ONTOLOGY,
-    model_path=MODEL_PATH,
+    ontology=HEP_ONTOLOGY,
+    model=MODEL_PATH,
     recreate_ontology=False,
     verbose=True,
 ):
     """
     Test the trained model on a set under a given path.
     :param testset_path: path to the directory with the test set
-    :param ontology_path: path to the ontology
-    :param model_path: path where the model is pickled
+    :param ontology: path to the ontology
+    :param model: path where the model is pickled
     :param recreate_ontology: boolean flag whether to recreate the ontology
     :param verbose: whether to print computation times
 
-    :return tuple of four floats (precision, recall, f1_score, accuracy)
+    :return tuple of three floats (precision, recall, f1_score)
     """
-    ontology = get_ontology(path=ontology_path, recreate=recreate_ontology)
+    if type(model) in [str, unicode]:
+        model = load_from_disk(model)
 
-    # Load the model
-    model = load_from_disk(model_path)
+    if type(ontology) in [str, unicode]:
+        ontology = get_ontology(path=ontology, recreate=recreate_ontology)
 
-    feature_matrices = []
-    kw_vector = []
-    answers = dict()
-
-    cand_gen_time = feature_ext_time = 0
-
-    for doc in get_documents(testset_path):
-        inv_index = InvertedIndex(doc)
-        candidates_start = time.clock()
-
-        # Generate keyword candidates
-        kw_candidates = list(generate_keyword_candidates(doc, ontology))
-
-        candidates_end = time.clock()
-
-        # Preallocate the feature matrix
-        X = preallocate_feature_matrix(len(kw_candidates))
-
-        # Extract features for keywords
-        extract_keyword_features(
-            kw_candidates,
-            X,
-            inv_index,
-            model,
-        )
-
-        # Extract document features
-        extract_document_features(inv_index, X)
-
-        features_end = time.clock()
-
-        # Get ground truth answers
-        answers[doc.doc_id] = get_answers_for_doc(doc.filename, testset_path)
-
-        X = rebuild_feature_matrix(X)
-        feature_matrices.append(X)
-
-        kw_vector.extend([(doc.doc_id, kw) for kw in kw_candidates])
-
-        cand_gen_time += candidates_end - candidates_start
-        feature_ext_time += features_end - candidates_end
-
-    # Merge feature matrices from different documents
-    X = pd.concat(feature_matrices)
-
+    tick = time.clock()
+    X, answers, kw_vector = build_test_matrices(
+        get_documents(testset_path),
+        model,
+        testset_path,
+        ontology,
+    )
     if verbose:
-        print("Candidate generation: {0:.2f}s".format(cand_gen_time))
-        print("Feature extraction: {0:.2f}s".format(feature_ext_time))
-
-    features_time = time.clock()
+        print("Matrices built in: {0:.2f}s".format(time.clock() - tick))
 
     # Predict
-    y_predicted = model.scale_and_predict(X)
-
-    if verbose:
-        print("Prediction time: {0:.2f}s".format(time.clock() - features_time))
-
-    # Remove ground truth answers that are not in the ontology
-    for doc_id, kw_set in answers.items():
-        answers[doc_id] = remove_unguessable_answers(kw_set, ontology)
+    y_pred = model.scale_and_predict(X)
 
     # Evaluate the results
-    precision, recall, accuracy = evaluate_results(
-        y_predicted,
+    precision, recall = evaluate_results(
+        y_pred,
         kw_vector,
         answers,
     )
 
-    f1_score = (2 * precision * recall) / (precision + recall)
-    return precision, recall, f1_score, accuracy
+    f1 = (2 * precision * recall) / (precision + recall)
+    return precision, recall, f1
 
 
 def batch_test(
@@ -215,6 +154,17 @@ def batch_test(
     recreate_ontology=False,
     verbose=True,
 ):
+    """
+    Test the trained model on a set under a given path.
+    :param testset_path: path to the directory with the test set
+    :param batch_size: size of the testing batch
+    :param ontology_path: path to the ontology
+    :param model_path: path where the model is pickled
+    :param recreate_ontology: boolean flag whether to recreate the ontology
+    :param verbose: whether to print computation times
+
+    :return tuple of three floats (precision, recall, f1_score)
+    """
     ontology = get_ontology(path=ontology_path, recreate=recreate_ontology)
     doc_generator = get_documents(testset_path)
     start_time = time.clock()
@@ -224,12 +174,13 @@ def batch_test(
 
     precision_list = []
     recall_list = []
-    accuracy_list = []
+    f1_list = []
+
+    if verbose:
+        print("Batches:", end=' ')
 
     no_more_samples = False
     batch_number = 0
-    if verbose:
-        print("Batches:", end=' ')
     while not no_more_samples:
         batch_number += 1
 
@@ -241,68 +192,17 @@ def batch_test(
                 no_more_samples = True
                 break
 
-        feature_matrices = []
-        kw_vector = []
-        answers = dict()
-
-        cand_gen_time = feature_ext_time = 0
-
-        for doc in batch:
-            inv_index = InvertedIndex(doc)
-            candidates_start = time.clock()
-
-            # Generate keyword candidates
-            kw_candidates = list(generate_keyword_candidates(doc, ontology))
-
-            candidates_end = time.clock()
-
-            # Preallocate the feature matrix
-            X = preallocate_feature_matrix(len(kw_candidates))
-
-            # Extract features for keywords
-            extract_keyword_features(
-                kw_candidates,
-                X,
-                inv_index,
-                model,
-            )
-
-            # Extract document features
-            extract_document_features(inv_index, X)
-
-            features_end = time.clock()
-
-            # Get ground truth answers
-            answers[doc.doc_id] = get_answers_for_doc(doc.filename, testset_path)
-
-            X = rebuild_feature_matrix(X)
-            feature_matrices.append(X)
-
-            kw_vector.extend([(doc.doc_id, kw) for kw in kw_candidates])
-
-            cand_gen_time += candidates_end - candidates_start
-            feature_ext_time += features_end - candidates_end
-
-        # Merge feature matrices from different documents
-        X = pd.concat(feature_matrices)
-
-        # Predict
-        y_predicted = model.scale_and_predict(X)
-
-        # Remove ground truth answers that are not in the ontology
-        for doc_id, kw_set in answers.items():
-            answers[doc_id] = remove_unguessable_answers(kw_set, ontology)
-
-        # Evaluate the results
-        precision, recall, accuracy = evaluate_results(
-            y_predicted,
-            kw_vector,
-            answers,
+        precision, recall, f1 = test(
+            testset_path=testset_path,
+            ontology=ontology,
+            model=model,
+            recreate_ontology=recreate_ontology,
+            verbose=False,
         )
 
         precision_list.append(precision)
         recall_list.append(recall)
-        accuracy_list.append(accuracy)
+        f1_list.append(f1)
 
         if verbose:
             sys.stdout.write(b'.')
@@ -312,9 +212,7 @@ def batch_test(
         print()
         print("Testing finished in: {0:.2f}s".format(time.clock() - start_time))
 
-    precision, recall = np.mean(precision_list), np.mean(recall_list)
-    f1_score = (2 * precision * recall) / (precision + recall)
-    return precision, recall, f1_score, np.mean(accuracy_list)
+    return np.mean(precision_list), np.mean(recall_list), np.mean(f1_list)
 
 
 def train(
@@ -337,72 +235,18 @@ def train(
     :return None if everything goes fine, error otherwise
     """
     ontology = get_ontology(path=ontology_path, recreate=recreate_ontology)
-    docs = get_documents(trainset_dir, as_generator=False)
+    docs = get_documents(trainset_dir)
 
     global_index = build_global_frequency_index(trainset_dir, verbose=verbose)
     word2vec_model = get_word2vec_model(word2vec_path, trainset_dir, verbose=verbose)
     model = LearningModel(global_index, word2vec_model)
 
-    output_vectors = []
-    feature_matrices = []
+    tick = time.clock()
 
-    cand_gen_time = feature_ext_time = 0
-
-    for doc in docs:
-        inv_index = InvertedIndex(doc)
-        candidates_start = time.clock()
-
-        # Generate keyword candidates
-        kw_candidates = list(generate_keyword_candidates(doc, ontology))
-
-        # Get ground truth answers
-        doc_answers = get_answers_for_doc(doc.filename, trainset_dir)
-
-        # If an answer was not generated, add it anyway
-        add_gt_answers_to_candidates_set(kw_candidates, doc_answers, ontology)
-
-        candidates_end = time.clock()
-
-        # Preallocate the feature matrix
-        X = preallocate_feature_matrix(len(kw_candidates))
-
-        # Extract features for keywords
-        extract_keyword_features(
-            kw_candidates,
-            X,
-            inv_index,
-            model,
-        )
-
-        # Extract document features
-        extract_document_features(inv_index, X)
-
-        X = rebuild_feature_matrix(X)
-        feature_matrices.append(X)
-
-        features_end = time.clock()
-
-        # Create the output vector
-        output_vector = np.zeros(len(kw_candidates), dtype=np.bool_)
-        for i, kw in enumerate(kw_candidates):
-            if kw.get_canonical_form() in doc_answers:
-                output_vector[i] = True
-
-        # feature_matrices.append(feature_matrix)
-        output_vectors.append(output_vector)
-
-        cand_gen_time += candidates_end - candidates_start
-        feature_ext_time += features_end - candidates_end
-
-    # Merge the pandas
-    X = pd.concat(feature_matrices)
-
-    # Cast the output vector to numpy
-    y = np.concatenate(output_vectors)
+    X, y = build_train_matrices(docs, model, trainset_dir, ontology)
 
     if verbose:
-        print("Candidate generation: {0:.2f}s".format(cand_gen_time))
-        print("Feature extraction: {0:.2f}s".format(feature_ext_time))
+        print("Matrices built in: {0:.2f}s".format(time.clock() - tick))
     t1 = time.clock()
 
     if verbose:
@@ -435,6 +279,7 @@ def batch_train(
     Train and save the model on a given dataset
     :param trainset_dir: path to the directory with the training set
     :param nb_epochs: number of passes over the training set
+    :param batch_size: the size of a single batch
     :param ontology_path: path to the ontology file
     :param model_path: path to the pickled LearningModel object
     :param word2vec_path: path to the gensim word2vec model
@@ -461,13 +306,11 @@ def batch_train(
         no_more_samples = False
         batch_number = 0
         if verbose:
-            print("Batches:", end=' ')
+            sys.stdout.write(b'Batches: ')
+            sys.stdout.flush()
         while not no_more_samples:
-            # batch_start = time.clock()
             batch_number += 1
 
-            output_vectors = []
-            feature_matrices = []
             batch = []
             for i in xrange(batch_size):
                 try:
@@ -476,67 +319,8 @@ def batch_train(
                     no_more_samples = True
                     break
 
-            # TODO from here
-            cand_gen_time = feature_ext_time = 0
-            for doc in batch:
-                inv_index = InvertedIndex(doc)
-                candidates_start = time.clock()
+            X, y = build_train_matrices(batch, model, trainset_dir, ontology)
 
-                # Generate keyword candidates
-                kw_candidates = list(generate_keyword_candidates(doc, ontology))
-
-                # Get ground truth answers
-                doc_answers = get_answers_for_doc(doc.filename, trainset_dir)
-
-                # If an answer was not generated, add it anyway
-                add_gt_answers_to_candidates_set(kw_candidates, doc_answers, ontology)
-
-                candidates_end = time.clock()
-
-                # Preallocate the feature matrix
-                X = preallocate_feature_matrix(len(kw_candidates))
-
-                # Extract features for keywords
-                extract_keyword_features(
-                    kw_candidates,
-                    X,
-                    inv_index,
-                    model,
-                )
-
-                # Extract document features
-                extract_document_features(inv_index, X)
-
-                X = rebuild_feature_matrix(X)
-                feature_matrices.append(X)
-
-                features_end = time.clock()
-
-                # Create the output vector
-                output_vector = np.zeros(len(kw_candidates), dtype=np.bool_)
-                for i, kw in enumerate(kw_candidates):
-                    if kw.get_canonical_form() in doc_answers:
-                        output_vector[i] = True
-
-                output_vectors.append(output_vector)
-
-                cand_gen_time += candidates_end - candidates_start
-                feature_ext_time += features_end - candidates_end
-
-            # Merge the pandas
-            X = pd.concat(feature_matrices)
-
-            # Cast the output vector to numpy
-            y = np.concatenate(output_vectors)
-
-            # TODO TO HERE - should be extracted
-
-            # if verbose:
-            #     print("Candidate generation: {0:.2f}s".format(cand_gen_time))
-            #     print("Feature extraction: {0:.2f}s".format(feature_ext_time))
-            #
-            # if verbose:
-            #     print("X size: {}".format(X.shape))
             samples_seen += len(X)
 
             # Normalize features
@@ -546,8 +330,6 @@ def batch_train(
             model.partial_fit_classifier(X, y)
 
             if verbose:
-                # print("Batch {0} computed in: {1:.2f}s\n"
-                #       .format(batch_number, time.clock() - batch_start))
                 sys.stdout.write(b'.')
                 sys.stdout.flush()
 
@@ -562,4 +344,4 @@ def batch_train(
 
 
 if __name__ == '__main__':
-    train()
+    batch_test(batch_size=20)
