@@ -18,6 +18,7 @@ from magpie.candidates import generate_keyword_candidates
 from magpie.config import MODEL_PATH, HEP_TRAIN_PATH, HEP_ONTOLOGY, \
     HEP_TEST_PATH, BATCH_SIZE, NB_EPOCHS, WORD2VEC_MODELPATH
 from magpie.evaluation.standard_evaluation import evaluate_results
+from magpie.misc.considered_keywords import get_considered_keywords
 from magpie.misc.utils import save_to_disk, load_from_disk
 from magpie.utils import get_ontology, get_answers_for_doc, get_documents
 
@@ -41,6 +42,7 @@ def extract(
     """
     doc = Document(0, path_to_file)
     ontology = get_ontology(path=ontology_path, recreate=recreate_ontology)
+    considered_keywords = set(get_considered_keywords())
     inv_index = InvertedIndex(doc)
 
     # Load the model
@@ -72,7 +74,7 @@ def extract(
         answers = get_answers_for_doc(
             doc.filename,
             os.path.dirname(doc.filepath),
-            filtered_by=ontology,
+            filtered_by=considered_keywords,
         )
 
         candidates = {kw.get_canonical_form() for kw in kw_candidates}
@@ -91,9 +93,6 @@ def extract(
         X['ground truth'] = y
 
         pd.set_option('expand_frame_repr', False)
-        X = X[['name', 'predicted', 'ground truth', 'tf', 'idf', 'tfidf',
-               'first_occurrence', 'last_occurrence', 'spread',
-               'hops_from_anchor', 'no_of_letters', 'no_of_words']]
         print(X[(X['ground truth'] == 1) | (X['predicted'])])
 
     return {kw.get_canonical_form() for kw in kw_predicted}
@@ -192,13 +191,24 @@ def batch_test(
                 no_more_samples = True
                 break
 
-        precision, recall, f1 = test(
-            testset_path=testset_path,
-            ontology=ontology,
-            model=model,
-            recreate_ontology=recreate_ontology,
-            verbose=False,
+        X, answers, kw_vector = build_test_matrices(
+            batch,
+            model,
+            testset_path,
+            ontology,
         )
+
+        # Predict
+        y_pred = model.scale_and_predict(X)
+
+        # Evaluate the results
+        precision, recall = evaluate_results(
+            y_pred,
+            kw_vector,
+            answers,
+        )
+
+        f1 = (2 * precision * recall) / (precision + recall)
 
         precision_list.append(precision)
         recall_list.append(recall)
@@ -339,8 +349,8 @@ def batch_train(
                   .format(epoch + 1, time.clock() - epoch_start))
             print("Samples seen: {0}".format(samples_seen))
 
-    # Pickle the model
-    save_to_disk(model_path, model, overwrite=True)
+        # Pickle the model
+        save_to_disk(model_path, model, overwrite=True)
 
 
 if __name__ == '__main__':
