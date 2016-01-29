@@ -8,6 +8,7 @@ from magpie.feature_extraction import preallocate_feature_matrix
 from magpie.feature_extraction.document_features import extract_document_features
 from magpie.feature_extraction.keyword_features import extract_keyword_features, \
     rebuild_feature_matrix
+from magpie.misc.considered_keywords import get_considered_keywords
 from magpie.utils import get_answers_for_doc
 
 
@@ -21,6 +22,7 @@ def build_test_matrices(docs, model, file_dir, ontology):
     :param ontology: Ontology object
     :return: X numpy array, answers dictionary and kw_vector tuple list
     """
+    considered_keywords = set(get_considered_keywords())
     feature_matrices = []
     kw_vector = []
     answers = dict()
@@ -38,7 +40,7 @@ def build_test_matrices(docs, model, file_dir, ontology):
         answers[doc.doc_id] = get_answers_for_doc(
             doc.filename,
             file_dir,
-            filtered_by=ontology,
+            filtered_by=considered_keywords,
         )
 
         kw_vector.extend([(doc.doc_id, kw) for kw in kw_candidates])
@@ -59,6 +61,7 @@ def build_train_matrices(docs, model, file_dir, ontology):
 
     :return: X and y numpy arrays
     """
+    considered_keywords = set(get_considered_keywords())
     feature_matrices = []
     output_vectors = []
 
@@ -72,7 +75,7 @@ def build_train_matrices(docs, model, file_dir, ontology):
         doc_answers = get_answers_for_doc(
             doc.filename,
             file_dir,
-            filtered_by=ontology,
+            filtered_by=considered_keywords,
         )
 
         # If an answer was not generated, add it anyway

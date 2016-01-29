@@ -3,8 +3,9 @@ from keras.layers.core import Flatten, Dropout, Dense, Merge
 from keras.layers.recurrent import GRU
 from keras.models import Sequential
 
+from magpie.config import CONSIDERED_KEYWORDS
 from magpie.feature_extraction import WORD2VEC_LENGTH
-from magpie.nn.config import OUTPUT_UNITS, SAMPLE_LENGTH
+from magpie.nn.config import SAMPLE_LENGTH
 
 # Convolutional parameters
 NB_FILTER = 100
@@ -54,7 +55,7 @@ def build_cnn_model():
     # model.add(Dense(250, activation='relu'))
     # model.add(Dropout(0.5))
 
-    model.add(Dense(OUTPUT_UNITS, activation='sigmoid'))
+    model.add(Dense(CONSIDERED_KEYWORDS, activation='sigmoid'))
 
     model.compile(
         loss='binary_crossentropy',
@@ -86,7 +87,7 @@ def build_rnn_model():
     # model.add(Dense(250, activation='relu'))
     # model.add(Dropout(0.5))
 
-    model.add(Dense(OUTPUT_UNITS, activation='sigmoid'))
+    model.add(Dense(CONSIDERED_KEYWORDS, activation='sigmoid'))
 
     model.compile(
         loss='binary_crossentropy',

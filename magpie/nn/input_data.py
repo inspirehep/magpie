@@ -1,15 +1,15 @@
 import os
 import threading
 
-from gensim.models import Word2Vec
 import numpy as np
+from gensim.models import Word2Vec
 
 from magpie.base.document import Document
 from magpie.config import HEP_TRAIN_PATH, HEP_TEST_PATH, BATCH_SIZE, \
-    WORD2VEC_MODELPATH
+    WORD2VEC_MODELPATH, CONSIDERED_KEYWORDS
 from magpie.feature_extraction import WORD2VEC_LENGTH
-from magpie.nn.config import OUTPUT_UNITS, SAMPLE_LENGTH
-from magpie.nn.considered_keywords import get_n_most_popular_keywords
+from magpie.misc.considered_keywords import get_considered_keywords
+from magpie.nn.config import SAMPLE_LENGTH
 from magpie.utils import get_documents, get_all_answers, get_answers_for_doc
 
 
@@ -55,13 +55,13 @@ def batch_generator(dirname, batch_size=BATCH_SIZE):
     :return: generator yielding numpy arrays
     """
     word2vec_model = Word2Vec.load(WORD2VEC_MODELPATH)
-    keywords = get_n_most_popular_keywords(OUTPUT_UNITS)
+    keywords = get_considered_keywords()
     keyword_indices = {kw: i for i, kw in enumerate(keywords)}
     docs = get_documents()
 
     while True:
         x_matrix = np.zeros((batch_size, SAMPLE_LENGTH, WORD2VEC_LENGTH))
-        y_matrix = np.zeros((batch_size, OUTPUT_UNITS), dtype=np.bool_)
+        y_matrix = np.zeros((batch_size, CONSIDERED_KEYWORDS), dtype=np.bool_)
         for sample in xrange(batch_size):
             try:
                 doc = docs.next()
@@ -94,13 +94,13 @@ def iterate_over_batches(filename_it):
     word2vec_model = Word2Vec.load(WORD2VEC_MODELPATH)
     dirname = filename_it.dirname
 
-    keywords = get_n_most_popular_keywords(OUTPUT_UNITS)
+    keywords = get_considered_keywords()
     keyword_indices = {kw: i for i, kw in enumerate(keywords)}
 
     while True:
         filenames = filename_it.next()
         x_matrix = np.zeros((len(filenames), SAMPLE_LENGTH, WORD2VEC_LENGTH))
-        y_matrix = np.zeros((len(filenames), OUTPUT_UNITS), dtype=np.bool_)
+        y_matrix = np.zeros((len(filenames), CONSIDERED_KEYWORDS), dtype=np.bool_)
         for doc_id, fname in enumerate(filenames):
             doc = Document(doc_id, os.path.join(dirname, fname + '.txt'))
             words = doc.get_all_words()[:SAMPLE_LENGTH]
@@ -170,17 +170,17 @@ def build_x(data_dir):
 
 def build_y(data_dir):
     """
-    Build the y matrix. It's a list of output vectors of length OUTPUT_UNITS
+    Build the y matrix. It's a list of output vectors of length CONSIDERED_KEYWORDS
     :param data_dir: directory with files
 
     :return: list of bool numpy arrays with ones on specific indices
     """
     ans_dict = get_all_answers(data_dir)
-    keywords = get_n_most_popular_keywords(OUTPUT_UNITS)
+    keywords = get_considered_keywords()
     keyword_indices = {kw: i for i, kw in enumerate(keywords)}
 
     for file_id, kw_set in ans_dict.items():
-        ans_vector = np.zeros(OUTPUT_UNITS, dtype=np.bool_)
+        ans_vector = np.zeros(CONSIDERED_KEYWORDS, dtype=np.bool_)
         for kw in kw_set:
             if kw in keyword_indices:
                 index = keyword_indices[kw]

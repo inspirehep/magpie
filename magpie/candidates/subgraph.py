@@ -2,7 +2,8 @@ import collections
 import copy
 from rdflib.namespace import SKOS
 from magpie.candidates.keyword_token import KeywordToken
-from magpie.candidates.utils import get_anchors, remove_nostandalone_candidates
+from magpie.candidates.utils import get_anchors, remove_nostandalone_candidates, \
+    remove_not_considered_keywords
 
 
 def generate_subgraph_candidates(document, ontology):
@@ -60,6 +61,8 @@ def generate_subgraph_candidates(document, ontology):
     for kw in candidates:
         kw.canonical_label = ontology.get_canonical_label_from_uri(kw.uri)
         kw.parsed_label = ontology.get_parsed_label_from_uri(kw.uri)
+
+    candidates = remove_not_considered_keywords(candidates)
 
     return remove_nostandalone_candidates(candidates, ontology)
 

@@ -3,7 +3,6 @@ from sklearn.linear_model import SGDClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.preprocessing import StandardScaler
 import numpy as np
-from sklearn.utils import compute_class_weight
 
 
 class LearningModel(object):

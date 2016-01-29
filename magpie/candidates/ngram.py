@@ -1,6 +1,7 @@
 from nltk.util import ngrams as nltk_ngrams
 from keyword_token import add_token
-from utils import get_anchors, remove_nostandalone_candidates
+from utils import get_anchors, remove_nostandalone_candidates, \
+    remove_not_considered_keywords
 
 
 def generate_ngram_candidates(document, ontology):
@@ -51,6 +52,8 @@ def generate_ngram_candidates(document, ontology):
     #         uri = ontology.get_uri_from_label(hit)
     #         add_token(uri, ngram_tokens, position, ontology, form=form)
     # tokens |= set(ngram_tokens.values())
+
+    tokens = remove_not_considered_keywords(tokens)
 
     return remove_nostandalone_candidates(tokens, ontology)
 

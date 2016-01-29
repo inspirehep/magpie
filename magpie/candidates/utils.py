@@ -1,4 +1,6 @@
 from magpie.candidates.keyword_token import add_token, KeywordToken
+from magpie.config import CONSIDERED_KEYWORDS
+from magpie.misc.considered_keywords import get_considered_keywords
 from magpie.misc.stemmer import stem
 
 
@@ -67,3 +69,16 @@ def add_gt_answers_to_candidates_set(kw_candidates, gt_answers, ontology):
                         parsed_label=parsed_label
                     )
                 )
+
+
+def remove_not_considered_keywords(candidates):
+    """
+    Filters the candidates in place, dropping the ones that we should not consider
+    :param candidates: set of KeywordTokens
+
+    :return: filtered set of KeywordTokens
+    """
+    if CONSIDERED_KEYWORDS < 0:
+        return candidates
+    considered_kw = set(get_considered_keywords())
+    return {kt for kt in candidates if kt.get_canonical_form() in considered_kw}

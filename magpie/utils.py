@@ -9,6 +9,7 @@ from magpie.base.document import Document
 from magpie.base.ontology import OntologyFactory, Ontology
 from magpie.candidates import generate_keyword_candidates
 from magpie.config import HEP_ONTOLOGY, HEP_TRAIN_PATH
+from magpie.misc.considered_keywords import get_considered_keywords
 
 
 def get_ontology(path=HEP_ONTOLOGY, recreate=False):
@@ -66,6 +67,8 @@ def get_answers_for_doc(doc_name, data_dir, filtered_by=None):
     Read ground_truth answers from a .key file corresponding to the doc_name
     :param doc_name: the name of the document, should end with .txt
     :param data_dir: directory in which the documents and answer files are
+    :param filtered_by: whether to filter the answers. Both sets and ontologies
+           can be passed as filters
 
     :return: set of unicodes containing answers for this particular document
     """
@@ -78,8 +81,10 @@ def get_answers_for_doc(doc_name, data_dir, filtered_by=None):
         answers = {line.decode('utf-8').rstrip('\n') for line in f}
 
     if filtered_by:
-        assert type(filtered_by) == Ontology
-        answers = {kw for kw in answers if filtered_by.exact_match(kw)}
+        if type(filtered_by) == Ontology:
+            answers = {kw for kw in answers if filtered_by.exact_match(kw)}
+        elif type(filtered_by) == set:
+            answers = {kw for kw in answers if kw in filtered_by}
 
     return answers
 
@@ -101,6 +106,7 @@ def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
 
     ontology = get_ontology(recreate=recreate_ontology)
     docs = get_documents(data_dir)
+    considered_keywords = set(get_considered_keywords())
     total_docs = 0
 
     start_time = time.clock()
@@ -108,8 +114,7 @@ def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
         kw_candidates = {kw.get_canonical_form() for kw
                          in generate_keyword_candidates(doc, ontology)}
 
-        answers = get_answers_for_doc(doc.filename, data_dir)
-
+        answers = get_answers_for_doc(doc.filename, data_dir, filtered_by=considered_keywords)
         # print(document.get_meaningful_words())
 
         # print(u"Candidates:")
@@ -127,7 +132,7 @@ def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
         #     print(u"\t" + unicode(kw))
         # print
 
-        recall = len(kw_candidates & answers) / (len(answers))
+        recall = 1 if not answers else len(kw_candidates & answers) / (len(answers))
         if verbose:
             print
             print("Paper: " + doc.filename)

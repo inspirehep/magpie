@@ -19,3 +19,6 @@ WORD2VEC_MODELPATH = os.path.join(os.environ['HOME'], 'word2vec_gensim_model')
 # Training parameters
 BATCH_SIZE = 64
 NB_EPOCHS = 1
+
+# Number of top N keywords that we consider for prediction
+CONSIDERED_KEYWORDS = 100

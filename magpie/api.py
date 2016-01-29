@@ -344,4 +344,4 @@ def batch_train(
 
 
 if __name__ == '__main__':
-    batch_test(batch_size=20)
+    train()
