@@ -14,7 +14,7 @@ HEP_TRAIN_PATH = os.path.join(ROOT_DIR, 'data', 'hep', 'train')
 HEP_TEST_PATH = os.path.join(ROOT_DIR, 'data', 'hep', 'test')
 
 # word2vec model path
-WORD2VEC_MODELPATH = os.path.join(os.environ['HOME'], 'word2vec_gensim_model')
+WORD2VEC_MODELPATH = os.path.join(os.environ['HOME'], 'word2vec_model.gensim')
 
 # Training parameters
 BATCH_SIZE = 64
