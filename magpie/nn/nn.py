@@ -5,9 +5,9 @@ import os
 import numpy as np
 import time
 from keras.callbacks import Callback, ModelCheckpoint
-from sklearn.metrics import average_precision_score, mean_squared_error, log_loss
-
 from magpie.config import HEP_TEST_PATH, HEP_TRAIN_PATH, NB_EPOCHS, BATCH_SIZE
+from magpie.evaluation.rank_metrics import mean_reciprocal_rank, r_precision, \
+    precision_at_k, ndcg_at_k, mean_average_precision
 from magpie.nn.config import LOG_FOLDER
 from magpie.nn.input_data import get_train_and_test_data, get_data_from,\
     FilenameIterator, iterate_over_batches
@@ -38,10 +38,12 @@ def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn',
         nb_worker=nb_worker,
     )
 
-    history.history['aps'] = logger.aps_list
-    history.history['ll'] = logger.ll_list
-    history.history['mse'] = logger.mse_list
-    history.history['td'] = logger.td_list
+    history.history['map'] = logger.map_list
+    history.history['ndcg'] = logger.ndcg_list
+    history.history['mrr'] = logger.mrr_list
+    history.history['r_prec'] = logger.r_prec_list
+    history.history['precision@3'] = logger.p_at_3_list
+    history.history['precision@5'] = logger.p_at_5_list
 
     # Write acc and loss to file
     for metric in ['acc', 'loss']:
@@ -77,10 +79,12 @@ def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn'):
         callbacks=[logger, model_checkpoint],
     )
 
-    history.history['aps'] = logger.aps_list
-    history.history['ll'] = logger.ll_list
-    history.history['mse'] = logger.mse_list
-    history.history['td'] = logger.td_list
+    history.history['map'] = logger.map_list
+    history.history['ndcg'] = logger.ndcg_list
+    history.history['mrr'] = logger.mrr_list
+    history.history['r_prec'] = logger.r_prec_list
+    history.history['precision@3'] = logger.p_at_3_list
+    history.history['precision@5'] = logger.p_at_5_list
 
     # Write acc and loss to file
     for metric in ['acc', 'loss']:
@@ -175,10 +179,12 @@ class CustomLogger(Callback):
     def __init__(self, X, y, nn_type, verbose=True):
         super(CustomLogger, self).__init__()
         self.test_data = (X, y)
-        self.aps_list = []
-        self.mse_list = []
-        self.ll_list = []
-        self.td_list = []
+        self.map_list = []
+        self.ndcg_list = []
+        self.mrr_list = []
+        self.r_prec_list = []
+        self.p_at_3_list = []
+        self.p_at_5_list = []
         self.verbose = verbose
         self.nn_type = nn_type
         self.log_dir = self.create_log_dir()
@@ -208,23 +214,35 @@ class CustomLogger(Callback):
         X_test, y_test = self.test_data
         y_pred = self.model.predict(X_test)
 
-        aps = average_precision_score(y_test, y_pred)
-        mse = mean_squared_error(y_test, y_pred)
-        ll = log_loss(y_test, y_pred)
-        td = compute_threshold_distance(y_test, y_pred)
+        # map = average_precision_score(y_test, y_pred, average='samples')
+        # auc = roc_auc_score(y_test, y_pred, average='samples')
+
+        y_pred = [y_test[i][y_pred.argsort()[i]] for i in xrange(len(y_test))]
+        y_pred = np.fliplr(np.array(y_pred))
+
+        map = mean_average_precision(y_pred)
+        mrr = mean_reciprocal_rank(y_pred)
+        ndcg = np.mean([ndcg_at_k(row, len(row)) for row in y_pred])
+        r_prec = np.mean([r_precision(row) for row in y_pred])
+        p_at_3 = np.mean([precision_at_k(row, 3) for row in y_pred])
+        p_at_5 = np.mean([precision_at_k(row, 5) for row in y_pred])
         val_acc = logs.get('val_acc', -1)
         val_loss = logs.get('val_loss', -1)
 
-        self.aps_list.append(aps)
-        self.mse_list.append(mse)
-        self.ll_list.append(ll)
-        self.td_list.append(td)
+        self.map_list.append(map)
+        self.mrr_list.append(mrr)
+        self.ndcg_list.append(ndcg)
+        self.r_prec_list.append(r_prec)
+        self.p_at_3_list.append(p_at_3)
+        self.p_at_5_list.append(p_at_5)
 
         log_dictionary = {
-            'aps': aps,
-            'mse': mse,
-            'll': ll,
-            'td': td,
+            'map': map,
+            'mrr': mrr,
+            'ndcg': ndcg,
+            'r_prec': r_prec,
+            'precision@3': p_at_3,
+            'precision@5': p_at_5,
             'val_acc': val_acc,
             'val_loss': val_loss
         }
@@ -233,8 +251,10 @@ class CustomLogger(Callback):
             self.log_to_file(metric_name, metric_value)
 
         if self.verbose:
-            print('Average precision score: {}'.format(aps))
-            print('MSE: {}'.format(mse))
-            print('Threshold distance: {}'.format(td))
-            print('Log loss: {}'.format(ll))
+            print('Mean Average Precision: {}'.format(map))
+            print('NDCG: {}'.format(ndcg))
+            print('Mean Reciprocal Rank: {}'.format(mrr))
+            print('R Precision: {}'.format(r_prec))
+            print('Precision@3: {}'.format(p_at_3))
+            print('Precision@5: {}'.format(p_at_5))
             print('')

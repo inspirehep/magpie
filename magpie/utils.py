@@ -46,10 +46,12 @@ def get_documents(data_dir=HEP_TRAIN_PATH, as_generator=True, shuffle=False):
     return generator if as_generator else list(generator)
 
 
-def get_all_answers(data_dir):
+def get_all_answers(data_dir, filtered_by=None):
     """
     Extract ground truth answers from *.key files in a given directory
     :param data_dir: path to the directory with .key files
+    :param filtered_by: whether to filter the answers. Both sets and ontologies
+           can be passed as filters
 
     :return: dictionary of the form e.g. {'101231': set('key1', 'key2') etc.}
     """
@@ -57,7 +59,7 @@ def get_all_answers(data_dir):
 
     files = {filename[:-4] for filename in os.listdir(data_dir)}
     for f in files:
-        answers[f] = get_answers_for_doc(f + '.key', data_dir)
+        answers[f] = get_answers_for_doc(f + '.key', data_dir, filtered_by=filtered_by)
 
     return answers
 
@@ -181,6 +183,15 @@ def calculate_keyword_distribution(data_dir=HEP_TRAIN_PATH):
     # return sorted([(k, len(v)) for k, v in histogram.iteritems()] +
     #               [(0, len(ontology.graph) - len(used_keywords))])
     return histogram
+
+
+def calculate_number_od_keywords_distribution(data_dir=HEP_TRAIN_PATH,
+                                              filtered_by=None):
+    """ Look how many papers are there with 3 keywords, 4 keywords etc.
+     Return a histogram. """
+    answers = get_all_answers(data_dir, filtered_by=filtered_by).values()
+    lengths = [len(ans_set) for ans_set in answers]
+    return Counter(lengths).items()
 
 
 def get_coverage_ratio_for_keyword_subset(no_of_keywords, hist=None):
