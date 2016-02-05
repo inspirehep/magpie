@@ -15,7 +15,7 @@ from magpie.nn.models import get_nn_model
 
 
 def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn',
-                  nb_worker=1):
+                  nb_worker=1, verbose=1):
     filename_it = FilenameIterator(HEP_TRAIN_PATH, batch_size)
     train_batch_generator = iterate_over_batches(filename_it, nn=nn)
     X_test, y_test = get_data_from(HEP_TEST_PATH, nn=nn)
@@ -36,6 +36,7 @@ def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn',
         validation_data=(X_test, y_test),
         callbacks=[logger, model_checkpoint],
         nb_worker=nb_worker,
+        verbose=verbose,
     )
 
     finish_logging(logger, history)
@@ -43,7 +44,7 @@ def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn',
     return history, model
 
 
-def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn'):
+def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn', verbose=1):
     (X_train, y_train), (X_test, y_test) = get_train_and_test_data(nn=nn)
     model = get_nn_model(nn)
 
@@ -62,6 +63,7 @@ def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn'):
         show_accuracy=True,
         validation_data=(X_test, y_test),
         callbacks=[logger, model_checkpoint],
+        verbose=verbose,
     )
 
     finish_logging(logger, history)
