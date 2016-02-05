@@ -10,24 +10,27 @@ from magpie.config import HEP_TRAIN_PATH, HEP_TEST_PATH, BATCH_SIZE, \
 from magpie.feature_extraction import WORD2VEC_LENGTH
 from magpie.misc.considered_keywords import get_considered_keywords
 from magpie.nn.config import SAMPLE_LENGTH
-from magpie.utils import get_documents, get_all_answers, get_answers_for_doc
+from magpie.nn.models import NGRAM_LENGTHS
+from magpie.utils import get_documents, get_all_answers, get_answers_for_doc, \
+    get_scaler
 
 
-def get_train_and_test_data(train_dir=HEP_TRAIN_PATH, test_dir=HEP_TEST_PATH):
+def get_train_and_test_data(train_dir=HEP_TRAIN_PATH, test_dir=HEP_TEST_PATH, nn='cnn'):
     """
     Fetch and preprocess the training and testing data from given directories
     :param train_dir: directory with the training files
     :param test_dir: directory with the validation files
+    :param nn: string, NN type
 
     :return: nested tuple with numpy matrices
     """
-    x_train, y_train = get_data_from(train_dir)
-    x_test, y_test = get_data_from(test_dir)
+    x_train, y_train = get_data_from(train_dir, nn=nn)
+    x_test, y_test = get_data_from(test_dir, nn=nn)
 
     return (x_train, y_train), (x_test, y_test)
 
 
-def get_data_from(data_dir):
+def get_data_from(data_dir, nn='cnn'):
     """
     Build X and Y matrices from a given directory. Make sure their order matches
     :param data_dir: directory with data files
@@ -41,7 +44,11 @@ def get_data_from(data_dir):
         if fx == fy:
             x_agg.append(mx)
             y_agg.append(my)
-    return np.array(x_agg), np.array(y_agg)
+
+    if nn == 'cnn':
+        return [np.array(x_agg)] * len(NGRAM_LENGTHS), np.array(y_agg)
+    else:
+        return np.array(x_agg), np.array(y_agg)
 
 
 def batch_generator(dirname, batch_size=BATCH_SIZE):
@@ -55,6 +62,7 @@ def batch_generator(dirname, batch_size=BATCH_SIZE):
     :return: generator yielding numpy arrays
     """
     word2vec_model = Word2Vec.load(WORD2VEC_MODELPATH)
+    scaler = get_scaler()
     keywords = get_considered_keywords()
     keyword_indices = {kw: i for i, kw in enumerate(keywords)}
     docs = get_documents()
@@ -73,7 +81,8 @@ def batch_generator(dirname, batch_size=BATCH_SIZE):
 
             for i, w in enumerate(words):
                 if w in word2vec_model:
-                    x_matrix[sample][i] = word2vec_model[w]
+                    word_vector = word2vec_model[w].reshape(1, -1)
+                    x_matrix[sample][i] = scaler.transform(word_vector, copy=True)[0]
 
             answers = get_answers_for_doc(doc.filename, dirname)
             for kw in answers:
@@ -84,14 +93,16 @@ def batch_generator(dirname, batch_size=BATCH_SIZE):
         yield [x_matrix], y_matrix
 
 
-def iterate_over_batches(filename_it):
+def iterate_over_batches(filename_it, nn='cnn'):
     """
     In theory threadsafe. Yield data batches using a threadsafe BatchIterator
     :param filename_it: BatchIterator object
+    :param nn: string, NN type
 
     :return: generator yielding numpy arrays
     """
     word2vec_model = Word2Vec.load(WORD2VEC_MODELPATH)
+    scaler = get_scaler()
     dirname = filename_it.dirname
 
     keywords = get_considered_keywords()
@@ -107,7 +118,8 @@ def iterate_over_batches(filename_it):
 
             for i, w in enumerate(words):
                 if w in word2vec_model:
-                    x_matrix[doc_id][i] = word2vec_model[w]
+                    word_vector = word2vec_model[w].reshape(1, -1)
+                    x_matrix[doc_id][i] = scaler.transform(word_vector, copy=True)[0]
 
             answers = get_answers_for_doc(fname + '.txt', dirname)
             for kw in answers:
@@ -115,7 +127,10 @@ def iterate_over_batches(filename_it):
                     index = keyword_indices[kw]
                     y_matrix[doc_id][index] = True
 
-        yield [x_matrix], y_matrix
+        if nn == 'cnn':
+            yield [x_matrix] * len(NGRAM_LENGTHS), y_matrix
+        else:
+            yield [x_matrix], y_matrix
 
 
 class FilenameIterator(object):
@@ -153,6 +168,7 @@ def build_x(data_dir):
     abstract and has a shape of (SAMPLE_LENGTH, WORD2VEC_LENGTH)
     """
     word2vec_model = Word2Vec.load(WORD2VEC_MODELPATH)
+    scaler = get_scaler()
     doc_tuples = []
     for doc in get_documents(data_dir=data_dir):
 
@@ -161,7 +177,8 @@ def build_x(data_dir):
 
         for i, w in enumerate(words):
             if w in word2vec_model:
-                matrix[i] = word2vec_model[w]
+                word_vector = word2vec_model[w].reshape(1, -1)
+                matrix[i] = scaler.transform(word_vector, copy=True)[0]
 
         doc_tuples.append((doc.filename[:-4], matrix))
 

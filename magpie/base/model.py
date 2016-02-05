@@ -1,6 +1,4 @@
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import SGDClassifier
-from sklearn.naive_bayes import GaussianNB
 from sklearn.preprocessing import StandardScaler
 import numpy as np
 
@@ -12,7 +10,7 @@ class LearningModel(object):
     """
     def __init__(self, global_index, word2vec_model):
         self.scaler = StandardScaler(copy=False)
-        self.classifier = SGDClassifier(n_jobs=-1)  # try loss log
+        self.classifier = SGDClassifier(n_jobs=-1)  # try loss log (logistic reg)
         self.global_index = global_index
         self.word2vec = word2vec_model
 

@@ -11,14 +11,14 @@ from magpie.evaluation.rank_metrics import mean_reciprocal_rank, r_precision, \
 from magpie.nn.config import LOG_FOLDER
 from magpie.nn.input_data import get_train_and_test_data, get_data_from,\
     FilenameIterator, iterate_over_batches
-from magpie.nn.models import get_nn_model, NGRAM_LENGTHS
+from magpie.nn.models import get_nn_model
 
 
 def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn',
                   nb_worker=1):
     filename_it = FilenameIterator(HEP_TRAIN_PATH, batch_size)
-    train_batch_generator = iterate_over_batches(filename_it)
-    X_test, y_test = get_data_from(HEP_TEST_PATH)
+    train_batch_generator = iterate_over_batches(filename_it, nn=nn)
+    X_test, y_test = get_data_from(HEP_TEST_PATH, nn=nn)
     model = get_nn_model(nn)
 
     # Create callbacks
@@ -55,12 +55,8 @@ def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn',
 
 
 def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn'):
-    (X_train, y_train), (X_test, y_test) = get_train_and_test_data()
+    (X_train, y_train), (X_test, y_test) = get_train_and_test_data(nn=nn)
     model = get_nn_model(nn)
-
-    if nn == 'cnn':
-        X_train = [X_train] * len(NGRAM_LENGTHS)
-        X_test = [X_test] * len(NGRAM_LENGTHS)
 
     # Create callbacks
     logger = CustomLogger(X_test, y_test, nn)
@@ -93,48 +89,6 @@ def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn'):
                 f.write(str(val) + "\n")
 
     return history, model
-
-    # accuracy = 1 - hamming_loss(y_test, y_pred)
-    # print('Accuracy: {}'.format(accuracy))
-    #
-    # recall = precision = f1 = 0
-    # for i in xrange(samples):
-    #     recall += recall_score(y_test[i], y_pred[i])
-    #     precision += precision_score(y_test[i], y_pred[i])
-    #     f1 += f1_score(y_test[i], y_pred[i])
-    #
-    # print('Recall: {}'.format(recall / samples))
-    # print('Precision: {}'.format(precision / samples))
-    # print('F1: {}'.format(f1 / samples))
-
-
-# def run_in_minibatches(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn'):
-#     model = get_nn_model(nn)
-#
-#     for epoch in xrange(nb_epochs):
-#         train_batch_generator = get_batch_generator(train_dir, batch_size=batch_size)
-#         test_batch_generator = get_batch_generator(test_dir, batch_size=batch_size)
-#         train_loss, train_acc = [], []
-#         for X, y in train_batch_generator:
-#             loss, acc = model.train_on_batch(X, y, accuracy=True)
-#             train_loss.append(loss)
-#             train_acc.append(acc)
-#         train_loss, train_acc = np.mean(train_loss), np.mean(train_acc)
-#
-#         test_loss, test_acc = [], []
-#         for X, y in test_batch_generator:
-#             loss, acc = model.test_on_batch(X, y, accuracy=True)
-#             test_loss.append(loss)
-#             test_acc.append(acc)
-#         test_loss, test_acc = np.mean(test_loss), np.mean(test_acc)
-#
-#         X_test, y_test = self.test_data
-#         y_pred = self.model.predict(X_test)
-#
-#         aps = average_precision_score(y_test, y_pred)
-#         mse = mean_squared_error(y_test, y_pred)
-#         ll = log_loss(y_test, y_pred)
-#         td = compute_threshold_distance(y_test, y_pred)
 
 
 def compare_results(X_test, y_test, model, i):

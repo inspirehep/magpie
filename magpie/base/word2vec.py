@@ -1,12 +1,15 @@
 import os
-from itertools import chain
 
 import numpy as np
 import time
 from gensim.models import Word2Vec
+from sklearn.preprocessing import StandardScaler
 
 from magpie.base.document import Document
+from magpie.config import HEP_TRAIN_PATH, WORD2VEC_MODELPATH, SCALER_PATH
 from magpie.feature_extraction import WORD2VEC_LENGTH
+from magpie.misc.utils import save_to_disk
+from magpie.utils import get_documents
 
 
 def get_word2vec_model(model_path, train_dir, verbose=True):
@@ -78,16 +81,39 @@ def compute_word2vec_for_phrase(phrase, model):
     return result
 
 
-# def create_sentence_iterator(doc_directory):
-#     """
-#     Return an iterator over tokenized sentences from different files.
-#     :param doc_directory: directory with the files
-#     :return: iterator over sentences (lists of strings)
-#     """
-#     from magpie import api
-#     doc_gen = api.get_documents(data_dir=doc_directory)
-#     sentence_gen = (d.read_sentences() for d in doc_gen)
-#     return chain.from_iterable(sentence_gen)
+def out_of_core_x_normalisation(data_dir=HEP_TRAIN_PATH, batch_size=1024,
+                                persist=False):
+    """ Get all the word2vec vectors in a 2D matrix and fit the scaler on it.
+     This scaler can be used afterwards for normalizing feature matrices. """
+    doc_generator = get_documents(data_dir=data_dir)
+    word2vec_model = Word2Vec.load(WORD2VEC_MODELPATH)
+    scaler = StandardScaler(copy=False)
+
+    no_more_samples = False
+    while not no_more_samples:
+        batch = []
+        for i in xrange(batch_size):
+            try:
+                batch.append(doc_generator.next())
+            except StopIteration:
+                no_more_samples = True
+                break
+
+        vectors = []
+        for doc in batch:
+            for word in doc.get_all_words():
+                if word in word2vec_model:
+                    vectors.append(word2vec_model[word])
+
+        matrix = np.array(vectors)
+        print "Matrix shape: {}".format(matrix.shape)
+
+        scaler.partial_fit(matrix)
+
+    if persist:
+        save_to_disk(SCALER_PATH, scaler)
+
+    return scaler
 
 
 def out_of_core_train(doc_directory):

@@ -8,8 +8,9 @@ from collections import Counter, defaultdict
 from magpie.base.document import Document
 from magpie.base.ontology import OntologyFactory, Ontology
 from magpie.candidates import generate_keyword_candidates
-from magpie.config import HEP_ONTOLOGY, HEP_TRAIN_PATH
+from magpie.config import HEP_ONTOLOGY, HEP_TRAIN_PATH, SCALER_PATH
 from magpie.misc.considered_keywords import get_considered_keywords
+from magpie.misc.utils import load_from_disk
 
 
 def get_ontology(path=HEP_ONTOLOGY, recreate=False):
@@ -24,6 +25,14 @@ def get_ontology(path=HEP_ONTOLOGY, recreate=False):
     ontology = OntologyFactory(path, recreate=recreate)
     print("Ontology loading time: {0:.2f}s".format(time.clock() - start_time))
     return ontology
+
+
+def get_scaler(path=SCALER_PATH):
+    """ Unpickle and return the scaler object
+    :param path: path to the pickled scaler object
+    :return scaler object
+    """
+    return load_from_disk(path)
 
 
 def get_documents(data_dir=HEP_TRAIN_PATH, as_generator=True, shuffle=False):
