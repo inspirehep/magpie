@@ -139,7 +139,7 @@ class CustomLogger(Callback):
 
     def create_log_dir(self):
         """ Create a directory where all the logs would be stored  """
-        dir_name = 'run_{}_{}'.format(self.nn_type, time.strftime('%d%m%H%M%S'))
+        dir_name = '{}_{}'.format(self.nn_type, time.strftime('%d%m%H%M%S'))
         log_dir = os.path.join(LOG_FOLDER, dir_name)
         os.mkdir(log_dir)
         return log_dir
