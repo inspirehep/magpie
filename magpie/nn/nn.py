@@ -38,18 +38,7 @@ def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn',
         nb_worker=nb_worker,
     )
 
-    history.history['map'] = logger.map_list
-    history.history['ndcg'] = logger.ndcg_list
-    history.history['mrr'] = logger.mrr_list
-    history.history['r_prec'] = logger.r_prec_list
-    history.history['precision@3'] = logger.p_at_3_list
-    history.history['precision@5'] = logger.p_at_5_list
-
-    # Write acc and loss to file
-    for metric in ['acc', 'loss']:
-        with open(os.path.join(logger.log_dir, metric), 'wb') as f:
-            for val in history.history[metric]:
-                f.write(str(val) + "\n")
+    finish_logging(logger, history)
 
     return history, model
 
@@ -75,6 +64,13 @@ def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn'):
         callbacks=[logger, model_checkpoint],
     )
 
+    finish_logging(logger, history)
+
+    return history, model
+
+
+def finish_logging(logger, history):
+    """ Save the rest of the logs after finishing optimisation. """
     history.history['map'] = logger.map_list
     history.history['ndcg'] = logger.ndcg_list
     history.history['mrr'] = logger.mrr_list
@@ -87,8 +83,6 @@ def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn'):
         with open(os.path.join(logger.log_dir, metric), 'wb') as f:
             for val in history.history[metric]:
                 f.write(str(val) + "\n")
-
-    return history, model
 
 
 def compare_results(X_test, y_test, model, i):
