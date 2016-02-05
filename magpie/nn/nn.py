@@ -171,8 +171,9 @@ class CustomLogger(Callback):
         # map = average_precision_score(y_test, y_pred, average='samples')
         # auc = roc_auc_score(y_test, y_pred, average='samples')
 
-        y_pred = [y_test[i][y_pred.argsort()[i]] for i in xrange(len(y_test))]
-        y_pred = np.fliplr(np.array(y_pred))
+        y_pred = np.fliplr(y_pred.argsort())
+        for i in xrange(len(y_test)):
+            y_pred[i] = y_test[i][y_pred[i]]
 
         map = mean_average_precision(y_pred)
         mrr = mean_reciprocal_rank(y_pred)
