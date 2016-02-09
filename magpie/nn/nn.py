@@ -9,17 +9,20 @@ from magpie.config import HEP_TEST_PATH, HEP_TRAIN_PATH, NB_EPOCHS, BATCH_SIZE
 from magpie.evaluation.rank_metrics import mean_reciprocal_rank, r_precision, \
     precision_at_k, ndcg_at_k, mean_average_precision
 from magpie.nn.config import LOG_FOLDER
-from magpie.nn.input_data import get_train_and_test_data, get_data_from,\
-    FilenameIterator, iterate_over_batches
+from magpie.nn.input_data import get_data_for_model
 from magpie.nn.models import get_nn_model
 
 
-def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn',
+def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn',
                   nb_worker=1, verbose=1):
-    filename_it = FilenameIterator(HEP_TRAIN_PATH, batch_size)
-    train_batch_generator = iterate_over_batches(filename_it, nn=nn)
-    X_test, y_test = get_data_from(HEP_TEST_PATH, nn=nn)
     model = get_nn_model(nn)
+    train_generator, (X_test, y_test) = get_data_for_model(
+        model,
+        as_generator=True,
+        batch_size=batch_size,
+        train_dir=HEP_TRAIN_PATH,
+        test_dir=HEP_TEST_PATH,
+    )
 
     # Create callbacks
     logger = CustomLogger(X_test, y_test, nn)
@@ -29,7 +32,7 @@ def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn',
     )
 
     history = model.fit_generator(
-        train_batch_generator,
+        train_generator,
         len({filename[:-4] for filename in os.listdir(HEP_TRAIN_PATH)}),
         nb_epochs,
         show_accuracy=True,
@@ -44,9 +47,14 @@ def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn',
     return history, model
 
 
-def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='cnn', verbose=1):
-    (X_train, y_train), (X_test, y_test) = get_train_and_test_data(nn=nn)
+def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn', verbose=1):
     model = get_nn_model(nn)
+    (X_train, y_train), (X_test, y_test) = get_data_for_model(
+        model,
+        as_generator=False,
+        train_dir=HEP_TRAIN_PATH,
+        test_dir=HEP_TEST_PATH,
+    )
 
     # Create callbacks
     logger = CustomLogger(X_test, y_test, nn)
@@ -85,17 +93,6 @@ def finish_logging(logger, history):
         with open(os.path.join(logger.log_dir, metric), 'wb') as f:
             for val in history.history[metric]:
                 f.write(str(val) + "\n")
-
-
-def compare_results(X_test, y_test, model, i):
-    """ Helper function for inspecting the results """
-    if i == 0:
-        y_pred = model.predict(X_test[:1])
-    else:
-        y_pred = model.predict(X_test[i - 1:i])
-    sorted_indices = np.argsort(-y_pred[0])
-    correct_indices = np.where(y_test[i])[0]
-    return sorted_indices, correct_indices
 
 
 def compute_threshold_distance(y_tests, y_preds):

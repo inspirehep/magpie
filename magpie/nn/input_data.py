@@ -10,127 +10,95 @@ from magpie.config import HEP_TRAIN_PATH, HEP_TEST_PATH, BATCH_SIZE, \
 from magpie.feature_extraction import WORD2VEC_LENGTH
 from magpie.misc.considered_keywords import get_considered_keywords
 from magpie.nn.config import SAMPLE_LENGTH
-from magpie.nn.models import NGRAM_LENGTHS
-from magpie.utils import get_documents, get_all_answers, get_answers_for_doc, \
-    get_scaler
+from magpie.utils import get_answers_for_doc, get_scaler
 
 
-def get_train_and_test_data(train_dir=HEP_TRAIN_PATH, test_dir=HEP_TEST_PATH, nn='cnn'):
+def get_data_for_model(
+        nn_model,
+        as_generator=False,
+        batch_size=BATCH_SIZE,
+        train_dir=HEP_TRAIN_PATH,
+        test_dir=HEP_TEST_PATH,
+):
     """
-    Fetch and preprocess the training and testing data from given directories
-    :param train_dir: directory with the training files
-    :param test_dir: directory with the validation files
-    :param nn: string, NN type
+    Get data in the form of matrices or generators for both train and test sets.
+    :param nn_model: Keras model of the NN
+    :param as_generator: flag whether to return a generator or in-memory matrix
+    :param batch_size: integer, size of the batch
+    :param train_dir: directory with train files
+    :param test_dir: directory with test files
 
-    :return: nested tuple with numpy matrices
+    :return: tuple with 2 elements for train and test data. Each element can be
+    either a pair of matrices (X, y) or their generator
     """
-    x_train, y_train = get_data_from(train_dir, nn=nn)
-    x_test, y_test = get_data_from(test_dir, nn=nn)
+    kwargs = dict(
+        keyword_indices={kw: i for i, kw in enumerate(get_considered_keywords())},
+        word2vec_model=Word2Vec.load(WORD2VEC_MODELPATH),
+        scaler=get_scaler(),
+        nn_model=nn_model,
+    )
 
-    return (x_train, y_train), (x_test, y_test)
-
-
-def get_data_from(data_dir, nn='cnn'):
-    """
-    Build X and Y matrices from a given directory. Make sure their order matches
-    :param data_dir: directory with data files
-
-    :return: tuple with two numpy (multidimensional) arrays
-    """
-    x = sorted(build_x(data_dir), key=lambda a: a[0])
-    y = sorted(build_y(data_dir), key=lambda a: a[0])
-    x_agg, y_agg = [], []
-    for (fx, mx), (fy, my) in zip(x, y):
-        if fx == fy:
-            x_agg.append(mx)
-            y_agg.append(my)
-
-    if nn == 'cnn':
-        return [np.array(x_agg)] * len(NGRAM_LENGTHS), np.array(y_agg)
+    if as_generator:
+        filename_it = FilenameIterator(train_dir, batch_size)
+        train_data = iterate_over_batches(filename_it, **kwargs)
     else:
-        return np.array(x_agg), np.array(y_agg)
+        train_files = {filename[:-4] for filename in os.listdir(train_dir)}
+        train_data = build_x_and_y(train_files, train_dir, **kwargs)
+
+    test_files = {filename[:-4] for filename in os.listdir(test_dir)}
+    x_test, y_test = build_x_and_y(test_files, test_dir, **kwargs)
+
+    return train_data, (x_test, y_test)
 
 
-def batch_generator(dirname, batch_size=BATCH_SIZE):
+def build_x_and_y(filenames, file_directory, **kwargs):
     """
-    NOT THREADSAFE.
-    Generator producing batches of a fixed size from a directory
-    and looping forever. Can be used if data doesn't fit in memory.
-    :param dirname: directory with input files
-    :param batch_size: size of the batch
+    Given file names and their directory, build (X, y) data matrices
+    :param filenames: iterable of strings showing file ids (no extension)
+    :param file_directory: path to a directory where those files lie
+    :param kwargs: additional necessary data for matrix building e.g. scaler
 
-    :return: generator yielding numpy arrays
+    :return: a tuple (X, y)
     """
-    word2vec_model = Word2Vec.load(WORD2VEC_MODELPATH)
-    scaler = get_scaler()
-    keywords = get_considered_keywords()
-    keyword_indices = {kw: i for i, kw in enumerate(keywords)}
-    docs = get_documents()
+    keyword_indices = kwargs['keyword_indices']
+    word2vec_model = kwargs['word2vec_model']
+    scaler = kwargs['scaler']
+    nn_model = kwargs['nn_model']
 
+    x_matrix = np.zeros((len(filenames), SAMPLE_LENGTH, WORD2VEC_LENGTH))
+    y_matrix = np.zeros((len(filenames), CONSIDERED_KEYWORDS), dtype=np.bool_)
+
+    for doc_id, fname in enumerate(filenames):
+        doc = Document(doc_id, os.path.join(file_directory, fname + '.txt'))
+        words = doc.get_all_words()[:SAMPLE_LENGTH]
+
+        for i, w in enumerate(words):
+            if w in word2vec_model:
+                word_vector = word2vec_model[w].reshape(1, -1)
+                x_matrix[doc_id][i] = scaler.transform(word_vector, copy=True)[0]
+
+        answers = get_answers_for_doc(fname + '.txt', file_directory)
+        for kw in answers:
+            if kw in keyword_indices:
+                index = keyword_indices[kw]
+                y_matrix[doc_id][index] = True
+
+    if type(nn_model.input) == list:
+        return [x_matrix] * len(nn_model.input), y_matrix
+    else:
+        return [x_matrix], y_matrix
+
+
+def iterate_over_batches(filename_it, **kwargs):
+    """
+    Iterate infinitely over a given filename iterator
+    :param filename_it: FilenameIterator object
+    :param kwargs: additional necessary data for matrix building e.g. scaler
+    :return: yields tuples (X, y) when called
+    """
     while True:
-        x_matrix = np.zeros((batch_size, SAMPLE_LENGTH, WORD2VEC_LENGTH))
-        y_matrix = np.zeros((batch_size, CONSIDERED_KEYWORDS), dtype=np.bool_)
-        for sample in xrange(batch_size):
-            try:
-                doc = docs.next()
-            except StopIteration:
-                docs = get_documents()
-                doc = docs.next()
-
-            words = doc.get_all_words()[:SAMPLE_LENGTH]
-
-            for i, w in enumerate(words):
-                if w in word2vec_model:
-                    word_vector = word2vec_model[w].reshape(1, -1)
-                    x_matrix[sample][i] = scaler.transform(word_vector, copy=True)[0]
-
-            answers = get_answers_for_doc(doc.filename, dirname)
-            for kw in answers:
-                if kw in keyword_indices:
-                    index = keyword_indices[kw]
-                    y_matrix[sample][index] = True
-
-        yield [x_matrix], y_matrix
-
-
-def iterate_over_batches(filename_it, nn='cnn'):
-    """
-    In theory threadsafe. Yield data batches using a threadsafe BatchIterator
-    :param filename_it: BatchIterator object
-    :param nn: string, NN type
-
-    :return: generator yielding numpy arrays
-    """
-    word2vec_model = Word2Vec.load(WORD2VEC_MODELPATH)
-    scaler = get_scaler()
-    dirname = filename_it.dirname
-
-    keywords = get_considered_keywords()
-    keyword_indices = {kw: i for i, kw in enumerate(keywords)}
-
-    while True:
-        filenames = filename_it.next()
-        x_matrix = np.zeros((len(filenames), SAMPLE_LENGTH, WORD2VEC_LENGTH))
-        y_matrix = np.zeros((len(filenames), CONSIDERED_KEYWORDS), dtype=np.bool_)
-        for doc_id, fname in enumerate(filenames):
-            doc = Document(doc_id, os.path.join(dirname, fname + '.txt'))
-            words = doc.get_all_words()[:SAMPLE_LENGTH]
-
-            for i, w in enumerate(words):
-                if w in word2vec_model:
-                    word_vector = word2vec_model[w].reshape(1, -1)
-                    x_matrix[doc_id][i] = scaler.transform(word_vector, copy=True)[0]
-
-            answers = get_answers_for_doc(fname + '.txt', dirname)
-            for kw in answers:
-                if kw in keyword_indices:
-                    index = keyword_indices[kw]
-                    y_matrix[doc_id][index] = True
-
-        if nn == 'cnn':
-            yield [x_matrix] * len(NGRAM_LENGTHS), y_matrix
-        else:
-            yield [x_matrix], y_matrix
+        files = filename_it.next()
+        yield build_x_and_y(files, filename_it.dirname, **kwargs)
 
 
 class FilenameIterator(object):
@@ -156,52 +124,3 @@ class FilenameIterator(object):
                 self.i += self.batch_size
 
             return batch
-
-
-def build_x(data_dir):
-    """
-    Build the X matrix from files from a given directory.
-    Use Word2Vec for embedding
-    :param data_dir: directory with files
-
-    :return: list with 2D matrices for each sample. Each of them represents one
-    abstract and has a shape of (SAMPLE_LENGTH, WORD2VEC_LENGTH)
-    """
-    word2vec_model = Word2Vec.load(WORD2VEC_MODELPATH)
-    scaler = get_scaler()
-    doc_tuples = []
-    for doc in get_documents(data_dir=data_dir):
-
-        words = doc.get_all_words()[:SAMPLE_LENGTH]
-        matrix = np.zeros((SAMPLE_LENGTH, WORD2VEC_LENGTH))
-
-        for i, w in enumerate(words):
-            if w in word2vec_model:
-                word_vector = word2vec_model[w].reshape(1, -1)
-                matrix[i] = scaler.transform(word_vector, copy=True)[0]
-
-        doc_tuples.append((doc.filename[:-4], matrix))
-
-    return doc_tuples
-
-
-def build_y(data_dir):
-    """
-    Build the y matrix. It's a list of output vectors of length CONSIDERED_KEYWORDS
-    :param data_dir: directory with files
-
-    :return: list of bool numpy arrays with ones on specific indices
-    """
-    ans_dict = get_all_answers(data_dir)
-    keywords = get_considered_keywords()
-    keyword_indices = {kw: i for i, kw in enumerate(keywords)}
-
-    for file_id, kw_set in ans_dict.items():
-        ans_vector = np.zeros(CONSIDERED_KEYWORDS, dtype=np.bool_)
-        for kw in kw_set:
-            if kw in keyword_indices:
-                index = keyword_indices[kw]
-                ans_vector[index] = True
-        ans_dict[file_id] = ans_vector
-
-    return [(k, v) for k, v in ans_dict.iteritems()]

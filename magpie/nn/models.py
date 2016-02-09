@@ -7,29 +7,25 @@ from magpie.config import CONSIDERED_KEYWORDS
 from magpie.feature_extraction import WORD2VEC_LENGTH
 from magpie.nn.config import SAMPLE_LENGTH
 
-# Convolutional parameters
-NB_FILTER = 100
-NGRAM_LENGTHS = [1, 2, 3, 4]
-
-# Recurrent parameters
-HIDDEN_LAYER_SIZE = 200
-
 
 def get_nn_model(nn_model):
-    if nn_model == 'cnn':
-        return build_cnn_model()
-    elif nn_model == 'rnn':
-        return build_rnn_model()
+    if nn_model == 'berger_cnn':
+        return berger_cnn()
+    elif nn_model == 'berger_rnn':
+        return berger_rnn()
     else:
         raise ValueError("Unknown NN type: {}".format(nn_model))
 
 
-def build_cnn_model():
+def berger_cnn():
     """
     Create and return a keras model of a CNN
 
     :return: keras model
     """
+    NB_FILTER = 100
+    NGRAM_LENGTHS = [1, 2, 3, 4]
+
     conv_layers = []
     for ngram_length in NGRAM_LENGTHS:
         ngram_layer = Sequential()
@@ -59,19 +55,21 @@ def build_cnn_model():
 
     model.compile(
         loss='binary_crossentropy',
-        optimizer='adadelta',
+        optimizer='adam',
         class_mode='binary',
     )
 
     return model
 
 
-def build_rnn_model():
+def berger_rnn():
     """
     Create and return a keras model of a RNN
 
     :return: keras model
     """
+    HIDDEN_LAYER_SIZE = 200
+
     model = Sequential()
 
     model.add(GRU(
