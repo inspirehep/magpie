@@ -7,7 +7,7 @@ from sklearn.preprocessing import StandardScaler
 
 from magpie.base.document import Document
 from magpie.config import HEP_TRAIN_PATH, WORD2VEC_MODELPATH, SCALER_PATH
-from magpie.feature_extraction import WORD2VEC_LENGTH
+from magpie.feature_extraction import EMBEDDING_SIZE
 from magpie.misc.utils import save_to_disk
 from magpie.utils import get_documents
 
@@ -44,7 +44,7 @@ def train_word2vec(docs):
     all_sentences = reduce(lambda d1, d2: d1 + d2, doc_sentences)
 
     # Set values for various parameters
-    num_features = WORD2VEC_LENGTH    # Word vector dimensionality
+    num_features = EMBEDDING_SIZE    # Word vector dimensionality
     min_word_count = 5   # Minimum word count
     num_workers = 4       # Number of threads to run in parallel
     context = 5           # Context window size
@@ -135,7 +135,7 @@ def out_of_core_train(doc_directory):
                     yield sentence
 
     # Set values for various parameters
-    num_features = WORD2VEC_LENGTH    # Word vector dimensionality
+    num_features = EMBEDDING_SIZE    # Word vector dimensionality
     min_word_count = 5   # Minimum word count
     num_workers = 4       # Number of threads to run in parallel
     context = 5           # Context window size

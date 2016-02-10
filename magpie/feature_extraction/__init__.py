@@ -29,7 +29,7 @@ FEATURE_VECTOR = {
     'unique_words_in_doc': 'uint32',
 }
 
-WORD2VEC_LENGTH = 100
+EMBEDDING_SIZE = 100
 
 
 def preallocate_feature_matrix(n_samples):
@@ -41,6 +41,6 @@ def preallocate_feature_matrix(n_samples):
     """
     X = {k: np.zeros(n_samples, dtype=v)
          for k, v in FEATURE_VECTOR.iteritems()}
-    X['word2vec'] = np.zeros((n_samples, WORD2VEC_LENGTH), dtype='float32')
+    X['word2vec'] = np.zeros((n_samples, EMBEDDING_SIZE), dtype='float32')
 
     return X
