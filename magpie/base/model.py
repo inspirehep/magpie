@@ -60,15 +60,25 @@ class LearningModel(object):
         """
         self.classifier = self.classifier.fit(input_matrix, output_vector)
 
-    def scale_and_predict(self, input_vector):
+    def scale_and_predict(self, input_matrix):
         """
-        Predict output for a given sample
-        :param input_vector: row of a feature matrix
+        Predict output for given samples
+        :param input_matrix: a feature matrix
 
-        :return: output vector
+        :return: matrix with predictions for each sample
         """
-        scaled_vec = self.scaler.transform(input_vector)
-        return self.classifier.predict(scaled_vec)
+        scaled_matrix = self.scaler.transform(input_matrix)
+        return self.classifier.predict(scaled_matrix)
+
+    def scale_and_predict_confidence(self, input_matrix):
+        """
+        Predict confidence values for given samples
+        :param input_matrix: a feature matrix
+
+        :return: matrix with confidence values for each sample
+        """
+        scaled_matrix = self.scaler.transform(input_matrix)
+        return self.classifier.decision_function(scaled_matrix)
 
     def get_global_index(self):
         """ Get the GlobalFrequencyIndex field. """

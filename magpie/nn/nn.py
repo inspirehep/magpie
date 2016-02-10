@@ -161,9 +161,6 @@ class CustomLogger(Callback):
         X_test, y_test = self.test_data
         y_pred = self.model.predict(X_test)
 
-        # map = average_precision_score(y_test, y_pred, average='samples')
-        # auc = roc_auc_score(y_test, y_pred, average='samples')
-
         y_pred = np.fliplr(y_pred.argsort())
         for i in xrange(len(y_test)):
             y_pred[i] = y_test[i][y_pred[i]]

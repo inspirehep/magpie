@@ -1,62 +1,65 @@
-from __future__ import division
+from __future__ import division, unicode_literals
 
 import unittest
 
-from magpie.candidates.keyword_token import KeywordToken
 from magpie.evaluation.standard_evaluation import evaluate_results
 
 
 class TestEvaluateResults(unittest.TestCase):
     def test_evaluate_results1(self):
-        kw_mask = [1, 1, 1, 1]
+        kw_mask = [0.5, 0.3, 0.8, 0.6]
         kw_vector = [
-            (1, KeywordToken(None, parsed_label=u"lionel messi")),
-            (2, KeywordToken(None, parsed_label=u"robert lewandowski")),
-            (2, KeywordToken(None, parsed_label=u"karl-heinz rummenigge")),
-            (3, KeywordToken(None, parsed_label=u"wayne rooney")),
+            (1, "supersymmetry"),
+            (2, "numerical calculations"),
+            (2, "quantum chromodynamics"),
+            (3, "bibliography"),
         ]
         gt_answers = {
-            1: {u"Lionel Messi", u"Arjen Robben"},
-            2: {u"Robert Lewandowski"},
-            3: {u"Pele", u"Diego Maradona"},
-            4: {u"Not predicted"},
+            1: {"supersymmetry", "string model"},
+            2: {"numerical calculations"},
+            3: {"duality", "membrane model"},
+            4: {"lattice field theory"},
         }
 
-        precision, recall = evaluate_results(
+        metrics = evaluate_results(
             kw_mask,
             kw_vector,
             gt_answers
         )
 
-        self.assertEqual(precision, 2.5 / 4)
-        self.assertEqual(recall, 1.5 / 4)
-        # self.assertAlmostEqual(accuracy, 2 / 4)
+        self.assertAlmostEqual(metrics['p_at_3'], 0.25)
+        self.assertAlmostEqual(metrics['p_at_5'], 0.15)
+        self.assertAlmostEqual(metrics['mrr'], 215 / 456)
+        self.assertAlmostEqual(metrics['map'], 1561 / 4560)
+        self.assertAlmostEqual(metrics['r_prec'], 81 / 380)
 
     def test_evaluate_results2(self):
-        kw_mask = [1, 1, 0, 1, 0, 1, 1]
+        kw_mask = [0.8, 0.7, 0.3, 0.5, 0.1, 0.6, 0.9]
         kw_vector = [
-            (1, KeywordToken(None, parsed_label=u"lionel messi")),
-            (1, KeywordToken(None, parsed_label=u"cristiano ronaldo")),
-            (2, KeywordToken(None, parsed_label=u"robert lewandowski")),
-            (2, KeywordToken(None, parsed_label=u"karl-heinz rummenigge")),
-            (3, KeywordToken(None, parsed_label=u"wayne rooney")),
-            (4, KeywordToken(None, parsed_label=u"neymar")),
-            (4, KeywordToken(None, parsed_label=u"robin van persie")),
+            (1, "supersymmetry"),
+            (1, "experimental results"),
+            (2, "numerical calculations"),
+            (2, "quantum chromodynamics"),
+            (3, "bibliography"),
+            (4, "boundary condition"),
+            (4, "critical phenomena"),
         ]
         gt_answers = {
-            1: {u"Lionel Messi", u"Arjen Robben", u"Cristiano Ronaldo", u"Rivaldo"},
-            2: {u"Robert Lewandowski", u"Karl-Heinz Rummenigge"},
-            3: {u"Pele", u"Diego Maradona"},
-            4: {u"Robin Van Persie"},
-            5: {u"Not predicted Keyword1", u"Not predicted keyword2"},
+            1: {"supersymmetry", "string model", "experimental results", "cosmological model"},
+            2: {"numerical calculations", "quantum chromodynamics"},
+            3: {"duality", "membrane model"},
+            4: {"critical phenomena"},
+            5: {"lattice field theory", "CERN LHC Coll"},
         }
 
-        precision, recall = evaluate_results(
+        metrics = evaluate_results(
             kw_mask,
             kw_vector,
             gt_answers
         )
 
-        self.assertEqual(precision, 4.5 / 5)
-        self.assertEqual(recall, 2 / 5)
-        # self.assertAlmostEqual(accuracy, 5 / 7)
+        self.assertAlmostEqual(metrics['p_at_3'], 7 / 15)
+        self.assertAlmostEqual(metrics['p_at_5'], 8 / 25)
+        self.assertAlmostEqual(metrics['mrr'], 43 / 60)
+        self.assertAlmostEqual(metrics['map'], 7397 / 11400)
+        self.assertAlmostEqual(metrics['r_prec'], 733 / 1425)

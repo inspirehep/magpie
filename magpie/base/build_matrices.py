@@ -43,7 +43,8 @@ def build_test_matrices(docs, model, file_dir, ontology):
             filtered_by=considered_keywords,
         )
 
-        kw_vector.extend([(doc.doc_id, kw) for kw in kw_candidates])
+        kw_vector.extend([(doc.doc_id, kw.get_canonical_form())
+                          for kw in kw_candidates])
 
     # Merge feature matrices from different documents
     X = pd.concat(feature_matrices)

@@ -13,17 +13,20 @@ from magpie.misc.considered_keywords import get_considered_keywords
 from magpie.misc.utils import load_from_disk
 
 
-def get_ontology(path=HEP_ONTOLOGY, recreate=False):
+def get_ontology(path=HEP_ONTOLOGY, recreate=False, verbose=True):
     """
     Load or create an ontology from a given path
     :param path: path to the ontology file
     :param recreate: flag whether to enforce recreation of the ontology
+    :param verbose: a flag whether to be verbose
 
     :return: Ontology object
     """
-    start_time = time.clock()
+    tick = time.clock()
     ontology = OntologyFactory(path, recreate=recreate)
-    print("Ontology loading time: {0:.2f}s".format(time.clock() - start_time))
+    if verbose:
+        print("Ontology loading time: {0:.2f}s".format(time.clock() - tick))
+
     return ontology
 
 

@@ -132,24 +132,21 @@ def test(
         print("Matrices built in: {0:.2f}s".format(time.clock() - tick))
 
     # Predict
-    y_pred = model.scale_and_predict(X)
+    y_pred = model.scale_and_predict_confidence(X)
 
     # Evaluate the results
-    precision, recall = evaluate_results(
+    return evaluate_results(
         y_pred,
         kw_vector,
         answers,
     )
 
-    f1 = (2 * precision * recall) / (precision + recall)
-    return precision, recall, f1
-
 
 def batch_test(
     testset_path=HEP_TEST_PATH,
     batch_size=BATCH_SIZE,
-    ontology_path=HEP_ONTOLOGY,
-    model_path=MODEL_PATH,
+    ontology=HEP_ONTOLOGY,
+    model=MODEL_PATH,
     recreate_ontology=False,
     verbose=True,
 ):
@@ -157,23 +154,24 @@ def batch_test(
     Test the trained model on a set under a given path.
     :param testset_path: path to the directory with the test set
     :param batch_size: size of the testing batch
-    :param ontology_path: path to the ontology
-    :param model_path: path where the model is pickled
+    :param ontology: path to the ontology
+    :param model: path where the model is pickled
     :param recreate_ontology: boolean flag whether to recreate the ontology
     :param verbose: whether to print computation times
 
     :return tuple of three floats (precision, recall, f1_score)
     """
-    ontology = get_ontology(path=ontology_path, recreate=recreate_ontology)
+    if type(model) in [str, unicode]:
+        model = load_from_disk(model)
+
+    if type(ontology) in [str, unicode]:
+        ontology = get_ontology(path=ontology, recreate=recreate_ontology)
+
     doc_generator = get_documents(testset_path)
     start_time = time.clock()
 
-    # Load the model
-    model = load_from_disk(model_path)
-
-    precision_list = []
-    recall_list = []
-    f1_list = []
+    all_metrics = ['map', 'mrr', 'ndcg', 'r_prec', 'p_at_3', 'p_at_5']
+    metrics_agg = {m: [] for m in all_metrics}
 
     if verbose:
         print("Batches:", end=' ')
@@ -199,20 +197,16 @@ def batch_test(
         )
 
         # Predict
-        y_pred = model.scale_and_predict(X)
+        y_pred = model.scale_and_predict_confidence(X)
 
         # Evaluate the results
-        precision, recall = evaluate_results(
+        metrics = evaluate_results(
             y_pred,
             kw_vector,
             answers,
         )
-
-        f1 = (2 * precision * recall) / (precision + recall)
-
-        precision_list.append(precision)
-        recall_list.append(recall)
-        f1_list.append(f1)
+        for k, v in metrics.iteritems():
+            metrics_agg[k].append(v)
 
         if verbose:
             sys.stdout.write(b'.')
@@ -222,7 +216,7 @@ def batch_test(
         print()
         print("Testing finished in: {0:.2f}s".format(time.clock() - start_time))
 
-    return np.mean(precision_list), np.mean(recall_list), np.mean(f1_list)
+    return {k: np.mean(v) for k, v in metrics_agg.iteritems()}
 
 
 def train(
@@ -298,11 +292,12 @@ def batch_train(
 
     :return None if everything goes fine, error otherwise
     """
-    ontology = get_ontology(path=ontology_path, recreate=recreate_ontology)
+    ontology = get_ontology(path=ontology_path, recreate=recreate_ontology, verbose=False)
 
-    global_index = build_global_frequency_index(trainset_dir, verbose=verbose)
-    word2vec_model = get_word2vec_model(word2vec_path, trainset_dir, verbose=verbose)
+    global_index = build_global_frequency_index(trainset_dir, verbose=False)
+    word2vec_model = get_word2vec_model(word2vec_path, trainset_dir, verbose=False)
     model = LearningModel(global_index, word2vec_model)
+    previous_best = -1
 
     for epoch in xrange(nb_epochs):
         doc_generator = get_documents(
@@ -313,11 +308,11 @@ def batch_train(
         samples_seen = 0
         epoch_start = time.clock()
 
+        if verbose:
+            print("Epoch {}".format(epoch + 1), end=' ')
+
         no_more_samples = False
         batch_number = 0
-        if verbose:
-            sys.stdout.write(b'Batches: ')
-            sys.stdout.flush()
         while not no_more_samples:
             batch_number += 1
 
@@ -344,13 +339,16 @@ def batch_train(
                 sys.stdout.flush()
 
         if verbose:
-            print()
-            print("Epoch {0} finished in: {1:.2f}s"
-                  .format(epoch + 1, time.clock() - epoch_start))
-            print("Samples seen: {0}".format(samples_seen))
+            print(" {0:.2f}s".format(time.clock() - epoch_start))
 
-        # Pickle the model
-        save_to_disk(model_path, model, overwrite=True)
+        metrics = batch_test(model=model, ontology=ontology, verbose=False)
+
+        for k, v in metrics.iteritems():
+            print("{0}: {1}".format(k, v))
+
+        if metrics['f1'] > previous_best:
+            previous_best = metrics['f1']
+            save_to_disk(model_path, model, overwrite=True)
 
 
 if __name__ == '__main__':

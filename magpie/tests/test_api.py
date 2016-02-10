@@ -19,11 +19,12 @@ class TestAPI(unittest.TestCase):
 
     def test_test(self):
         train_model_if_necessary(MODEL_PATH)
-        precision, recall, f1_score = api.test(verbose=False)
-        self.assertGreater(precision, 0)
-        self.assertGreater(recall, 0)
-        self.assertGreater(f1_score, 0)
-        # self.assertGreater(accuracy, 0)
+        metrics = api.test(verbose=False)
+        self.assertGreater(metrics['map'], 0)
+        self.assertGreater(metrics['mrr'], 0)
+        self.assertGreater(metrics['ndcg'], 0)
+        self.assertGreater(metrics['p_at_3'], 0)
+        self.assertGreater(metrics['p_at_5'], 0)
 
     def test_extract(self):
         train_model_if_necessary(MODEL_PATH)

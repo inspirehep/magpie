@@ -1,70 +1,62 @@
 from __future__ import division
-from collections import defaultdict
 
-from magpie.base.ontology import Ontology
+import numpy as np
+
+from magpie.evaluation.rank_metrics import mean_average_precision, \
+    mean_reciprocal_rank, ndcg_at_k, r_precision, precision_at_k
+from magpie.misc.considered_keywords import get_considered_keywords
 
 
-def evaluate_results(kw_mask, kw_vector, gt_answers):
+def evaluate_results(kw_conf, kw_vector, gt_answers):
     """
-    Compute basic model evaluation metrics
-    :param kw_mask: a vector of 0/1 that was predicted by a classifier
-    :param kw_vector: a vector of (doc_id, KeywordToken) tuples
-    that correspond to kw_mask
-    :param gt_answers: dictionary containing ground truth answers for each doc
+    Compute basic evaluation ranking metrics and return them
+    :param kw_conf: vector with confidence levels, return by the LearningModel
+    :param kw_vector: vector with tuples (doc_id:int, kw:unicode)
+    :param gt_answers: dictionary of the form dict(doc_id:int=kws:set(unicode))
 
-    :return: (precision, recall, accuracy) tuple, each element in (0,1)
+    :return: dictionary with basic metrics
     """
+    y_true, y_pred = build_result_matrices(kw_conf, kw_vector, gt_answers)
 
-    # Create the dictionary with model predictions
-    prediction_dict = defaultdict(set)
-    prediction_vector = [kw_vector[i] for i in xrange(len(kw_vector))
-                         if kw_mask[i] == 1]
-    for doc_id, kw in prediction_vector:
-        prediction_dict[doc_id].add(kw.get_parsed_form())
+    y_pred = np.fliplr(y_pred.argsort())
+    for i in xrange(len(y_true)):
+        y_pred[i] = y_true[i][y_pred[i]]
 
-    # Create the dictionary with ground truth answers
-    answers_dict = dict()
-    for doc_id, keywords in gt_answers.iteritems():
-        answers_dict[doc_id] = {Ontology.parse_label(kw) for kw in keywords}
+    return {
+        'map': mean_average_precision(y_pred),
+        'mrr': mean_reciprocal_rank(y_pred),
+        'ndcg': np.mean([ndcg_at_k(row, len(row)) for row in y_pred]),
+        'r_prec': np.mean([r_precision(row) for row in y_pred]),
+        'p_at_3': np.mean([precision_at_k(row, 3) for row in y_pred]),
+        'p_at_5': np.mean([precision_at_k(row, 5) for row in y_pred]),
+    }
 
-    # Recall and precision computation
-    avg_recall = avg_precision = 0
 
-    for doc_id in gt_answers.keys():
-        answers = answers_dict[doc_id]
-        predictions = prediction_dict[doc_id]
+def build_result_matrices(kw_conf, kw_vector, gt_answers):
+    """
+    Build result matrices from dict with answers and candidate vector.
+    :param kw_conf: vector with confidence levels, return by the LearningModel
+    :param kw_vector: vector with tuples (doc_id:int, kw:unicode)
+    :param gt_answers: dictionary of the form dict(doc_id:int=kws:set(unicode))
 
-        if not predictions or not answers:
-            if not predictions:
-                avg_precision += 1  # we assume 100% precision for no predictions
+    :return: y_true, y_pred numpy arrays
+    """
+    keywords = get_considered_keywords()
+    keyword_indices = {kw: i for i, kw in enumerate(keywords)}
+    min_docid = min(gt_answers.keys())
 
-            if not answers:
-                avg_recall += 1  # we assume 100% recall if there's no answers
+    y_true = np.zeros((len(gt_answers), len(keywords)), dtype=np.bool_)
+    y_pred = np.zeros((len(gt_answers), len(keywords)))
 
-            continue
+    for doc_id, answers in gt_answers.iteritems():
+        for kw in answers:
+            if kw in keyword_indices:
+                index = keyword_indices[kw]
+                y_true[doc_id - min_docid][index] = True
 
-        true_positives = predictions & answers
+    for conf, (doc_id, kw) in zip(kw_conf, kw_vector):
+        if kw in keyword_indices:
+            index = keyword_indices[kw]
+            y_pred[doc_id - min_docid][index] = conf
 
-        avg_recall += len(true_positives) / len(answers)
-        avg_precision += len(true_positives) / len(predictions)
-
-    avg_recall /= len(gt_answers)
-    avg_precision /= len(gt_answers)
-
-    # Accuracy computation
-    # TODO incorrect computation, skips ground truth kw
-    # TODO that have not been even recognized as candidates
-    # avg_accuracy = 0
-    # for i, kw_vector_elem in enumerate(kw_vector):
-    #     doc_id, kw = kw_vector_elem
-    #     parsed_lab = kw.get_parsed_form()
-    #
-    #     true_pos = kw_mask[i] == 1 and parsed_lab in answers_dict[doc_id]
-    #     true_neg = kw_mask[i] == 0 and parsed_lab not in answers_dict[doc_id]
-    #
-    #     if true_pos or true_neg:
-    #         avg_accuracy += 1
-    #
-    # avg_accuracy /= len(kw_vector)
-
-    return avg_precision, avg_recall  # , avg_accuracy
+    return y_true, y_pred
