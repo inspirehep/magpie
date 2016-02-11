@@ -1,7 +1,8 @@
+from keras.layers.embeddings import Embedding
 from keras.layers.convolutional import MaxPooling1D, Convolution1D
 from keras.layers.core import Flatten, Dropout, Dense, Merge
 from keras.layers.recurrent import GRU
-from keras.models import Sequential
+from keras.models import Sequential, Graph
 
 from magpie.config import CONSIDERED_KEYWORDS
 from magpie.feature_extraction import EMBEDDING_SIZE
@@ -132,3 +133,51 @@ def berger_rnn():
     )
 
     return model
+
+
+def berger_rnn_embedding():
+    pass
+
+
+def berger_cnn_embedding():
+    """ Create and return a keras model of a CNN with the embedding layer """
+    NB_FILTER = 100
+    NGRAM_LENGTHS = [1, 2, 3, 4]
+    VOCAB_SIZE = 10000
+
+    graph = Graph()
+    graph.add_input(name='input', input_shape=(SAMPLE_LENGTH, ), dtype='int')
+
+    graph.add_node(Embedding(
+        VOCAB_SIZE,  # integers in range 0...9999
+        EMBEDDING_SIZE,
+        input_length=SAMPLE_LENGTH,
+    ), name='embedding', input='input')
+
+    for ngram_length in NGRAM_LENGTHS:
+        conv_name = 'convolution' + str(ngram_length)
+        pool_name = 'pooling' + str(ngram_length)
+        graph.add_node(Convolution1D(
+            NB_FILTER,
+            ngram_length,
+            input_dim=EMBEDDING_SIZE,
+            input_length=SAMPLE_LENGTH,
+            init='lecun_uniform',
+            activation='tanh',
+        ), input='embedding', name=conv_name)
+        pool_length = SAMPLE_LENGTH - ngram_length + 1
+        graph.add_node(MaxPooling1D(pool_length=pool_length),
+                       input=conv_name, name=pool_name)
+
+    graph.add_node(Dropout(0.5), name='dropout', merge_mode='concat',
+                   inputs=['pooling' + str(n) for n in NGRAM_LENGTHS])
+    graph.add_node(Flatten(), name='flatten', input='dropout')
+
+    graph.add_node(Dense(CONSIDERED_KEYWORDS, activation='sigmoid'),
+                   name='dense', input='flatten')
+
+    graph.add_output(name='output', input='dense')
+
+    graph.compile(optimizer='adam', loss={'output': 'binary_crossentropy'})
+
+    return graph
