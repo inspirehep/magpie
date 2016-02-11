@@ -27,11 +27,11 @@ class TestEvaluateResults(unittest.TestCase):
             gt_answers
         )
 
-        self.assertAlmostEqual(metrics['p_at_3'], 0.25)
-        self.assertAlmostEqual(metrics['p_at_5'], 0.15)
-        self.assertAlmostEqual(metrics['mrr'], 215 / 456)
-        self.assertAlmostEqual(metrics['map'], 1561 / 4560)
-        self.assertAlmostEqual(metrics['r_prec'], 81 / 380)
+        self.assertAlmostEqual(metrics['p_at_3'], 1 / 6)
+        self.assertAlmostEqual(metrics['p_at_5'], 0.1)
+        self.assertAlmostEqual(metrics['mrr'], 557 / 1440)
+        self.assertAlmostEqual(metrics['map'], 28877 / 106560)
+        self.assertAlmostEqual(metrics['r_prec'], 689 / 4440)
 
     def test_evaluate_results2(self):
         kw_mask = [0.8, 0.7, 0.3, 0.5, 0.1, 0.6, 0.9]
@@ -58,8 +58,8 @@ class TestEvaluateResults(unittest.TestCase):
             gt_answers
         )
 
-        self.assertAlmostEqual(metrics['p_at_3'], 7 / 15)
-        self.assertAlmostEqual(metrics['p_at_5'], 8 / 25)
-        self.assertAlmostEqual(metrics['mrr'], 43 / 60)
-        self.assertAlmostEqual(metrics['map'], 7397 / 11400)
-        self.assertAlmostEqual(metrics['r_prec'], 733 / 1425)
+        self.assertAlmostEqual(metrics['p_at_3'], 1 / 3)
+        self.assertAlmostEqual(metrics['p_at_5'], 0.2)
+        self.assertAlmostEqual(metrics['mrr'], 367 / 600)
+        self.assertAlmostEqual(metrics['map'], 0.52312410236323)
+        self.assertAlmostEqual(metrics['r_prec'], 2252 / 5175)
