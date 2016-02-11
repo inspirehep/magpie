@@ -346,8 +346,8 @@ def batch_train(
         for k, v in metrics.iteritems():
             print("{0}: {1}".format(k, v))
 
-        if metrics['f1'] > previous_best:
-            previous_best = metrics['f1']
+        if metrics['map'] > previous_best:
+            previous_best = metrics['map']
             save_to_disk(model_path, model, overwrite=True)
 
 
