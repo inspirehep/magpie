@@ -9,7 +9,7 @@ class LearningModel(object):
     keywords for unknown data
     """
     def __init__(self, global_index, word2vec_model):
-        self.scaler = StandardScaler(copy=False)
+        self.scaler = StandardScaler()
         self.classifier = SGDClassifier(n_jobs=-1)  # try loss log (logistic reg)
         self.global_index = global_index
         self.word2vec = word2vec_model
@@ -23,7 +23,7 @@ class LearningModel(object):
 
         :return: scaled matrix
         """
-        if not hasattr(self.scaler, 'n_samples_seen'):
+        if not hasattr(self.scaler, 'n_samples_seen_'):
             if len(matrix) < 1000:
                 raise ValueError("Please user bigger batch size. "
                                  "The feature matrix is too small "

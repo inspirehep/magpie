@@ -16,7 +16,7 @@ def build_test_matrices(docs, model, file_dir, ontology):
     """
     Build the X feature matrix and answers & kw_vector variables, needed for
     evaluating the predictions.
-    :param docs: documents to process. Either list of generator of Document obj
+    :param docs: documents to process. Either list or generator of Document obj
     :param model: LearningModel object
     :param file_dir: directory where the answer files are located
     :param ontology: Ontology object

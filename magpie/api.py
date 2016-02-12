@@ -167,7 +167,7 @@ def batch_test(
     if type(ontology) in [str, unicode]:
         ontology = get_ontology(path=ontology, recreate=recreate_ontology)
 
-    doc_generator = get_documents(testset_path)
+    doc_generator = get_documents(testset_path, as_generator=True)
     start_time = time.clock()
 
     all_metrics = ['map', 'mrr', 'ndcg', 'r_prec', 'p_at_3', 'p_at_5']
@@ -188,6 +188,9 @@ def batch_test(
             except StopIteration:
                 no_more_samples = True
                 break
+
+        if not batch:
+            break
 
         X, answers, kw_vector = build_test_matrices(
             batch,
@@ -305,7 +308,6 @@ def batch_train(
             as_generator=True,
             shuffle=True,
         )
-        samples_seen = 0
         epoch_start = time.clock()
 
         if verbose:
@@ -324,9 +326,10 @@ def batch_train(
                     no_more_samples = True
                     break
 
-            X, y = build_train_matrices(batch, model, trainset_dir, ontology)
+            if not batch:
+                break
 
-            samples_seen += len(X)
+            X, y = build_train_matrices(batch, model, trainset_dir, ontology)
 
             # Normalize features
             X = model.maybe_fit_and_scale(X)
