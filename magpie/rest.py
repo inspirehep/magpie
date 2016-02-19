@@ -75,7 +75,7 @@ def word2vec():
     if not json or not ('positive' in json or 'negative' in json) or 'domain' not in json:
         return jsonify({'status_code': 400, 'similar_words': []})
 
-    for word in json['positive'] + json['negative']:
+    for word in json.get('positive', []) + json.get('negative', []):
         if word not in word2vec_model:
             return jsonify({'status_code': 404, 'similar_words': None,
                             'info': word + ' does not have a representation'})
