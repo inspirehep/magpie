@@ -75,15 +75,15 @@ def word2vec():
     if not json or not ('positive' in json or 'negative' in json) or 'domain' not in json:
         return jsonify({'status_code': 400, 'similar_words': []})
 
-    for word in json.get('positive', []) + json.get('negative', []):
+    positive, negative = json.get('positive', []), json.get('negative', [])
+    for word in positive + negative:
         if word not in word2vec_model:
             return jsonify({'status_code': 404, 'similar_words': None,
                             'info': word + ' does not have a representation'})
 
     return jsonify({
         'status_code': 200,
-        'vector': word2vec_model.most_similar(positive=json['positive'],
-                                              negative=json['negative'])
+        'vector': word2vec_model.most_similar(positive=positive, negative=negative)
     })
 
 if __name__ == "__main__":
