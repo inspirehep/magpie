@@ -20,19 +20,19 @@ from magpie.nn.nn import extract as nn_extract
 from magpie.utils import get_ontology, get_documents
 
 
-def extract_from_file(path_to_file, model_path):
+def extract_from_file(path_to_file, model_path, **kwargs):
     """ Extract keywords from a file """
     doc = Document(0, path_to_file)
-    return extract(doc, model_path)
+    return extract(doc, model_path, **kwargs)
 
 
-def extract_from_text(text, model_path):
+def extract_from_text(text, model_path, **kwargs):
     """ Extract keywords from a given text """
     doc = Document(0, None, text=text)
-    return extract(doc, model_path)
+    return extract(doc, model_path, **kwargs)
 
 
-def extract(doc, model_path):
+def extract(doc, model_path, **kwargs):
     """
     Extract keywords from a given file
     :param doc: Document object
@@ -47,7 +47,7 @@ def extract(doc, model_path):
     model = get_nn_model(nn_name)
     model.load_weights(model_path)
 
-    return nn_extract(doc, model)
+    return nn_extract(doc, model, **kwargs)
 
     # ontology = get_ontology(path=ontology_path, recreate=recreate_ontology)
     # considered_keywords = set(get_considered_keywords())
@@ -337,13 +337,13 @@ def batch_train(
             if not batch:
                 break
 
-            X, y = build_train_matrices(batch, model, trainset_dir, ontology)
+            x, y = build_train_matrices(batch, model, trainset_dir, ontology)
 
             # Normalize features
-            X = model.maybe_fit_and_scale(X)
+            x = model.maybe_fit_and_scale(x)
 
             # Train the model
-            model.partial_fit_classifier(X, y)
+            model.partial_fit_classifier(x, y)
 
             if verbose:
                 sys.stdout.write(b'.')

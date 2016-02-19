@@ -5,10 +5,8 @@ import os
 import numpy as np
 import time
 
-from gensim.models import Word2Vec
 from keras.callbacks import Callback, ModelCheckpoint
-from magpie.config import HEP_TEST_PATH, HEP_TRAIN_PATH, NB_EPOCHS, BATCH_SIZE, \
-    WORD2VEC_MODELPATH
+from magpie.config import HEP_TEST_PATH, HEP_TRAIN_PATH, NB_EPOCHS, BATCH_SIZE
 from magpie.evaluation.rank_metrics import mean_reciprocal_rank, r_precision, \
     precision_at_k, ndcg_at_k, mean_average_precision
 from magpie.feature_extraction import EMBEDDING_SIZE
@@ -16,7 +14,6 @@ from magpie.misc.considered_keywords import get_considered_keywords
 from magpie.nn.config import LOG_FOLDER, SAMPLE_LENGTH
 from magpie.nn.input_data import get_data_for_model
 from magpie.nn.models import get_nn_model
-from magpie.utils import get_scaler
 
 
 def batch_train(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn',
@@ -104,18 +101,19 @@ def train(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn', verbose=1
     return history, model
 
 
-def extract(doc, model):
+def extract(doc, model, **kwargs):
     """
     Use a given trained NN model to extract keywords from a document
     :param doc: Document object
     :param model: keras Model object
+    :param kwargs: should contain elements: 'word2vec_model' and 'scaler'
 
     :return: list of tuples of the form [('kw1', 0.85), ('kw2', 0.6) ...]
     """
     considered_keywords = get_considered_keywords()
 
-    word2vec_model = Word2Vec.load(WORD2VEC_MODELPATH)
-    scaler = get_scaler()
+    word2vec_model = kwargs['word2vec_model']
+    scaler = kwargs['scaler']
 
     words = doc.get_all_words()[:SAMPLE_LENGTH]
     x_matrix = np.zeros((1, SAMPLE_LENGTH, EMBEDDING_SIZE))

@@ -22,10 +22,10 @@ def get_word2vec_model(model_path, train_dir, verbose=True):
     """
     tick = time.clock()
 
-    if not model_path:
-        res = out_of_core_train(train_dir)
-    else:
+    if model_path:
         res = Word2Vec.load(model_path)
+    else:
+        res = out_of_core_train(train_dir)
 
     if verbose:
         print("Getting word2vec model: {0:.2f}s".format(time.clock() - tick))
