@@ -20,16 +20,16 @@ from magpie.nn.nn import extract as nn_extract
 from magpie.utils import get_ontology, get_documents
 
 
-def extract_from_file(path_to_file, **kwargs):
+def extract_from_file(path_to_file, model_path):
     """ Extract keywords from a file """
     doc = Document(0, path_to_file)
-    return extract(doc, **kwargs)
+    return extract(doc, model_path)
 
 
-def extract_from_text(text, **kwargs):
+def extract_from_text(text, model_path):
     """ Extract keywords from a given text """
     doc = Document(0, None, text=text)
-    return extract(doc, **kwargs)
+    return extract(doc, model_path)
 
 
 def extract(doc, model_path):
