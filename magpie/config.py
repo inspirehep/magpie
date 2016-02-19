@@ -3,8 +3,10 @@ import os
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(ROOT_DIR, 'data')
 
-# Path where the model should be pickled
+# Models
 MODEL_PATH = os.path.join(DATA_DIR, 'hep', 'model.pickle')
+WORD2VEC_MODELPATH = os.path.join(os.environ['HOME'], 'word2vec_model.gensim')
+NN_TRAINED_MODEL = os.path.join(DATA_DIR, 'berger_cnn.trained')
 
 # Ontology related
 ONTOLOGY_DIR = os.path.join(DATA_DIR, 'ontologies')
@@ -16,9 +18,6 @@ SCALER_PATH = os.path.join(DATA_DIR, 'scaler_nn.pickle')
 # Train and test data directories
 HEP_TRAIN_PATH = os.path.join(DATA_DIR, 'hep', 'train')
 HEP_TEST_PATH = os.path.join(DATA_DIR, 'hep', 'test')
-
-# word2vec model path
-WORD2VEC_MODELPATH = os.path.join(os.environ['HOME'], 'word2vec_model.gensim')
 
 # Training parameters
 BATCH_SIZE = 64

@@ -4,19 +4,35 @@ import os
 
 import numpy as np
 import time
+
+from gensim.models import Word2Vec
 from keras.callbacks import Callback, ModelCheckpoint
-from magpie.config import HEP_TEST_PATH, HEP_TRAIN_PATH, NB_EPOCHS, BATCH_SIZE
+from magpie.config import HEP_TEST_PATH, HEP_TRAIN_PATH, NB_EPOCHS, BATCH_SIZE, \
+    WORD2VEC_MODELPATH
 from magpie.evaluation.rank_metrics import mean_reciprocal_rank, r_precision, \
     precision_at_k, ndcg_at_k, mean_average_precision
-from magpie.nn.config import LOG_FOLDER
+from magpie.feature_extraction import EMBEDDING_SIZE
+from magpie.misc.considered_keywords import get_considered_keywords
+from magpie.nn.config import LOG_FOLDER, SAMPLE_LENGTH
 from magpie.nn.input_data import get_data_for_model
 from magpie.nn.models import get_nn_model
+from magpie.utils import get_scaler
 
 
-def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn',
-                  nb_worker=1, verbose=1):
+def batch_train(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn',
+                nb_worker=1, verbose=1):
+    """
+    Train a NN model out-of-core with given parameters.
+    :param nb_epochs: number of epochs
+    :param batch_size: size of one batch
+    :param nn: nn type, for supported ones look at `get_nn_model()`
+    :param nb_worker: number of workers to read the data
+    :param verbose: verbosity flag
+
+    :return: tuple containing a history object and a trained keras model
+    """
     model = get_nn_model(nn)
-    train_generator, (X_test, y_test) = get_data_for_model(
+    train_generator, (x_test, y_test) = get_data_for_model(
         model,
         as_generator=True,
         batch_size=batch_size,
@@ -25,7 +41,7 @@ def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn',
     )
 
     # Create callbacks
-    logger = CustomLogger(X_test, y_test, nn)
+    logger = CustomLogger(x_test, y_test, nn)
     model_checkpoint = ModelCheckpoint(
         os.path.join(logger.log_dir, 'keras_model'),
         save_best_only=True,
@@ -36,7 +52,7 @@ def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn',
         len({filename[:-4] for filename in os.listdir(HEP_TRAIN_PATH)}),
         nb_epochs,
         show_accuracy=True,
-        validation_data=(X_test, y_test),
+        validation_data=(x_test, y_test),
         callbacks=[logger, model_checkpoint],
         nb_worker=nb_worker,
         verbose=verbose,
@@ -47,9 +63,18 @@ def run_generator(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn',
     return history, model
 
 
-def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn', verbose=1):
+def train(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn', verbose=1):
+    """
+    Train a NN model with given parameters, all in memory
+    :param nb_epochs: number of epochs
+    :param batch_size: size of one batch
+    :param nn: nn type, for supported ones look at `get_nn_model()`
+    :param verbose: verbosity flag
+
+    :return: tuple containing a history object and a trained keras model
+    """
     model = get_nn_model(nn)
-    (X_train, y_train), (X_test, y_test) = get_data_for_model(
+    (x_train, y_train), (x_test, y_test) = get_data_for_model(
         model,
         as_generator=False,
         train_dir=HEP_TRAIN_PATH,
@@ -57,19 +82,19 @@ def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn', verbose=1):
     )
 
     # Create callbacks
-    logger = CustomLogger(X_test, y_test, nn)
+    logger = CustomLogger(x_test, y_test, nn)
     model_checkpoint = ModelCheckpoint(
         os.path.join(logger.log_dir, 'keras_model'),
         save_best_only=True,
     )
 
     history = model.fit(
-        X_train,
+        x_train,
         y_train,
         batch_size=batch_size,
         nb_epoch=nb_epochs,
         show_accuracy=True,
-        validation_data=(X_test, y_test),
+        validation_data=(x_test, y_test),
         callbacks=[logger, model_checkpoint],
         verbose=verbose,
     )
@@ -77,6 +102,37 @@ def run(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn', verbose=1):
     finish_logging(logger, history)
 
     return history, model
+
+
+def extract(doc, model):
+    """
+    Use a given trained NN model to extract keywords from a document
+    :param doc: Document object
+    :param model: keras Model object
+
+    :return: list of tuples of the form [('kw1', 0.85), ('kw2', 0.6) ...]
+    """
+    considered_keywords = get_considered_keywords()
+
+    word2vec_model = Word2Vec.load(WORD2VEC_MODELPATH)
+    scaler = get_scaler()
+
+    words = doc.get_all_words()[:SAMPLE_LENGTH]
+    x_matrix = np.zeros((1, SAMPLE_LENGTH, EMBEDDING_SIZE))
+
+    for i, w in enumerate(words):
+        if w in word2vec_model:
+            word_vector = word2vec_model[w].reshape(1, -1)
+            x_matrix[doc.doc_id][i] = scaler.transform(word_vector, copy=True)[0]
+
+    x = [x_matrix] * len(model.input) if type(model.input) == list else [x_matrix]
+
+    # Predict
+    y_predicted = model.predict(x)
+
+    zipped = zip(considered_keywords, y_predicted[0])
+
+    return sorted(zipped, key=lambda elem: elem[1], reverse=True)
 
 
 def finish_logging(logger, history):
@@ -158,8 +214,8 @@ class CustomLogger(Callback):
 
     def on_epoch_end(self, epoch, logs=None):
         """ Compute custom metrics at the end of the epoch """
-        X_test, y_test = self.test_data
-        y_pred = self.model.predict(X_test)
+        x_test, y_test = self.test_data
+        y_pred = self.model.predict(x_test)
 
         y_pred = np.fliplr(y_pred.argsort())
         for i in xrange(len(y_test)):

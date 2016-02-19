@@ -10,16 +10,22 @@ nltk.download('punkt', quiet=True)  # make sure it's downloaded before using
 
 class Document(object):
     """ Class representing a document that the keywords are extracted from """
-    def __init__(self, doc_id, filepath):
-        if not os.path.exists(filepath):
-            raise ValueError("The file " + filepath + " doesn't exist")
-
+    def __init__(self, doc_id, filepath, text=None):
         self.doc_id = doc_id
-        self.filepath = filepath
-        self.filename = os.path.basename(filepath)
 
-        with open(filepath, 'r') as f:
-            self.text = f.read().decode('utf-8')
+        if text:
+            self.text = text
+            self.filename = None
+            self.filepath = None
+        else:  # is a path to a file
+            if not os.path.exists(filepath):
+                raise ValueError("The file " + filepath + " doesn't exist")
+
+            self.filepath = filepath
+            self.filename = os.path.basename(filepath)
+
+            with open(filepath, 'r') as f:
+                self.text = f.read().decode('utf-8')
 
         self.wordset = self.compute_wordset()
 

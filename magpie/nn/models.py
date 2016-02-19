@@ -23,7 +23,7 @@ def get_nn_model(nn_model):
 def berger_cnn():
     """ Create and return a keras model of a CNN """
     NB_FILTER = 100
-    NGRAM_LENGTHS = [1, 2, 3, 4]
+    NGRAM_LENGTHS = [1, 2, 3, 4, 5]
 
     conv_layers = []
     for ngram_length in NGRAM_LENGTHS:
