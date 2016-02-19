@@ -57,30 +57,34 @@ def word2vec():
     """
     Takes a following JSON as input:
     {
-        'domain': 'hep' # currently supported: 'hep'
-        'word': 'cern'  # the word to be checked
+        'domain': 'hep'                 # currently supported: 'hep'
+        'positive': ['cern', 'geneva']  # words to add
+        'negative': ['heidelberg']      # words to subtract
     }
 
     :return:
     {
         'status_code': 200      # 200, 400, 403 etc
-        'vector': []            # word2vec vector
+        'similar_words': []     # list of the form [('w1', 0.99), ('w2', 0.67)]
     }
     """
     if request.method == 'GET':
         return "GET method is not supported for this URI, use POST"
 
     json = request.json
-    if not json or 'word' not in json or 'domain' not in json:
-        return jsonify({'status_code': 400, 'vector': None})
+    if not json or not ('positive' in json or 'negative' in json) or 'domain' not in json:
+        return jsonify({'status_code': 400, 'similar_words': []})
 
-    if json['word'] in word2vec_model:
-        return jsonify({
-            'status_code': 200,
-            'vector': word2vec_model[json['word']].tolist()
-        })
-    else:
-        return jsonify({'status_code': 404, 'vector': None})
+    for word in json['positive'] + json['negative']:
+        if word not in word2vec_model:
+            return jsonify({'status_code': 404, 'similar_words': None,
+                            'info': word + ' does not have a representation'})
+
+    return jsonify({
+        'status_code': 200,
+        'vector': word2vec_model.most_similar(positive=json['positive'],
+                                              negative=json['negative'])
+    })
 
 if __name__ == "__main__":
     app.run()

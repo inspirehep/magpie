@@ -130,7 +130,7 @@ def test(
         ontology = get_ontology(path=ontology, recreate=recreate_ontology)
 
     tick = time.clock()
-    X, answers, kw_vector = build_test_matrices(
+    x, answers, kw_vector = build_test_matrices(
         get_documents(testset_path),
         model,
         testset_path,
@@ -140,7 +140,7 @@ def test(
         print("Matrices built in: {0:.2f}s".format(time.clock() - tick))
 
     # Predict
-    y_pred = model.scale_and_predict_confidence(X)
+    y_pred = model.scale_and_predict_confidence(x)
 
     # Evaluate the results
     return evaluate_results(
@@ -258,20 +258,20 @@ def train(
 
     tick = time.clock()
 
-    X, y = build_train_matrices(docs, model, trainset_dir, ontology)
+    x, y = build_train_matrices(docs, model, trainset_dir, ontology)
 
     if verbose:
         print("Matrices built in: {0:.2f}s".format(time.clock() - tick))
     t1 = time.clock()
 
     if verbose:
-        print("X size: {}".format(X.shape))
+        print("X size: {}".format(x.shape))
 
     # Normalize features
-    X = model.maybe_fit_and_scale(X)
+    x = model.maybe_fit_and_scale(x)
 
     # Train the model
-    model.fit_classifier(X, y)
+    model.fit_classifier(x, y)
 
     if verbose:
         print("Fitting the model: {0:.2f}s".format(time.clock() - t1))
@@ -340,7 +340,7 @@ def batch_train(
             x, y = build_train_matrices(batch, model, trainset_dir, ontology)
 
             # Normalize features
-            x = model.maybe_fit_and_scale(x)
+            # x = model.maybe_fit_and_scale(x)
 
             # Train the model
             model.partial_fit_classifier(x, y)
