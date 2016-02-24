@@ -18,7 +18,7 @@ def keras_model():
     from magpie.nn.config import SAMPLE_LENGTH
     from magpie.nn.input_data import get_data_for_model
 
-    NB_EPOCHS = 2
+    NB_EPOCHS = 1
 
     model = Sequential()
     model.add(GRU(
