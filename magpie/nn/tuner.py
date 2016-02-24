@@ -58,12 +58,11 @@ def keras_model():
         train_generator,
         len({filename[:-4] for filename in os.listdir(HEP_TRAIN_PATH)}),
         NB_EPOCHS,
-        verbose=1,
+        verbose=2,
     )
 
-    score = model.evaluate(x_test, y_test, show_accuracy=True, verbose=1)
-    print('Test accuracy:', score[1])
-    return {'loss': -score[1], 'status': STATUS_OK}
+    score = model.evaluate(x_test, y_test)
+    return {'loss': score, 'status': STATUS_OK}
 
 if __name__ == '__main__':
     best_run = optim.minimize(keras_model,
