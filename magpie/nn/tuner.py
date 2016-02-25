@@ -5,6 +5,20 @@ from hyperas import optim
 from hyperas.distributions import choice, uniform
 
 
+def keras_data():
+    from magpie.config import HEP_TEST_PATH, HEP_TRAIN_PATH
+    from magpie.nn.input_data import get_data_for_model
+    import fileinput
+
+    train_generator, (x_test, y_test) = get_data_for_model(
+        fileinput,  # yes, it's a hack
+        as_generator=True,
+        batch_size=64,
+        train_dir=HEP_TRAIN_PATH,
+        test_dir=HEP_TEST_PATH,
+    )
+
+
 def keras_model():
     import os
 
@@ -13,10 +27,9 @@ def keras_model():
     from keras.layers.core import Dropout
     from keras.layers.recurrent import GRU
 
-    from magpie.config import HEP_TEST_PATH, HEP_TRAIN_PATH, CONSIDERED_KEYWORDS
+    from magpie.config import HEP_TRAIN_PATH, CONSIDERED_KEYWORDS
     from magpie.feature_extraction import EMBEDDING_SIZE
     from magpie.nn.config import SAMPLE_LENGTH
-    from magpie.nn.input_data import get_data_for_model
 
     NB_EPOCHS = 1
 
@@ -31,8 +44,8 @@ def keras_model():
     model.add(Dropout(0.1))
 
     # We add a vanilla hidden layer:
-    model.add(Dense(256, activation='relu'))
-    model.add(Dropout(0.1))
+    # model.add(Dense(256, activation='relu'))
+    # model.add(Dropout(0.1))
 
     model.add(Dense(CONSIDERED_KEYWORDS, activation='sigmoid'))
 
@@ -43,14 +56,6 @@ def keras_model():
     )
 
     print("Model compiled")
-
-    train_generator, (x_test, y_test) = get_data_for_model(
-        model,
-        as_generator=True,
-        batch_size=64,
-        train_dir=HEP_TRAIN_PATH,
-        test_dir=HEP_TEST_PATH,
-    )
 
     print("Data loaded")
 
@@ -65,8 +70,9 @@ def keras_model():
     return {'loss': score, 'status': STATUS_OK}
 
 if __name__ == '__main__':
-    best_run = optim.minimize(keras_model,
+    best_run = optim.minimize(model=keras_model,
+                              data=keras_data,
                               algo=tpe.suggest,
-                              max_evals=10,
+                              max_evals=3,
                               trials=Trials())
     print(best_run)
