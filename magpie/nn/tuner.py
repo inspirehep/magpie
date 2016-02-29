@@ -25,27 +25,31 @@ def keras_model():
     from keras.models import Sequential
     from keras.layers.core import Dense
     from keras.layers.core import Dropout
+    from keras.layers.normalization import BatchNormalization
     from keras.layers.recurrent import GRU
 
     from magpie.config import HEP_TRAIN_PATH, CONSIDERED_KEYWORDS
     from magpie.feature_extraction import EMBEDDING_SIZE
     from magpie.nn.config import SAMPLE_LENGTH
 
-    NB_EPOCHS = 1
+    NB_EPOCHS = 20
 
     model = Sequential()
     model.add(GRU(
-        {{choice([256, 512])}},
+        {{choice([512, 1024])}},
         input_dim=EMBEDDING_SIZE,
         input_length=SAMPLE_LENGTH,
         init='glorot_uniform',
         inner_init='normal',
     ))
-    model.add(Dropout(0.1))
+    model.add(BatchNormalization())
+    model.add(Dropout({{uniform(0.0, 0.3)}}))
 
     # We add a vanilla hidden layer:
-    # model.add(Dense(256, activation='relu'))
-    # model.add(Dropout(0.1))
+    model.add(Dense({{choice([512, 1024])}}, activation='relu'))
+    
+    model.add(BatchNormalization())
+    model.add(Dropout({{uniform(0.0, 0.3)}}))
 
     model.add(Dense(CONSIDERED_KEYWORDS, activation='sigmoid'))
 
@@ -73,6 +77,6 @@ if __name__ == '__main__':
     best_run = optim.minimize(model=keras_model,
                               data=keras_data,
                               algo=tpe.suggest,
-                              max_evals=3,
+                              max_evals=10,
                               trials=Trials())
     print(best_run)
