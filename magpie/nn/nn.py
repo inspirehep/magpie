@@ -16,10 +16,13 @@ from magpie.nn.input_data import get_data_for_model
 from magpie.nn.models import get_nn_model
 
 
-def batch_train(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn',
+def batch_train(train_dir=HEP_TRAIN_PATH, test_dir=HEP_TEST_PATH,
+                nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn',
                 nb_worker=1, verbose=1):
     """
     Train a NN model out-of-core with given parameters.
+    :param train_dir: path to the directory with training files
+    :param test_dir: path to the directory with testing files
     :param nb_epochs: number of epochs
     :param batch_size: size of one batch
     :param nn: nn type, for supported ones look at `get_nn_model()`
@@ -33,8 +36,8 @@ def batch_train(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn',
         model,
         as_generator=True,
         batch_size=batch_size,
-        train_dir=HEP_TRAIN_PATH,
-        test_dir=HEP_TEST_PATH,
+        train_dir=train_dir,
+        test_dir=test_dir,
     )
 
     # Create callbacks
@@ -46,7 +49,7 @@ def batch_train(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn',
 
     history = model.fit_generator(
         train_generator,
-        len({filename[:-4] for filename in os.listdir(HEP_TRAIN_PATH)}),
+        len({filename[:-4] for filename in os.listdir(train_dir)}),
         nb_epochs,
         show_accuracy=True,
         validation_data=(x_test, y_test),
@@ -60,9 +63,12 @@ def batch_train(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn',
     return history, model
 
 
-def train(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn', verbose=1):
+def train(train_dir=HEP_TRAIN_PATH, test_dir=HEP_TEST_PATH, nb_epochs=NB_EPOCHS,
+          batch_size=BATCH_SIZE, nn='berger_cnn', verbose=1):
     """
     Train a NN model with given parameters, all in memory
+    :param train_dir: path to the directory with training files
+    :param test_dir: path to the directory with testing files
     :param nb_epochs: number of epochs
     :param batch_size: size of one batch
     :param nn: nn type, for supported ones look at `get_nn_model()`
@@ -74,8 +80,8 @@ def train(nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn', verbose=1
     (x_train, y_train), (x_test, y_test) = get_data_for_model(
         model,
         as_generator=False,
-        train_dir=HEP_TRAIN_PATH,
-        test_dir=HEP_TEST_PATH,
+        train_dir=train_dir,
+        test_dir=test_dir,
     )
 
     # Create callbacks
