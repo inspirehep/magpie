@@ -292,6 +292,7 @@ def train(
 
 def batch_train(
     trainset_dir=HEP_TRAIN_PATH,
+    testset_dir=HEP_TEST_PATH,
     nb_epochs=NB_EPOCHS,
     batch_size=BATCH_SIZE,
     ontology_path=HEP_ONTOLOGY,
@@ -303,6 +304,7 @@ def batch_train(
     """
     Train and save the model on a given dataset
     :param trainset_dir: path to the directory with the training set
+    :param testset_dir: path to the directory with the test set
     :param nb_epochs: number of passes over the training set
     :param batch_size: the size of a single batch
     :param ontology_path: path to the ontology file
