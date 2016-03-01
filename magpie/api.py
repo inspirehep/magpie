@@ -1,6 +1,5 @@
 from __future__ import division, unicode_literals, print_function
 
-import os
 import time
 
 import numpy as np
@@ -13,99 +12,24 @@ from magpie.base.model import LearningModel
 from magpie.base.word2vec import get_word2vec_model
 from magpie.config import MODEL_PATH, HEP_TRAIN_PATH, HEP_ONTOLOGY, \
     HEP_TEST_PATH, BATCH_SIZE, NB_EPOCHS, WORD2VEC_MODELPATH
-from magpie.evaluation.standard_evaluation import evaluate_results, build_y_true, \
+from magpie.evaluation.standard_evaluation import build_y_true, \
     calculate_basic_metrics
 from magpie.misc.considered_keywords import get_considered_keywords
 from magpie.misc.utils import save_to_disk, load_from_disk
-from magpie.nn.models import get_nn_model
 from magpie.nn.nn import extract as nn_extract
 from magpie.utils import get_ontology, get_documents
 
 
-def extract_from_file(path_to_file, model_path, **kwargs):
+def extract_from_file(path_to_file, model, **kwargs):
     """ Extract keywords from a file """
     doc = Document(0, path_to_file)
-    return extract(doc, model_path, **kwargs)
-
-
-def extract_from_text(text, model_path, **kwargs):
-    """ Extract keywords from a given text """
-    doc = Document(0, None, text=text)
-    return extract(doc, model_path, **kwargs)
-
-
-def extract(doc, model_path, **kwargs):
-    """
-    Extract keywords from a given file
-    :param doc: Document object
-    # :param ontology_path: unicode with the ontology path
-    :param model_path: unicode with the trained model path
-    # :param recreate_ontology: boolean flag whether to recreate the ontology
-    # :param verbose: whether to print additional info
-
-    :return: set of predicted keywords
-    """
-    nn_name = os.path.basename(model_path).split('.')[0]
-    model = get_nn_model(nn_name)
-    model.load_weights(model_path)
-
     return nn_extract(doc, model, **kwargs)
 
-    # ontology = get_ontology(path=ontology_path, recreate=recreate_ontology)
-    # considered_keywords = set(get_considered_keywords())
-    # inv_index = InvertedIndex(doc)
-    #
-    # # Load the model
-    # model = load_from_disk(model_path)
-    #
-    # # Generate keyword candidates
-    # kw_candidates = list(generate_keyword_candidates(doc, ontology))
-    #
-    # X = build_feature_matrix(kw_candidates, inv_index, model)
-    #
-    # # Predict
-    # y_predicted = model.scale_and_predict(X)
-    #
-    # kw_predicted = []
-    # for bit, kw in zip(y_predicted, kw_candidates):
-    #     if bit == 1:
-    #         kw_predicted.append(kw)
-    #
-    # # Print results
-    # if verbose:
-    #     print("Document content:")
-    #     print(doc)
-    #
-    #     print("Predicted keywords:")
-    #     for kw in kw_predicted:
-    #         print(u"\t" + unicode(kw.get_canonical_form()))
-    #     print()
-    #
-    #     answers = get_answers_for_doc(
-    #         doc.filename,
-    #         os.path.dirname(doc.filepath),
-    #         filtered_by=considered_keywords,
-    #     )
-    #
-    #     candidates = {kw.get_canonical_form() for kw in kw_candidates}
-    #     print("Ground truth keywords:")
-    #     for kw in answers:
-    #         in_candidates = "(in candidates)" if kw in candidates else ""
-    #         print("\t" + kw.ljust(30, ' ') + in_candidates)
-    #     print()
-    #
-    #     y = []
-    #     for kw in kw_candidates:
-    #         y.append(1 if kw.get_canonical_form() in answers else 0)
-    #
-    #     X['name'] = [kw.get_canonical_form() for kw in kw_candidates]
-    #     X['predicted'] = y_predicted
-    #     X['ground truth'] = y
-    #
-    #     pd.set_option('expand_frame_repr', False)
-    #     print(X[(X['ground truth'] == 1) | (X['predicted'])])
-    #
-    # return {kw.get_canonical_form() for kw in kw_predicted}
+
+def extract_from_text(text, model, **kwargs):
+    """ Extract keywords from a given text """
+    doc = Document(0, None, text=text)
+    return nn_extract(doc, model, **kwargs)
 
 
 def test(
