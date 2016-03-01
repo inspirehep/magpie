@@ -364,7 +364,12 @@ def batch_train(
         if verbose:
             print(" {0:.2f}s".format(time.clock() - epoch_start))
 
-        metrics = test(model=model, ontology=ontology, verbose=False)
+        metrics = test(
+            testset_path=testset_dir,
+            model=model,
+            ontology=ontology,
+            verbose=False
+        )
 
         for k, v in metrics.iteritems():
             print("{0}: {1}".format(k, v))
