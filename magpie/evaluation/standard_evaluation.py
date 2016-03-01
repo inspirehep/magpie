@@ -22,6 +22,12 @@ def evaluate_results(kw_conf, kw_vector, gt_answers):
     for i in xrange(len(y_true)):
         y_pred[i] = y_true[i][y_pred[i]]
 
+    return calculate_basic_metrics(y_pred)
+
+
+def calculate_basic_metrics(y_pred):
+    """ Calculate the basic metrics and return a dictionary with them. """
+
     return {
         'map': mean_average_precision(y_pred),
         'mrr': mean_reciprocal_rank(y_pred),
@@ -45,14 +51,9 @@ def build_result_matrices(kw_conf, kw_vector, gt_answers):
     keyword_indices = {kw: i for i, kw in enumerate(keywords)}
     min_docid = min(gt_answers.keys())
 
-    y_true = np.zeros((len(gt_answers), len(keywords)), dtype=np.bool_)
-    y_pred = np.zeros((len(gt_answers), len(keywords)))
+    y_true = build_y_true(gt_answers, keyword_indices, min_docid)
 
-    for doc_id, answers in gt_answers.iteritems():
-        for kw in answers:
-            if kw in keyword_indices:
-                index = keyword_indices[kw]
-                y_true[doc_id - min_docid][index] = True
+    y_pred = np.zeros((len(gt_answers), len(keywords)))
 
     for conf, (doc_id, kw) in zip(kw_conf, kw_vector):
         if kw in keyword_indices:
@@ -60,3 +61,23 @@ def build_result_matrices(kw_conf, kw_vector, gt_answers):
             y_pred[doc_id - min_docid][index] = conf
 
     return y_true, y_pred
+
+
+def build_y_true(gt_answers, keyword_indices, min_docid):
+    """
+    Built the ground truth matrix
+    :param gt_answers: dictionary with answers for documents
+    :param keyword_indices: {kw: index} dictionary
+    :param min_docid: the lowest doc_id in the batch
+
+    :return: numpy array
+    """
+    y_true = np.zeros((len(gt_answers), len(keyword_indices)), dtype=np.bool_)
+
+    for doc_id, answers in gt_answers.iteritems():
+        for kw in answers:
+            if kw in keyword_indices:
+                index = keyword_indices[kw]
+                y_true[doc_id - min_docid][index] = True
+
+    return y_true

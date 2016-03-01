@@ -13,7 +13,9 @@ from magpie.base.model import LearningModel
 from magpie.base.word2vec import get_word2vec_model
 from magpie.config import MODEL_PATH, HEP_TRAIN_PATH, HEP_ONTOLOGY, \
     HEP_TEST_PATH, BATCH_SIZE, NB_EPOCHS, WORD2VEC_MODELPATH
-from magpie.evaluation.standard_evaluation import evaluate_results
+from magpie.evaluation.standard_evaluation import evaluate_results, build_y_true, \
+    calculate_basic_metrics
+from magpie.misc.considered_keywords import get_considered_keywords
 from magpie.misc.utils import save_to_disk, load_from_disk
 from magpie.nn.models import get_nn_model
 from magpie.nn.nn import extract as nn_extract
@@ -129,105 +131,113 @@ def test(
     if type(ontology) in [str, unicode]:
         ontology = get_ontology(path=ontology, recreate=recreate_ontology)
 
-    tick = time.clock()
-    x, answers, kw_vector = build_test_matrices(
-        get_documents(testset_path),
-        model,
-        testset_path,
-        ontology,
-    )
-    if verbose:
-        print("Matrices built in: {0:.2f}s".format(time.clock() - tick))
+    keywords = get_considered_keywords()
+    keyword_indices = {kw: i for i, kw in enumerate(keywords)}
 
-    # Predict
-    y_pred = model.scale_and_predict_confidence(x)
-
-    # Evaluate the results
-    return evaluate_results(
-        y_pred,
-        kw_vector,
-        answers,
-    )
-
-
-def batch_test(
-    testset_path=HEP_TEST_PATH,
-    batch_size=BATCH_SIZE,
-    ontology=HEP_ONTOLOGY,
-    model=MODEL_PATH,
-    recreate_ontology=False,
-    verbose=True,
-):
-    """
-    Test the trained model on a set under a given path.
-    :param testset_path: path to the directory with the test set
-    :param batch_size: size of the testing batch
-    :param ontology: path to the ontology
-    :param model: path where the model is pickled
-    :param recreate_ontology: boolean flag whether to recreate the ontology
-    :param verbose: whether to print computation times
-
-    :return tuple of three floats (precision, recall, f1_score)
-    """
-    if type(model) in [str, unicode]:
-        model = load_from_disk(model)
-
-    if type(ontology) in [str, unicode]:
-        ontology = get_ontology(path=ontology, recreate=recreate_ontology)
-
-    doc_generator = get_documents(testset_path, as_generator=True)
-    start_time = time.clock()
-
-    all_metrics = ['map', 'mrr', 'ndcg', 'r_prec', 'p_at_3', 'p_at_5']
+    all_metrics = calculate_basic_metrics([range(5)]).keys()
     metrics_agg = {m: [] for m in all_metrics}
 
-    if verbose:
-        print("Batches:", end=' ')
-
-    no_more_samples = False
-    batch_number = 0
-    while not no_more_samples:
-        batch_number += 1
-
-        batch = []
-        for i in xrange(batch_size):
-            try:
-                batch.append(doc_generator.next())
-            except StopIteration:
-                no_more_samples = True
-                break
-
-        if not batch:
-            break
-
-        X, answers, kw_vector = build_test_matrices(
-            batch,
+    for doc in get_documents(testset_path, as_generator=True):
+        x, answers, kw_vector = build_test_matrices(
+            [doc],
             model,
             testset_path,
             ontology,
         )
 
-        # Predict
-        y_pred = model.scale_and_predict_confidence(X)
+        y_true = build_y_true(answers, keyword_indices, doc.doc_id)
 
-        # Evaluate the results
-        metrics = evaluate_results(
-            y_pred,
-            kw_vector,
-            answers,
-        )
+        # Predict
+        ranking = model.scale_and_predict(x.as_matrix())
+
+        y_pred = y_true[0][ranking[::-1]]
+
+        metrics = calculate_basic_metrics([y_pred])
+
         for k, v in metrics.iteritems():
             metrics_agg[k].append(v)
 
-        if verbose:
-            sys.stdout.write(b'.')
-            sys.stdout.flush()
-
-    if verbose:
-        print()
-        print("Testing finished in: {0:.2f}s".format(time.clock() - start_time))
-
     return {k: np.mean(v) for k, v in metrics_agg.iteritems()}
+
+
+# def batch_test(
+#     testset_path=HEP_TEST_PATH,
+#     batch_size=BATCH_SIZE,
+#     ontology=HEP_ONTOLOGY,
+#     model=MODEL_PATH,
+#     recreate_ontology=False,
+#     verbose=True,
+# ):
+#     """
+#     Test the trained model on a set under a given path.
+#     :param testset_path: path to the directory with the test set
+#     :param batch_size: size of the testing batch
+#     :param ontology: path to the ontology
+#     :param model: path where the model is pickled
+#     :param recreate_ontology: boolean flag whether to recreate the ontology
+#     :param verbose: whether to print computation times
+#
+#     :return tuple of three floats (precision, recall, f1_score)
+#     """
+#     if type(model) in [str, unicode]:
+#         model = load_from_disk(model)
+#
+#     if type(ontology) in [str, unicode]:
+#         ontology = get_ontology(path=ontology, recreate=recreate_ontology)
+#
+#     doc_generator = get_documents(testset_path, as_generator=True)
+#     start_time = time.clock()
+#
+#     all_metrics = calculate_basic_metrics([range(5)]).keys()
+#     metrics_agg = {m: [] for m in all_metrics}
+#
+#     if verbose:
+#         print("Batches:", end=' ')
+#
+#     no_more_samples = False
+#     batch_number = 0
+#     while not no_more_samples:
+#         batch_number += 1
+#
+#         batch = []
+#         for i in xrange(batch_size):
+#             try:
+#                 batch.append(doc_generator.next())
+#             except StopIteration:
+#                 no_more_samples = True
+#                 break
+#
+#         if not batch:
+#             break
+#
+#         X, answers, kw_vector = build_test_matrices(
+#             batch,
+#             model,
+#             testset_path,
+#             ontology,
+#         )
+#
+#         # Predict
+#         y_pred = model.scale_and_predict_confidence(X)
+#
+#         # Evaluate the results
+#         metrics = evaluate_results(
+#             y_pred,
+#             kw_vector,
+#             answers,
+#         )
+#         for k, v in metrics.iteritems():
+#             metrics_agg[k].append(v)
+#
+#         if verbose:
+#             sys.stdout.write(b'.')
+#             sys.stdout.flush()
+#
+#     if verbose:
+#         print()
+#         print("Testing finished in: {0:.2f}s".format(time.clock() - start_time))
+#
+#     return {k: np.mean(v) for k, v in metrics_agg.iteritems()}
 
 
 def train(
@@ -340,7 +350,7 @@ def batch_train(
             x, y = build_train_matrices(batch, model, trainset_dir, ontology)
 
             # Normalize features
-            # x = model.maybe_fit_and_scale(x)
+            x = model.maybe_fit_and_scale(x)
 
             # Train the model
             model.partial_fit_classifier(x, y)
@@ -352,7 +362,7 @@ def batch_train(
         if verbose:
             print(" {0:.2f}s".format(time.clock() - epoch_start))
 
-        metrics = batch_test(model=model, ontology=ontology, verbose=False)
+        metrics = test(model=model, ontology=ontology, verbose=False)
 
         for k, v in metrics.iteritems():
             print("{0}: {1}".format(k, v))

@@ -83,10 +83,11 @@ def build_train_matrices(docs, model, file_dir, ontology):
         add_gt_answers_to_candidates_set(kw_candidates, doc_answers, ontology)
 
         # Create the output vector
-        output_vector = np.zeros(len(kw_candidates), dtype=np.bool_)
+        output_vector = np.zeros((len(kw_candidates), 2), dtype=np.int16)
         for i, kw in enumerate(kw_candidates):
             if kw.get_canonical_form() in doc_answers:
-                output_vector[i] = True
+                output_vector[i][0] = True
+            output_vector[i][1] = doc.doc_id
 
         output_vectors.append(output_vector)
 
