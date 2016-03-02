@@ -58,10 +58,8 @@ def keras_model():
         optimizer='adam',
         class_mode='binary',
     )
-
-    print("Model compiled")
-
-    print("Data loaded")
+    print('Model YAML:')
+    print(model.to_yaml())
 
     model.fit_generator(
         train_generator,
