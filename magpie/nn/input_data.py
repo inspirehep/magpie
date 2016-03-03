@@ -6,8 +6,7 @@ from gensim.models import Word2Vec
 
 from magpie.base.document import Document
 from magpie.config import HEP_TRAIN_PATH, HEP_TEST_PATH, BATCH_SIZE, \
-    WORD2VEC_MODELPATH, CONSIDERED_KEYWORDS
-from magpie.feature_extraction import EMBEDDING_SIZE
+    WORD2VEC_MODELPATH, CONSIDERED_KEYWORDS, EMBEDDING_SIZE
 from magpie.misc.considered_keywords import get_considered_keywords
 from magpie.nn.config import SAMPLE_LENGTH
 from magpie.utils import get_answers_for_doc, get_scaler

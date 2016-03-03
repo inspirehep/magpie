@@ -1,5 +1,7 @@
 import numpy as np
 
+from magpie.config import EMBEDDING_SIZE
+
 FEATURE_VECTOR = {
     # Candidate features
     'tf_mean': 'float64',
@@ -28,8 +30,6 @@ FEATURE_VECTOR = {
     'total_words_in_doc': 'uint32',
     'unique_words_in_doc': 'uint32',
 }
-
-EMBEDDING_SIZE = 100
 
 
 def preallocate_feature_matrix(n_samples):

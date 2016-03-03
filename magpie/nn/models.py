@@ -1,11 +1,11 @@
 from keras.layers.embeddings import Embedding
 from keras.layers.convolutional import MaxPooling1D, Convolution1D
 from keras.layers.core import Flatten, Dropout, Dense, Merge
+from keras.layers.normalization import BatchNormalization
 from keras.layers.recurrent import GRU
 from keras.models import Sequential, Graph
 
-from magpie.config import CONSIDERED_KEYWORDS
-from magpie.feature_extraction import EMBEDDING_SIZE
+from magpie.config import CONSIDERED_KEYWORDS, EMBEDDING_SIZE
 from magpie.nn.config import SAMPLE_LENGTH
 
 
@@ -98,7 +98,7 @@ def cnn_rnn():
 
 def berger_rnn():
     """ Create and return a keras model of a RNN """
-    HIDDEN_LAYER_SIZE = 200
+    HIDDEN_LAYER_SIZE = 256
 
     model = Sequential()
 
@@ -109,7 +109,8 @@ def berger_rnn():
         init='glorot_uniform',
         inner_init='normal',
     ))
-    model.add(Dropout(0.5))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.1))
 
     # We add a vanilla hidden layer:
     # model.add(Dense(250, activation='relu'))

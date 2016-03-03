@@ -6,10 +6,10 @@ import numpy as np
 import time
 
 from keras.callbacks import Callback, ModelCheckpoint
-from magpie.config import HEP_TEST_PATH, HEP_TRAIN_PATH, NB_EPOCHS, BATCH_SIZE
+from magpie.config import HEP_TEST_PATH, HEP_TRAIN_PATH, NB_EPOCHS, BATCH_SIZE, \
+    EMBEDDING_SIZE
 from magpie.evaluation.rank_metrics import mean_reciprocal_rank, r_precision, \
     precision_at_k, ndcg_at_k, mean_average_precision
-from magpie.feature_extraction import EMBEDDING_SIZE
 from magpie.misc.considered_keywords import get_considered_keywords
 from magpie.nn.config import LOG_FOLDER, SAMPLE_LENGTH
 from magpie.nn.input_data import get_data_for_model
