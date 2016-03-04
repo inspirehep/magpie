@@ -8,8 +8,9 @@ from collections import Counter, defaultdict
 from magpie.base.document import Document
 from magpie.base.ontology import OntologyFactory, Ontology
 from magpie.candidates import generate_keyword_candidates
-from magpie.config import HEP_ONTOLOGY, HEP_TRAIN_PATH, SCALER_PATH
-from magpie.misc.considered_keywords import get_considered_keywords
+from magpie.config import HEP_ONTOLOGY, HEP_TRAIN_PATH, SCALER_PATH, \
+    LABEL_FILE_EXTENSION
+from magpie.misc.labels import get_keywords
 from magpie.misc.utils import load_from_disk
 
 
@@ -58,10 +59,11 @@ def get_documents(data_dir=HEP_TRAIN_PATH, as_generator=True, shuffle=False):
     return generator if as_generator else list(generator)
 
 
-def get_all_answers(data_dir, filtered_by=None):
+def get_all_answers(data_dir, extension=LABEL_FILE_EXTENSION, filtered_by=None):
     """
     Extract ground truth answers from *.key files in a given directory
     :param data_dir: path to the directory with .key files
+    :param extension: answer file extension
     :param filtered_by: whether to filter the answers. Both sets and ontologies
            can be passed as filters
 
@@ -71,22 +73,27 @@ def get_all_answers(data_dir, filtered_by=None):
 
     files = {filename[:-4] for filename in os.listdir(data_dir)}
     for f in files:
-        answers[f] = get_answers_for_doc(f + '.key', data_dir, filtered_by=filtered_by)
+        answers[f] = get_answers_for_doc(f + extension,
+                                         data_dir,
+                                         extension=extension,
+                                         filtered_by=filtered_by)
 
     return answers
 
 
-def get_answers_for_doc(doc_name, data_dir, filtered_by=None):
+def get_answers_for_doc(doc_name, data_dir, extension=LABEL_FILE_EXTENSION,
+                        filtered_by=None):
     """
     Read ground_truth answers from a .key file corresponding to the doc_name
     :param doc_name: the name of the document, should end with .txt
     :param data_dir: directory in which the documents and answer files are
+    :param extension: answer file extension
     :param filtered_by: whether to filter the answers. Both sets and ontologies
            can be passed as filters
 
     :return: set of unicodes containing answers for this particular document
     """
-    filename = os.path.join(data_dir, doc_name[:-4] + '.key')
+    filename = os.path.join(data_dir, doc_name[:-4] + extension)
 
     if not os.path.exists(filename):
         raise ValueError("Answer file " + filename + " does not exist")
@@ -95,10 +102,7 @@ def get_answers_for_doc(doc_name, data_dir, filtered_by=None):
         answers = {line.decode('utf-8').rstrip('\n') for line in f}
 
     if filtered_by:
-        if type(filtered_by) == Ontology:
-            answers = {kw for kw in answers if filtered_by.exact_match(kw)}
-        elif type(filtered_by) == set:
-            answers = {kw for kw in answers if kw in filtered_by}
+        answers = {kw for kw in answers if kw in filtered_by}
 
     return answers
 
@@ -120,7 +124,7 @@ def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
 
     ontology = get_ontology(recreate=recreate_ontology)
     docs = get_documents(data_dir)
-    considered_keywords = set(get_considered_keywords())
+    considered_keywords = set(get_keywords())
     total_docs = 0
 
     start_time = time.clock()

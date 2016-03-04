@@ -49,6 +49,9 @@ class Ontology(object):
         self.id_mapping = None  # defined in _build_tree()
         self.trie = self._build_trie()
 
+    def __contains__(self, item):
+        return self.exact_match(item)
+
     def exact_match(self, word, already_parsed=False):
         """ Look for a word (its canonical label) in the ontology """
         if not already_parsed:

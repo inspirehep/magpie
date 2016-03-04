@@ -1,6 +1,6 @@
 from magpie.candidates.keyword_token import add_token, KeywordToken
-from magpie.config import CONSIDERED_KEYWORDS
-from magpie.misc.considered_keywords import get_considered_keywords
+from magpie.config import NO_OF_LABELS
+from magpie.misc.labels import get_keywords
 from magpie.misc.stemmer import stem
 
 
@@ -78,7 +78,7 @@ def remove_not_considered_keywords(candidates):
 
     :return: filtered set of KeywordTokens
     """
-    if CONSIDERED_KEYWORDS < 0:
+    if NO_OF_LABELS < 0:
         return candidates
-    considered_kw = set(get_considered_keywords())
+    considered_kw = set(get_keywords())
     return {kt for kt in candidates if kt.get_canonical_form() in considered_kw}

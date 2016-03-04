@@ -5,7 +5,7 @@ from keras.layers.normalization import BatchNormalization
 from keras.layers.recurrent import GRU
 from keras.models import Sequential, Graph
 
-from magpie.config import CONSIDERED_KEYWORDS, EMBEDDING_SIZE
+from magpie.config import NO_OF_LABELS, EMBEDDING_SIZE
 from magpie.nn.config import SAMPLE_LENGTH
 
 
@@ -50,7 +50,7 @@ def berger_cnn():
     # model.add(Dense(250, activation='relu'))
     # model.add(Dropout(0.5))
 
-    model.add(Dense(CONSIDERED_KEYWORDS, activation='sigmoid'))
+    model.add(Dense(NO_OF_LABELS, activation='sigmoid'))
 
     model.compile(
         loss='binary_crossentropy',
@@ -85,7 +85,7 @@ def cnn_rnn():
     ))
     model.add(Dropout(0.5))
 
-    model.add(Dense(CONSIDERED_KEYWORDS, activation='sigmoid'))
+    model.add(Dense(NO_OF_LABELS, activation='sigmoid'))
 
     model.compile(
         loss='binary_crossentropy',
@@ -116,7 +116,7 @@ def berger_rnn():
     # model.add(Dense(250, activation='relu'))
     # model.add(Dropout(0.5))
 
-    model.add(Dense(CONSIDERED_KEYWORDS, activation='sigmoid'))
+    model.add(Dense(NO_OF_LABELS, activation='sigmoid'))
 
     model.compile(
         loss='binary_crossentropy',
@@ -165,7 +165,7 @@ def cnn_embedding():
                    inputs=['pooling' + str(n) for n in NGRAM_LENGTHS])
     graph.add_node(Flatten(), name='flatten', input='dropout')
 
-    graph.add_node(Dense(CONSIDERED_KEYWORDS, activation='sigmoid'),
+    graph.add_node(Dense(NO_OF_LABELS, activation='sigmoid'),
                    name='dense', input='flatten')
 
     graph.add_output(name='output', input='dense')

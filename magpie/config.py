@@ -11,6 +11,9 @@ WORD2VEC_MODELPATH = os.path.join(
     'word2vec{0}_model.gensim'.format(EMBEDDING_SIZE)
 )
 
+# Extension of the label files, defines whether we predict keywords or categories
+LABEL_FILE_EXTENSION = '.key'
+
 # Models
 MODEL_PATH = os.path.join(DATA_DIR, 'hep', 'model.pickle')
 NN_TRAINED_MODEL = os.path.join(DATA_DIR, 'berger_cnn.trained')
@@ -32,5 +35,5 @@ HEP_TEST_PATH = os.path.join(DATA_DIR, 'hep', 'test')
 BATCH_SIZE = 64
 NB_EPOCHS = 1
 
-# Number of top N keywords that we consider for prediction
-CONSIDERED_KEYWORDS = 100
+# Number of labels that we consider for prediction
+NO_OF_LABELS = 100

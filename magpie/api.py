@@ -14,7 +14,7 @@ from magpie.config import MODEL_PATH, HEP_TRAIN_PATH, HEP_ONTOLOGY, \
     HEP_TEST_PATH, BATCH_SIZE, NB_EPOCHS, WORD2VEC_MODELPATH
 from magpie.evaluation.standard_evaluation import build_y_true, \
     calculate_basic_metrics
-from magpie.misc.considered_keywords import get_considered_keywords
+from magpie.misc.labels import get_keywords
 from magpie.misc.utils import save_to_disk, load_from_disk
 from magpie.nn.nn import extract as nn_extract
 from magpie.utils import get_ontology, get_documents
@@ -55,7 +55,7 @@ def test(
     if type(ontology) in [str, unicode]:
         ontology = get_ontology(path=ontology, recreate=recreate_ontology)
 
-    keywords = get_considered_keywords()
+    keywords = get_keywords()
     keyword_indices = {kw: i for i, kw in enumerate(keywords)}
 
     all_metrics = calculate_basic_metrics([range(5)]).keys()

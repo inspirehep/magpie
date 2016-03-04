@@ -6,8 +6,8 @@ from gensim.models import Word2Vec
 
 from magpie.base.document import Document
 from magpie.config import HEP_TRAIN_PATH, HEP_TEST_PATH, BATCH_SIZE, \
-    WORD2VEC_MODELPATH, CONSIDERED_KEYWORDS, EMBEDDING_SIZE
-from magpie.misc.considered_keywords import get_considered_keywords
+    WORD2VEC_MODELPATH, NO_OF_LABELS, EMBEDDING_SIZE
+from magpie.misc.labels import get_labels
 from magpie.nn.config import SAMPLE_LENGTH
 from magpie.utils import get_answers_for_doc, get_scaler
 
@@ -31,7 +31,7 @@ def get_data_for_model(
     either a pair of matrices (X, y) or their generator
     """
     kwargs = dict(
-        keyword_indices={kw: i for i, kw in enumerate(get_considered_keywords())},
+        label_indices={lab: i for i, lab in enumerate(get_labels())},
         word2vec_model=Word2Vec.load(WORD2VEC_MODELPATH),
         scaler=get_scaler(),
         nn_model=nn_model,
@@ -59,13 +59,13 @@ def build_x_and_y(filenames, file_directory, **kwargs):
 
     :return: a tuple (X, y)
     """
-    keyword_indices = kwargs['keyword_indices']
+    label_indices = kwargs['label_indices']
     word2vec_model = kwargs['word2vec_model']
     scaler = kwargs['scaler']
     nn_model = kwargs['nn_model']
 
     x_matrix = np.zeros((len(filenames), SAMPLE_LENGTH, EMBEDDING_SIZE))
-    y_matrix = np.zeros((len(filenames), CONSIDERED_KEYWORDS), dtype=np.bool_)
+    y_matrix = np.zeros((len(filenames), NO_OF_LABELS), dtype=np.bool_)
 
     for doc_id, fname in enumerate(filenames):
         doc = Document(doc_id, os.path.join(file_directory, fname + '.txt'))
@@ -76,11 +76,15 @@ def build_x_and_y(filenames, file_directory, **kwargs):
                 word_vector = word2vec_model[w].reshape(1, -1)
                 x_matrix[doc_id][i] = scaler.transform(word_vector, copy=True)[0]
 
-        answers = get_answers_for_doc(fname + '.txt', file_directory)
-        for kw in answers:
-            if kw in keyword_indices:
-                index = keyword_indices[kw]
-                y_matrix[doc_id][index] = True
+        labels = get_answers_for_doc(
+            fname + '.txt',
+            file_directory,
+            filtered_by=set(label_indices.keys()),
+        )
+
+        for lab in labels:
+            index = label_indices[lab]
+            y_matrix[doc_id][index] = True
 
     if type(nn_model.input) == list:
         return [x_matrix] * len(nn_model.input), y_matrix

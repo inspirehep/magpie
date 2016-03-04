@@ -1,23 +1,52 @@
-from magpie.config import CONSIDERED_KEYWORDS
+from magpie.config import NO_OF_LABELS, LABEL_FILE_EXTENSION
 
 
-def get_considered_keywords(n=CONSIDERED_KEYWORDS):
+def get_labels():
+    if LABEL_FILE_EXTENSION == '.key':
+        return get_keywords()
+    elif LABEL_FILE_EXTENSION == '.tag':
+        return get_categories()
+
+
+def get_keywords(n=NO_OF_LABELS):
     """ Get a precomputed list of N most popular keywords in HEP dataset. """
     if n == -1:
         return []
     elif n == 20:
-        return TOP_20
+        return TOP_20_KEYWORDS
     elif n == 100:
-        return TOP_100
+        return TOP_100_KEYWORDS
     elif n == 500:
-        return TOP_500
+        return TOP_500_KEYWORDS
     elif n == 1000:
-        return TOP_1000
+        return TOP_1000_KEYWORDS
     else:
         raise ValueError("No value has been computed "
                          "for {} most popular keywords".format(n))
 
-TOP_20 = [
+
+def get_categories():
+    return categories
+
+
+categories = [
+    u'Astrophysics',
+    u'Accelerators',
+    u'Computing',
+    u'Experiment-HEP',
+    u'Gravitation and Cosmology',
+    u'Instrumentation',
+    u'Lattice',
+    u'Math and Math Physics',
+    u'Theory-Nucl',
+    u'Other',
+    u'Phenomenology-HEP',
+    u'General Physics',
+    u'Theory-HEP',
+    u'Experiment-Nucl',
+]
+
+TOP_20_KEYWORDS = [
     u'numerical calculations',
     u'supersymmetry',
     u'CERN LHC Coll',
@@ -40,7 +69,7 @@ TOP_20 = [
     u'cosmological model',
 ]
 
-TOP_100 = [
+TOP_100_KEYWORDS = [
     u'numerical calculations',
     u'supersymmetry',
     u'CERN LHC Coll',
@@ -143,7 +172,7 @@ TOP_100 = [
     u'supernova',
 ]
 
-TOP_500 = [
+TOP_500_KEYWORDS = [
     u'CERN LHC Coll',
     u'quantum chromodynamics',
     u'experimental results',
@@ -644,7 +673,7 @@ TOP_500 = [
     u'energy levels',
 ]
 
-TOP_1000 = [
+TOP_1000_KEYWORDS = [
     u'numerical calculations',
     u'supersymmetry',
     u'CERN LHC Coll',

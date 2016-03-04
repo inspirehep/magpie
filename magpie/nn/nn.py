@@ -10,7 +10,7 @@ from magpie.config import HEP_TEST_PATH, HEP_TRAIN_PATH, NB_EPOCHS, BATCH_SIZE, 
     EMBEDDING_SIZE
 from magpie.evaluation.rank_metrics import mean_reciprocal_rank, r_precision, \
     precision_at_k, ndcg_at_k, mean_average_precision
-from magpie.misc.considered_keywords import get_considered_keywords
+from magpie.misc.labels import get_labels
 from magpie.nn.config import LOG_FOLDER, SAMPLE_LENGTH
 from magpie.nn.input_data import get_data_for_model
 from magpie.nn.models import get_nn_model
@@ -116,8 +116,6 @@ def extract(doc, model, **kwargs):
 
     :return: list of tuples of the form [('kw1', 0.85), ('kw2', 0.6) ...]
     """
-    considered_keywords = get_considered_keywords()
-
     word2vec_model = kwargs['word2vec_model']
     scaler = kwargs['scaler']
 
@@ -134,7 +132,7 @@ def extract(doc, model, **kwargs):
     # Predict
     y_predicted = model.predict(x)
 
-    zipped = zip(considered_keywords, y_predicted[0])
+    zipped = zip(get_labels(), y_predicted[0])
 
     return sorted(zipped, key=lambda elem: elem[1], reverse=True)
 
@@ -153,30 +151,6 @@ def finish_logging(logger, history):
         with open(os.path.join(logger.log_dir, metric), 'wb') as f:
             for val in history.history[metric]:
                 f.write(str(val) + "\n")
-
-
-def compute_threshold_distance(y_tests, y_preds):
-    """
-    Compute the threshold distance error between two output vectors.
-    :param y_preds: matrix with predicted float vectors for each sample
-    :param y_tests: matrix with ground truth output vectors for each sample
-
-    :return: float with the score
-    """
-    assert len(y_tests) == len(y_preds)
-
-    distances = []
-    for i in xrange(len(y_preds)):
-        y_pred, y_test = y_preds[i], y_tests[i]
-        sorted_indices = np.argsort(-y_pred)
-        correct_indices = np.where(y_test)[0]
-
-        for i in correct_indices:
-            position = np.where(sorted_indices == i)[0][0]
-            distance = max(0, position - len(correct_indices) + 1)
-            distances.append(distance)
-
-    return np.mean(distances)
 
 
 class CustomLogger(Callback):
