@@ -1,11 +1,11 @@
-from magpie.config import NO_OF_LABELS, LABEL_FILE_EXTENSION
+from magpie.config import NO_OF_LABELS
 
 
-def get_labels():
-    if LABEL_FILE_EXTENSION == '.key':
-        return get_keywords()
-    elif LABEL_FILE_EXTENSION == '.tag':
+def get_labels(n=NO_OF_LABELS):
+    if n == 14:
         return get_categories()
+    else:
+        return get_keywords(n)
 
 
 def get_keywords(n=NO_OF_LABELS):
