@@ -6,12 +6,11 @@ import numpy as np
 import time
 
 from keras.callbacks import Callback, ModelCheckpoint
-from magpie.config import HEP_TEST_PATH, HEP_TRAIN_PATH, NB_EPOCHS, BATCH_SIZE, \
-    EMBEDDING_SIZE
+from magpie.config import HEP_TEST_PATH, HEP_TRAIN_PATH, NB_EPOCHS, BATCH_SIZE
 from magpie.evaluation.rank_metrics import mean_reciprocal_rank, r_precision, \
     precision_at_k, ndcg_at_k, mean_average_precision
 from magpie.misc.labels import get_labels
-from magpie.nn.config import LOG_FOLDER, SAMPLE_LENGTH
+from magpie.nn.config import LOG_FOLDER
 from magpie.nn.input_data import get_data_for_model
 from magpie.nn.models import get_nn_model
 
@@ -119,8 +118,12 @@ def extract(doc, model, **kwargs):
     word2vec_model = kwargs['word2vec_model']
     scaler = kwargs['scaler']
 
-    words = doc.get_all_words()[:SAMPLE_LENGTH]
-    x_matrix = np.zeros((1, SAMPLE_LENGTH, EMBEDDING_SIZE))
+    input_layer = model.input[0] if type(model.input) == list else model.input
+    _, sample_length, embedding_size = input_layer.get_shape()
+    no_of_labels = model.output_shape[1]
+
+    words = doc.get_all_words()[:sample_length]
+    x_matrix = np.zeros((1, sample_length, embedding_size))
 
     for i, w in enumerate(words):
         if w in word2vec_model:
@@ -132,7 +135,7 @@ def extract(doc, model, **kwargs):
     # Predict
     y_predicted = model.predict(x)
 
-    zipped = zip(get_labels(), y_predicted[0])
+    zipped = zip(get_labels(no_of_labels), y_predicted[0])
 
     return sorted(zipped, key=lambda elem: elem[1], reverse=True)
 

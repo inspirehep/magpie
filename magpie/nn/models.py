@@ -20,7 +20,7 @@ def get_nn_model(nn_model):
         raise ValueError("Unknown NN type: {}".format(nn_model))
 
 
-def berger_cnn():
+def berger_cnn(embedding_size=EMBEDDING_SIZE, output_length=NO_OF_LABELS):
     """ Create and return a keras model of a CNN """
     NB_FILTER = 100
     NGRAM_LENGTHS = [1, 2, 3, 4, 5]
@@ -31,7 +31,7 @@ def berger_cnn():
         ngram_layer.add(Convolution1D(
             NB_FILTER,
             ngram_length,
-            input_dim=EMBEDDING_SIZE,
+            input_dim=embedding_size,
             input_length=SAMPLE_LENGTH,
             init='lecun_uniform',
             activation='tanh',
@@ -46,11 +46,7 @@ def berger_cnn():
     model.add(Dropout(0.5))
     model.add(Flatten())
 
-    # We add a vanilla hidden layer:
-    # model.add(Dense(250, activation='relu'))
-    # model.add(Dropout(0.5))
-
-    model.add(Dense(NO_OF_LABELS, activation='sigmoid'))
+    model.add(Dense(output_length, activation='sigmoid'))
 
     model.compile(
         loss='binary_crossentropy',
