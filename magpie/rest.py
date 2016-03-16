@@ -82,7 +82,7 @@ def hello():
     return 'Hello World!'
 
 
-@app.route("/predict", methods=['GET', 'POST'])
+@app.route("/predict", methods=['POST'])
 def predict():
     """
     Takes a following JSON as input:
@@ -99,8 +99,6 @@ def predict():
                                 # and its confidence value e.g. [('jan', 0.95)]
     }
     """
-    if request.method == 'GET':
-        return "GET method is not supported for this URI, use POST"
 
     json = request.json
     if not json or 'text' not in json:
@@ -124,7 +122,7 @@ def predict():
     })
 
 
-@app.route("/word2vec", methods=['GET', 'POST'])
+@app.route("/word2vec", methods=['POST'])
 def word2vec():
     """
     Takes a following JSON as input:
@@ -143,8 +141,6 @@ def word2vec():
         'similar_words': []     # list of the form [('w1', 0.99), ('w2', 0.67)]
     }
     """
-    if request.method == 'GET':
-        return "GET method is not supported for this URI, use POST"
 
     json = request.json
     if not json or not ('positive' in json or 'negative' in json) or 'corpus' not in json:
