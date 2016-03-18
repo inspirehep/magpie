@@ -1,3 +1,4 @@
+from keras.layers import AsymmetricZeroPadding1D
 from keras.layers.embeddings import Embedding
 from keras.layers.convolutional import MaxPooling1D, Convolution1D
 from keras.layers.core import Flatten, Dropout, Dense, Merge
@@ -14,8 +15,8 @@ def get_nn_model(nn_model):
         return berger_cnn()
     elif nn_model == 'berger_rnn':
         return berger_rnn()
-    elif nn_model == 'cnn_rnn':
-        return cnn_rnn()
+    elif nn_model == 'crnn':
+        return crnn()
     else:
         raise ValueError("Unknown NN type: {}".format(nn_model))
 
@@ -57,21 +58,39 @@ def berger_cnn(embedding_size=EMBEDDING_SIZE, output_length=NO_OF_LABELS):
     return model
 
 
-def cnn_rnn():
+def crnn(embedding_size=EMBEDDING_SIZE, output_length=NO_OF_LABELS):
     """ Create and return a keras model of a CNN with a GRU layer. """
     NB_FILTER = 100
     NGRAM_LENGTH = 3
+    NGRAM_LENGTHS = [1, 2, 3, 4, 5]
     HIDDEN_LAYER_SIZE = 200
 
     model = Sequential()
-    model.add(Convolution1D(
-        NB_FILTER,
-        NGRAM_LENGTH,
-        input_dim=EMBEDDING_SIZE,
-        input_length=SAMPLE_LENGTH,
-        init='lecun_uniform',
-        activation='tanh',
-    ))
+    # model.add(Convolution1D(
+    #     NB_FILTER,
+    #     NGRAM_LENGTH,
+    #     input_dim=EMBEDDING_SIZE,
+    #     input_length=SAMPLE_LENGTH,
+    #     init='lecun_uniform',
+    #     activation='tanh',
+    # ))
+    # model.add(Dropout(0.5))
+
+    conv_layers = []
+    for ngram_length in NGRAM_LENGTHS:
+        ngram_layer = Sequential()
+        ngram_layer.add(Convolution1D(
+            NB_FILTER,
+            ngram_length,
+            input_dim=embedding_size,
+            input_length=SAMPLE_LENGTH,
+            init='lecun_uniform',
+            activation='tanh',
+        ))
+        ngram_layer.add(AsymmetricZeroPadding1D(right_padding=ngram_length - 1))
+        conv_layers.append(ngram_layer)
+
+    model.add(Merge(conv_layers, mode='concat'))
     model.add(Dropout(0.5))
 
     model.add(GRU(
@@ -79,9 +98,10 @@ def cnn_rnn():
         init='glorot_uniform',
         inner_init='normal',
     ))
-    model.add(Dropout(0.5))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.1))
 
-    model.add(Dense(NO_OF_LABELS, activation='sigmoid'))
+    model.add(Dense(output_length, activation='sigmoid'))
 
     model.compile(
         loss='binary_crossentropy',
