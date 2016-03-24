@@ -1,4 +1,3 @@
-from keras.layers import AsymmetricZeroPadding1D
 from keras.layers.embeddings import Embedding
 from keras.layers.convolutional import MaxPooling1D, Convolution1D
 from keras.layers.core import Flatten, Dropout, Dense, Merge
@@ -60,6 +59,7 @@ def berger_cnn(embedding_size=EMBEDDING_SIZE, output_length=NO_OF_LABELS):
 
 def crnn(embedding_size=EMBEDDING_SIZE, output_length=NO_OF_LABELS):
     """ Create and return a keras model of a CNN with a GRU layer. """
+    from keras.layers import AsymmetricZeroPadding1D
     NB_FILTER = 100
     NGRAM_LENGTH = 3
     NGRAM_LENGTHS = [1, 2, 3, 4, 5]
