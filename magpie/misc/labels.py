@@ -32,10 +32,10 @@ def get_keywords(n=NO_OF_LABELS):
 
 
 def get_categories():
-    return categories
+    return CATEGORIES
 
 
-categories = [
+CATEGORIES = [
     u'Astrophysics',
     u'Accelerators',
     u'Computing',

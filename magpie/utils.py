@@ -166,7 +166,7 @@ def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
     return average_recall
 
 
-def calculate_keyword_distribution(data_dir=HEP_TRAIN_PATH):
+def calculate_keyword_distribution(data_dir=HEP_TRAIN_PATH, filtered_by=None):
     """
     Calculate the distribution of keywords in a directory. Function can be used
     to find the most frequent and not used keywords, so that the target
@@ -176,20 +176,20 @@ def calculate_keyword_distribution(data_dir=HEP_TRAIN_PATH):
     :return: list of KV pairs of the form (14, ['kw1', 'kw2']), which means
              that both kw1 and kw2 were keywords in 14 papers
     """
-    ontology = get_ontology()
-    answers = [kw for v in get_all_answers(data_dir).values() for kw in v]
-    ont_answers = [ans for ans in answers if ontology.exact_match(ans)]
-    counts = Counter(ont_answers)
+    answers = [kw for v in get_all_answers(data_dir, filtered_by=filtered_by).values()
+               for kw in v]
+    counts = Counter(answers)
 
     histogram = defaultdict(list)
     for kw, cnt in counts.iteritems():
         histogram[cnt].append(kw)
 
-    parsed_answers = {ontology.parse_label(l) for l in counts.keys()}
-    for node in ontology.graph:
-        parsed = ontology.graph.node[node]['parsed']
-        if parsed not in parsed_answers:
-            histogram[0].append(ontology.graph.node[node]['canonical'])
+    # Add terms that don't occur at all in the corpus
+    # parsed_answers = {ontology.parse_label(l) for l in counts.keys()}
+    # for node in ontology.graph:
+    #     parsed = ontology.graph.node[node]['parsed']
+    #     if parsed not in parsed_answers:
+    #         histogram[0].append(ontology.graph.node[node]['canonical'])
 
     # return sorted([(k, len(v)) for k, v in histogram.iteritems()] +
     #               [(0, len(ontology.graph) - len(used_keywords))])
