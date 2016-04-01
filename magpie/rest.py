@@ -1,11 +1,12 @@
 import os
 from collections import defaultdict
 
+import time
 from flask import Flask, request, jsonify
 from gensim.models import Word2Vec
 
 from magpie.api import extract_from_text
-from magpie.config import DATA_DIR
+from magpie.config import DATA_DIR, FEEDBACK_PATH
 from magpie.nn.models import berger_cnn
 from magpie.utils import get_scaler
 
@@ -157,6 +158,69 @@ def word2vec():
         'vector': word2vec_models[corpus].most_similar(positive=positive,
                                                        negative=negative)
     })
+
+
+@app.route("/feedback", methods=['POST'])
+def feedback():
+    """
+    Takes a following JSON as input:
+    {
+        'corpus': 'hep-keywords',   # corpus to work on. Currently supported
+                                    # are in the supported_corpora variable
+        'text': 'my abstract',      # the text that the labels describe
+        'labels': []                # list of two-element tuples each with a label
+                                    # and a binary value e.g. [('jan', 1)]
+    }
+
+    :return:
+    {
+        'status_code': 200      # 200, 400, 403 etc
+    }
+    """
+    json = request.json
+    if not json or \
+       'text' not in json or \
+       'labels' not in json or \
+       type(json['labels']) != list:
+        return jsonify({'status_code': 400, 'info': 'Field error'})
+
+    for elem in json['labels']:
+        if type(json['labels']) != list or len(elem) != 2:
+            return jsonify({'status_code': 400, 'info': 'Error in labels field'})
+
+    corpus = json.get('corpus', supported_corpora[0])
+    if corpus not in supported_corpora:
+        return jsonify({'status_code': 404,
+                        'info': 'Corpus ' + corpus + ' is not available'})
+
+    filepath = os.path.join(FEEDBACK_PATH, corpus, 'feedback')
+    if not os.path.exists(filepath):
+        os.makedirs(filepath)
+
+    filename = os.path.join(filepath, 'magpie' + time.strftime('%d%m%H%M%S'))
+
+    # For the name conflicts
+    tail = 0
+    while os.path.exists(filename):
+        potential_name = filename + str(tail)
+        if not os.path.exists(potential_name):
+            filename = potential_name
+            break
+        else:
+            tail += 1
+
+    def format_line(s): return (s + '\n').encode('utf-8')
+
+    with open(filename + '.txt', 'wb+') as f:
+        f.write(format_line(json['text']))
+
+    labels = [lab for (lab, is_lab) in json['labels'] if is_lab == 1]
+
+    with open(filename + '.lab', 'wb+') as f:
+        for lab in labels:
+            f.write(format_line(lab))
+
+    return jsonify({'status_code': 200})
 
 
 if __name__ == "__main__":
