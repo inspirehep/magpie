@@ -131,8 +131,6 @@ def word2vec():
                                         # are in the supported_corpora variable
         'positive': ['cern', 'geneva']  # words to add
         'negative': ['heidelberg']      # words to subtract
-
-        'vector_size': 100              # (optional) size of the vector
     }
 
     :return:

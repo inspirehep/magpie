@@ -3,6 +3,7 @@ import threading
 
 import numpy as np
 from gensim.models import Word2Vec
+from keras.models import Graph
 
 from magpie.base.document import Document
 from magpie.config import HEP_TRAIN_PATH, HEP_TEST_PATH, BATCH_SIZE, \
@@ -45,9 +46,9 @@ def get_data_for_model(
         train_data = build_x_and_y(train_files, train_dir, **kwargs)
 
     test_files = {filename[:-4] for filename in os.listdir(test_dir)}
-    x_test, y_test = build_x_and_y(test_files, test_dir, **kwargs)
+    test_data = build_x_and_y(test_files, test_dir, **kwargs)
 
-    return train_data, (x_test, y_test)
+    return train_data, test_data
 
 
 def build_x_and_y(filenames, file_directory, **kwargs):
@@ -87,9 +88,14 @@ def build_x_and_y(filenames, file_directory, **kwargs):
             y_matrix[doc_id][index] = True
 
     if type(nn_model.input) == list:
-        return [x_matrix] * len(nn_model.input), y_matrix
+        return_data = [x_matrix] * len(nn_model.input), y_matrix
     else:
-        return [x_matrix], y_matrix
+        return_data = [x_matrix], y_matrix
+
+    if type(nn_model) == Graph:
+        return {'input': return_data[0], 'output': return_data[1]}
+    else:
+        return return_data
 
 
 def iterate_over_batches(filename_it, **kwargs):

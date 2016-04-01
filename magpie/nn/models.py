@@ -16,6 +16,8 @@ def get_nn_model(nn_model):
         return berger_rnn()
     elif nn_model == 'crnn':
         return crnn()
+    elif nn_model == 'cnn_embedding':
+        return cnn_embedding()
     else:
         raise ValueError("Unknown NN type: {}".format(nn_model))
 
