@@ -28,6 +28,7 @@ SCALER_PATH = os.path.join(CORPUS_DIR,
 # Train and test data directories
 HEP_TRAIN_PATH = os.path.join(CORPUS_DIR, 'data', 'train')
 HEP_TEST_PATH = os.path.join(CORPUS_DIR, 'data', 'test')
+FEEDBACK_PATH = DATA_DIR
 
 # Training parameters
 BATCH_SIZE = 64
