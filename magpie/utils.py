@@ -1,44 +1,34 @@
 from __future__ import division
 
+import cPickle as pickle
 import os
 import random
-import time
 from collections import Counter, defaultdict
 
 from magpie.base.document import Document
-from magpie.base.ontology import OntologyFactory
-from magpie.candidates import generate_keyword_candidates
-from magpie.config import HEP_ONTOLOGY, HEP_TRAIN_PATH, SCALER_PATH
-from magpie.misc.labels import get_keywords
-from magpie.misc.utils import load_from_disk
 
 
-def get_ontology(path=HEP_ONTOLOGY, recreate=False, verbose=True):
-    """
-    Load or create an ontology from a given path
-    :param path: path to the ontology file
-    :param recreate: flag whether to enforce recreation of the ontology
-    :param verbose: a flag whether to be verbose
+def save_to_disk(path_to_disk, obj, overwrite=False):
+    """ Pickle an object to disk """
+    dirname = os.path.dirname(path_to_disk)
+    if not os.path.exists(dirname):
+        raise ValueError("Path " + dirname + " does not exist")
 
-    :return: Ontology object
-    """
-    tick = time.clock()
-    ontology = OntologyFactory(path, recreate=recreate)
-    if verbose:
-        print("Ontology loading time: {0:.2f}s".format(time.clock() - tick))
+    if not overwrite and os.path.exists(path_to_disk):
+        raise ValueError("File " + path_to_disk + "already exists")
 
-    return ontology
+    pickle.dump(obj, open(path_to_disk, 'wb'))
 
 
-def get_scaler(path=SCALER_PATH):
-    """ Unpickle and return the scaler object
-    :param path: path to the pickled scaler object
-    :return scaler object
-    """
-    return load_from_disk(path)
+def load_from_disk(path_to_disk):
+    """ Load a pickle from disk to memory """
+    if not os.path.exists(path_to_disk):
+        raise ValueError("File " + path_to_disk + " does not exist")
+
+    return pickle.load(open(path_to_disk, 'rb'))
 
 
-def get_documents(data_dir=HEP_TRAIN_PATH, as_generator=True, shuffle=False):
+def get_documents(data_dir, as_generator=True, shuffle=False):
     """
     Extract documents from *.txt files in a given directory
     :param data_dir: path to the directory with .txt files
@@ -102,76 +92,14 @@ def get_answers_for_doc(doc_name, data_dir, filtered_by=None):
     return answers
 
 
-def calculate_recall_for_kw_candidates(data_dir=HEP_TRAIN_PATH,
-                                       recreate_ontology=False,
-                                       verbose=False):
-    """
-    Generate keyword candidates for files in a given directory
-    and compute their recall in reference to ground truth answers
-    :param data_dir: directory with .txt and .key files
-    :param recreate_ontology: boolean flag for recreating the ontology
-    :param verbose: whether to print computation times
-
-    :return average_recall: float
-    """
-    average_recall = 0
-    total_kw_number = 0
-
-    ontology = get_ontology(recreate=recreate_ontology)
-    docs = get_documents(data_dir)
-    considered_keywords = set(get_keywords())
-    total_docs = 0
-
-    start_time = time.clock()
-    for doc in docs:
-        kw_candidates = {kw.get_canonical_form() for kw
-                         in generate_keyword_candidates(doc, ontology)}
-
-        answers = get_answers_for_doc(doc.filename, data_dir, filtered_by=considered_keywords)
-        # print(document.get_meaningful_words())
-
-        # print(u"Candidates:")
-        # for kw in sorted(kw_candidates):
-        #     print(u"\t" + unicode(kw))
-        # print
-        #
-        # print(u"Answers:")
-        # for kw in sorted(answers):
-        #     print(u"\t" + unicode(kw))
-        # print
-        #
-        # print(u"Conjunction:")
-        # for kw in sorted(kw_candidates & answers):
-        #     print(u"\t" + unicode(kw))
-        # print
-
-        recall = 1 if not answers else len(kw_candidates & answers) / (len(answers))
-        if verbose:
-            print
-            print("Paper: " + doc.filename)
-            print("Candidates: " + str(len(kw_candidates)))
-            print("Recall: " + unicode(recall * 100) + "%")
-
-        average_recall += recall
-        total_kw_number += len(kw_candidates)
-        total_docs += 1
-
-    average_recall /= total_docs
-
-    if verbose:
-        print
-        print("Total # of keywords: " + str(total_kw_number))
-        print("Time elapsed: " + str(time.clock() - start_time))
-
-    return average_recall
-
-
-def calculate_keyword_distribution(data_dir=HEP_TRAIN_PATH, filtered_by=None):
+def calculate_keyword_distribution(data_dir, filtered_by=None):
     """
     Calculate the distribution of keywords in a directory. Function can be used
     to find the most frequent and not used keywords, so that the target
     vocabulary can be trimmed accordingly.
     :param data_dir: directory path with the .key files
+    :param filtered_by: a set of keywords that defines the vocabulary.
+                        Can also be an Ontology object
 
     :return: list of KV pairs of the form (14, ['kw1', 'kw2']), which means
              that both kw1 and kw2 were keywords in 14 papers
@@ -196,8 +124,7 @@ def calculate_keyword_distribution(data_dir=HEP_TRAIN_PATH, filtered_by=None):
     return histogram
 
 
-def calculate_number_od_keywords_distribution(data_dir=HEP_TRAIN_PATH,
-                                              filtered_by=None):
+def calculate_number_od_keywords_distribution(data_dir, filtered_by=None):
     """ Look how many papers are there with 3 keywords, 4 keywords etc.
      Return a histogram. """
     answers = get_all_answers(data_dir, filtered_by=filtered_by).values()
@@ -252,4 +179,3 @@ def get_top_n_keywords(n, hist=None):
             break
 
     return answer[:n]
-

@@ -1,39 +1,16 @@
 import os
 
 import numpy as np
-import time
+
 from gensim.models import Word2Vec
 from sklearn.preprocessing import StandardScaler
 
 from magpie.base.document import Document
-from magpie.config import HEP_TRAIN_PATH, WORD2VEC_MODELPATH, SCALER_PATH, \
-    EMBEDDING_SIZE
-from magpie.misc.utils import save_to_disk
-from magpie.utils import get_documents
+from magpie.config import WORD2VEC_MODELPATH, EMBEDDING_SIZE
+from magpie.utils import get_documents, save_to_disk
 
 
-def get_word2vec_model(model_path, train_dir, verbose=True):
-    """
-    Build or read from disk a word2vec trained model
-    :param model_path: path to the trained model, None or 'retrain'
-    :param train_dir: path to the training set
-
-    :return: gensim Word2Vec object
-    """
-    tick = time.clock()
-
-    if model_path:
-        res = Word2Vec.load(model_path)
-    else:
-        res = out_of_core_train(train_dir)
-
-    if verbose:
-        print("Getting word2vec model: {0:.2f}s".format(time.clock() - tick))
-
-    return res
-
-
-def train_word2vec(docs, vec_dim=EMBEDDING_SIZE):
+def train_word2vec_in_memory(docs, vec_dim=EMBEDDING_SIZE):
     """
     Builds word embeddings from documents and return a model
     :param docs: list of Document objects
@@ -82,13 +59,14 @@ def compute_word2vec_for_phrase(phrase, model):
     return result
 
 
-def out_of_core_x_normalisation(data_dir=HEP_TRAIN_PATH, batch_size=1024,
-                                persist=False, w2v_model=WORD2VEC_MODELPATH,
-                                scaler_path=SCALER_PATH):
+def fit_scaler(data_dir, word2vec_model=WORD2VEC_MODELPATH, batch_size=1024,
+               persist_to_path=None):
     """ Get all the word2vec vectors in a 2D matrix and fit the scaler on it.
      This scaler can be used afterwards for normalizing feature matrices. """
-    doc_generator = get_documents(data_dir=data_dir)
-    word2vec_model = Word2Vec.load(w2v_model)
+    if type(word2vec_model) == str:
+        word2vec_model = Word2Vec.load(word2vec_model)
+
+    doc_generator = get_documents(data_dir)
     scaler = StandardScaler(copy=False)
 
     no_more_samples = False
@@ -108,17 +86,17 @@ def out_of_core_x_normalisation(data_dir=HEP_TRAIN_PATH, batch_size=1024,
                     vectors.append(word2vec_model[word])
 
         matrix = np.array(vectors)
-        print "Matrix shape: {}".format(matrix.shape)
+        print "Fitted to {} vectors".format(matrix.shape[0])
 
         scaler.partial_fit(matrix)
 
-    if persist:
-        save_to_disk(scaler_path, scaler)
+    if persist_to_path:
+        save_to_disk(persist_to_path, scaler)
 
     return scaler
 
 
-def out_of_core_train(doc_directory, vec_dim=EMBEDDING_SIZE):
+def train_word2vec(doc_directory, vec_dim=EMBEDDING_SIZE):
     """
     Train the Word2Vec object iteratively, loading stuff to memory one by one.
     :param doc_directory: directory with the documents

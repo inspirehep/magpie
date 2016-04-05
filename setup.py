@@ -24,7 +24,7 @@ setup(
     # https://packaging.python.org/en/latest/single_source_version.html
     version='0.2',
 
-    description='Automatic keyword extraction tool',
+    description='Automatic text classification tool',
     # long_description=long_description,
 
     # The project's main homepage.
@@ -43,7 +43,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
 
         'Topic :: Text Processing',
 
@@ -60,18 +60,11 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='automatic keyword keyphrase extraction',
+    keywords='automatic keyword keyphrase extraction document classification',
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
-    # packages=find_packages(exclude=['contrib', 'docs', 'tests']),
-    packages=[
-        'magpie',
-        'magpie.base',
-        'magpie.candidates',
-        'magpie.misc',
-        'magpie.nn',
-    ],
+    packages=find_packages(exclude=['contrib', 'docs', 'tests']),
 
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's
@@ -88,7 +81,6 @@ setup(
         'sklearn',
         'Click',
         'keras',
-        'flask',
     ],
 
     # List additional groups of dependencies here (e.g. development
@@ -123,6 +115,6 @@ setup(
     # },
     entry_points='''
         [console_scripts]
-        magpie=magpie.cli:cli
+        magpie=magpie.linear_classifier.cli:cli
     ''',
 )

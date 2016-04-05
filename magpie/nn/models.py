@@ -5,8 +5,7 @@ from keras.layers.normalization import BatchNormalization
 from keras.layers.recurrent import GRU
 from keras.models import Sequential, Graph
 
-from magpie.config import NO_OF_LABELS, EMBEDDING_SIZE
-from magpie.nn.config import SAMPLE_LENGTH
+from magpie.config import NO_OF_LABELS, EMBEDDING_SIZE, SAMPLE_LENGTH
 
 
 def get_nn_model(nn_model):

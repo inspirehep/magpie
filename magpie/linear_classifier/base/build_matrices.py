@@ -1,13 +1,15 @@
 import numpy as np
 import pandas as pd
+from magpie.linear_classifier.candidates import generate_keyword_candidates
+from magpie.linear_classifier.feature_extraction import preallocate_feature_matrix
+from magpie.linear_classifier.feature_extraction.document_features import \
+    extract_document_features
 
-from magpie.base.inverted_index import InvertedIndex
-from magpie.candidates import generate_keyword_candidates
-from magpie.candidates.utils import add_gt_answers_to_candidates_set
-from magpie.feature_extraction import preallocate_feature_matrix
-from magpie.feature_extraction.document_features import extract_document_features
-from magpie.feature_extraction.keyword_features import extract_keyword_features, \
-    rebuild_feature_matrix
+from magpie.linear_classifier.base.inverted_index import InvertedIndex
+from magpie.linear_classifier.candidates.utils import \
+    add_gt_answers_to_candidates_set
+from magpie.linear_classifier.feature_extraction.keyword_features import \
+    extract_keyword_features, rebuild_feature_matrix
 from magpie.misc.labels import get_keywords
 from magpie.utils import get_answers_for_doc
 

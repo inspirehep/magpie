@@ -6,18 +6,16 @@ import numpy as np
 import time
 
 from keras.callbacks import Callback, ModelCheckpoint
-from magpie.config import HEP_TEST_PATH, HEP_TRAIN_PATH, NB_EPOCHS, BATCH_SIZE
+from magpie.config import NB_EPOCHS, BATCH_SIZE, LOG_FOLDER
 from magpie.evaluation.rank_metrics import mean_reciprocal_rank, r_precision, \
     precision_at_k, ndcg_at_k, mean_average_precision
 from magpie.misc.labels import get_labels
-from magpie.nn.config import LOG_FOLDER
 from magpie.nn.input_data import get_data_for_model
 from magpie.nn.models import get_nn_model
 
 
-def batch_train(train_dir=HEP_TRAIN_PATH, test_dir=HEP_TEST_PATH,
-                nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE, nn='berger_cnn',
-                nb_worker=1, verbose=1):
+def batch_train(train_dir, test_dir=None, nb_epochs=NB_EPOCHS,
+                batch_size=BATCH_SIZE, nn='berger_cnn', nb_worker=1, verbose=1):
     """
     Train a NN model out-of-core with given parameters.
     :param train_dir: path to the directory with training files
@@ -31,16 +29,16 @@ def batch_train(train_dir=HEP_TRAIN_PATH, test_dir=HEP_TEST_PATH,
     :return: tuple containing a history object and a trained keras model
     """
     model = get_nn_model(nn)
-    train_generator, (x_test, y_test) = get_data_for_model(
+    train_generator, test_data = get_data_for_model(
+        train_dir,
         model,
         as_generator=True,
         batch_size=batch_size,
-        train_dir=train_dir,
         test_dir=test_dir,
     )
 
     # Create callbacks
-    logger = CustomLogger(x_test, y_test, nn)
+    logger = CustomLogger(test_data, nn)
     model_checkpoint = ModelCheckpoint(
         os.path.join(logger.log_dir, 'keras_model'),
         save_best_only=True,
@@ -51,7 +49,7 @@ def batch_train(train_dir=HEP_TRAIN_PATH, test_dir=HEP_TEST_PATH,
         len({filename[:-4] for filename in os.listdir(train_dir)}),
         nb_epochs,
         show_accuracy=True,
-        validation_data=(x_test, y_test),
+        validation_data=test_data,
         callbacks=[logger, model_checkpoint],
         nb_worker=nb_worker,
         verbose=verbose,
@@ -62,8 +60,8 @@ def batch_train(train_dir=HEP_TRAIN_PATH, test_dir=HEP_TEST_PATH,
     return history, model
 
 
-def train(train_dir=HEP_TRAIN_PATH, test_dir=HEP_TEST_PATH, nb_epochs=NB_EPOCHS,
-          batch_size=BATCH_SIZE, nn='berger_cnn', verbose=1):
+def train(train_dir, test_dir=None, nb_epochs=NB_EPOCHS, batch_size=BATCH_SIZE,
+          nn='berger_cnn', verbose=1):
     """
     Train a NN model with given parameters, all in memory
     :param train_dir: path to the directory with training files
@@ -76,15 +74,15 @@ def train(train_dir=HEP_TRAIN_PATH, test_dir=HEP_TEST_PATH, nb_epochs=NB_EPOCHS,
     :return: tuple containing a history object and a trained keras model
     """
     model = get_nn_model(nn)
-    (x_train, y_train), (x_test, y_test) = get_data_for_model(
+    (x_train, y_train), test_data = get_data_for_model(
+        train_dir,
         model,
         as_generator=False,
-        train_dir=train_dir,
         test_dir=test_dir,
     )
 
     # Create callbacks
-    logger = CustomLogger(x_test, y_test, nn)
+    logger = CustomLogger(test_data, nn)
     model_checkpoint = ModelCheckpoint(
         os.path.join(logger.log_dir, 'keras_model'),
         save_best_only=True,
@@ -96,7 +94,7 @@ def train(train_dir=HEP_TRAIN_PATH, test_dir=HEP_TEST_PATH, nb_epochs=NB_EPOCHS,
         batch_size=batch_size,
         nb_epoch=nb_epochs,
         show_accuracy=True,
-        validation_data=(x_test, y_test),
+        validation_data=test_data,
         callbacks=[logger, model_checkpoint],
         verbose=verbose,
     )
@@ -160,9 +158,9 @@ class CustomLogger(Callback):
     """
     A Keras callback logging additional metrics after every epoch
     """
-    def __init__(self, X, y, nn_type, verbose=True):
+    def __init__(self, test_data, nn_type, verbose=True):
         super(CustomLogger, self).__init__()
-        self.test_data = (X, y)
+        self.test_data = test_data
         self.map_list = []
         self.ndcg_list = []
         self.mrr_list = []
@@ -195,9 +193,17 @@ class CustomLogger(Callback):
 
     def on_epoch_end(self, epoch, logs=None):
         """ Compute custom metrics at the end of the epoch """
-        x_test, y_test = self.test_data
-        y_pred = self.model.predict(x_test)
+        if not self.test_data:
+            return
 
+        # TODO check if this works
+        if type(self.test_data) == dict:
+            y_test = self.test_data['output']
+            x_test = {'input': self.test_data['input']}
+        else:
+            x_test, y_test = self.test_data
+
+        y_pred = self.model.predict(x_test)
         y_pred = np.fliplr(y_pred.argsort())
         for i in xrange(len(y_test)):
             y_pred[i] = y_test[i][y_pred[i]]
