@@ -1,7 +1,7 @@
-from sklearn.preprocessing import StandardScaler
 import numpy as np
+from sklearn.preprocessing import StandardScaler
 
-from magpie.base.rank_model import RankSVM
+from magpie.linear_classifier.base.rank_model import RankSVM
 
 
 class LearningModel(object):

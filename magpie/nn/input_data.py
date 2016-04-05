@@ -6,35 +6,35 @@ from gensim.models import Word2Vec
 from keras.models import Graph
 
 from magpie.base.document import Document
-from magpie.config import HEP_TRAIN_PATH, HEP_TEST_PATH, BATCH_SIZE, \
-    WORD2VEC_MODELPATH, NO_OF_LABELS, EMBEDDING_SIZE
+from magpie.config import BATCH_SIZE, WORD2VEC_MODELPATH, NO_OF_LABELS,\
+    EMBEDDING_SIZE, SCALER_PATH, SAMPLE_LENGTH
 from magpie.misc.labels import get_labels
-from magpie.nn.config import SAMPLE_LENGTH
-from magpie.utils import get_answers_for_doc, get_scaler
+from magpie.utils import get_answers_for_doc, load_from_disk
 
 
-def get_data_for_model(
-        nn_model,
-        as_generator=False,
-        batch_size=BATCH_SIZE,
-        train_dir=HEP_TRAIN_PATH,
-        test_dir=HEP_TEST_PATH,
-):
+def get_data_for_model(train_dir, nn_model, labels=None, as_generator=False,
+                       batch_size=BATCH_SIZE, test_dir=None, word2vec_model=None,
+                       scaler=None):
     """
     Get data in the form of matrices or generators for both train and test sets.
     :param nn_model: Keras model of the NN
+    :param labels: an iterable of predefined labels (controlled vocabulary)
     :param as_generator: flag whether to return a generator or in-memory matrix
     :param batch_size: integer, size of the batch
     :param train_dir: directory with train files
     :param test_dir: directory with test files
+    :param word2vec_model: trained w2v gensim model
+    :param scaler: scaling object for X matrix normalisation e.g. StandardScaler
 
     :return: tuple with 2 elements for train and test data. Each element can be
     either a pair of matrices (X, y) or their generator
     """
+    labels = labels or get_labels()
+
     kwargs = dict(
-        label_indices={lab: i for i, lab in enumerate(get_labels())},
-        word2vec_model=Word2Vec.load(WORD2VEC_MODELPATH),
-        scaler=get_scaler(),
+        label_indices={lab: i for i, lab in enumerate(labels)},
+        word2vec_model=word2vec_model or Word2Vec.load(WORD2VEC_MODELPATH),
+        scaler=scaler or load_from_disk(SCALER_PATH),
         nn_model=nn_model,
     )
 
@@ -45,8 +45,10 @@ def get_data_for_model(
         train_files = {filename[:-4] for filename in os.listdir(train_dir)}
         train_data = build_x_and_y(train_files, train_dir, **kwargs)
 
-    test_files = {filename[:-4] for filename in os.listdir(test_dir)}
-    test_data = build_x_and_y(test_files, test_dir, **kwargs)
+    test_data = None
+    if test_dir:
+        test_files = {filename[:-4] for filename in os.listdir(test_dir)}
+        test_data = build_x_and_y(test_files, test_dir, **kwargs)
 
     return train_data, test_data
 

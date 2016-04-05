@@ -2,11 +2,11 @@
 Implementation of pairwise ranking using scikit-learn LinearSVC
 Link: https://gist.github.com/agramfort/2071994
 
-Reference: "Large Margin Rank Boundaries for Ordinal Regression", R. Herbrich,
-    T. Graepel, K. Obermayer.
+Reference: "Large Margin Rank Boundaries for Ordinal Regression",
+           R. Herbrich, T. Graepel, K. Obermayer.
 
-Authors: Fabian Pedregosa <fabian@fseoane.net>
-         Alexandre Gramfort <alexandre.gramfort@inria.fr>
+Original authors: Fabian Pedregosa <fabian@fseoane.net>
+                  Alexandre Gramfort <alexandre.gramfort@inria.fr>
 
 Edited by: Jan Stypka <jan.stypka@cern.ch>
 """
@@ -59,6 +59,47 @@ def transform_pairwise(X, y):
     return np.asarray(X_new), np.asarray(y_new).ravel()
 
 
+def fast_transform_pairwise(x, y):
+    """ The same as transform_pairwise(), but a little optimised for our usecase
+    :param x: the same as in transform_pairwise
+    :param y: the same as in transform_pairwise
+
+    :return x, y: the same as in transform_pairwise
+    """
+    if y.ndim == 1:
+        y = np.c_[y, np.ones(y.shape[0])]
+
+    hits = np.where(y[:, 0])[0]
+    comparisons = len(hits) * (len(y) - len(hits))
+    row_to_write = 0
+    print comparisons, x.shape
+    x_new = np.zeros((comparisons, len(x[0])))
+    y_new = np.zeros(comparisons, dtype=np.int16)
+
+    for h in hits:
+        for i in xrange(len(x)):
+            try:
+                if i == h:
+                    continue
+            except Exception:
+                import ipdb; ipdb.set_trace()
+                raise
+
+            x_new[row_to_write] = x[h] - x[i]
+            y_new[row_to_write] = np.sign(y[h, 0] - y[i, 0])
+
+            # Balanced output classes
+            if y_new[row_to_write] != (-1) ** row_to_write:
+                y_new[row_to_write] = - y_new[row_to_write]
+                x_new[row_to_write] = - x_new[row_to_write]
+
+            row_to_write += 1
+
+    assert row_to_write == comparisons
+
+    return x_new, y_new
+
+
 class RankSVM(SGDClassifier):
     """Performs pairwise ranking with an underlying SGDClassifier model
     Input should be a n-class ranking problem, this object will convert it
@@ -82,7 +123,7 @@ class RankSVM(SGDClassifier):
         -------
         self
         """
-        X_trans, y_trans = transform_pairwise(X, y)
+        X_trans, y_trans = fast_transform_pairwise(X, y)
         super(RankSVM, self).fit(X_trans, y_trans, **kwargs)
         return self
 
@@ -98,7 +139,7 @@ class RankSVM(SGDClassifier):
         -------
         self
         """
-        X_trans, y_trans = transform_pairwise(X, y)
+        X_trans, y_trans = fast_transform_pairwise(X, y)
         super(RankSVM, self).partial_fit(X_trans, y_trans, **kwargs)
         return self
 

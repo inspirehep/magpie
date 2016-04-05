@@ -1,13 +1,13 @@
 import cPickle as pickle
 import logging
-import networkx as nx
 import os
+
+import networkx as nx
 import rdflib
 from rdflib.namespace import SKOS
-
-from magpie.config import ONTOLOGY_DIR
-from magpie.candidates.trie import Trie, MarisaTrie
-from magpie.misc.utils import get_all_permutations
+from magpie.linear_classifier.config import ONTOLOGY_DIR
+from magpie.linear_classifier.candidates.trie import MarisaTrie
+from magpie.linear_classifier.utils import get_all_permutations
 
 PUNCTUATION_TABLE = dict((ord(c), None) for c in u',:;')
 
