@@ -6,7 +6,7 @@ from theano.gradient import np
 
 from magpie.base.document import Document
 from magpie.base.word2vec import train_word2vec, fit_scaler
-from magpie.config import NN_ARCHITECTURE, BATCH_SIZE, EMBEDDING_SIZE
+from magpie.config import NN_ARCHITECTURE, BATCH_SIZE, EMBEDDING_SIZE, NB_EPOCHS
 from magpie.nn.input_data import get_data_for_model
 from magpie.nn.models import get_nn_model
 
@@ -21,8 +21,8 @@ class MagpieModel(object):
         self.labels = labels
 
     def train(self, train_dir, vocabulary, test_dir=None, callbacks=None,
-              nn_model=NN_ARCHITECTURE, batch_size=BATCH_SIZE, nb_epochs=1,
-              verbose=1):
+              nn_model=NN_ARCHITECTURE, batch_size=BATCH_SIZE,
+              nb_epochs=NB_EPOCHS, verbose=1):
         """
         Train the model on given data
         :param train_dir: directory with data files. Text files should end with
@@ -55,11 +55,11 @@ class MagpieModel(object):
 
         (x_train, y_train), test_data = get_data_for_model(
             train_dir,
-            self.keras_model,
-            labels=vocabulary,
+            vocabulary,
+            test_dir=test_dir,
+            nn_model=self.keras_model,
             as_generator=False,
             batch_size=batch_size,
-            test_dir=test_dir,
             word2vec_model=self.word2vec_model,
             scaler=self.scaler,
         )
@@ -76,8 +76,8 @@ class MagpieModel(object):
         )
 
     def batch_train(self, train_dir, vocabulary, test_dir=None, callbacks=None,
-                    nn_model=NN_ARCHITECTURE, batch_size=BATCH_SIZE, nb_epochs=1,
-                    verbose=1):
+                    nn_model=NN_ARCHITECTURE, batch_size=BATCH_SIZE,
+                    nb_epochs=NB_EPOCHS, verbose=1):
         """
         Train the model on given data
         :param train_dir: directory with data files. Text files should end with
@@ -110,11 +110,13 @@ class MagpieModel(object):
 
         train_generator, test_data = get_data_for_model(
             train_dir,
-            self.keras_model,
-            labels=vocabulary,
+            vocabulary,
+            test_dir=test_dir,
+            nn_model=self.keras_model,
             as_generator=True,
             batch_size=batch_size,
-            test_dir=test_dir,
+            word2vec_model=self.word2vec_model,
+            scaler=self.scaler,
         )
 
         return self.keras_model.fit_generator(

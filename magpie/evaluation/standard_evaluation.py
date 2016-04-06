@@ -4,7 +4,7 @@ import numpy as np
 
 from magpie.evaluation.rank_metrics import mean_average_precision, \
     mean_reciprocal_rank, ndcg_at_k, r_precision, precision_at_k
-from magpie.misc.labels import get_labels
+from magpie.linear_classifier.labels import get_labels
 
 
 def evaluate_results(kw_conf, kw_vector, gt_answers):

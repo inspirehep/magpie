@@ -6,17 +6,16 @@ import time
 import numpy as np
 from gensim.models import Word2Vec
 
-from magpie.linear_classifier.base.model import LearningModel
-
 from magpie.config import BATCH_SIZE, NB_EPOCHS, WORD2VEC_MODELPATH
-from magpie.linear_classifier.config import ONTOLOGY_PATH, MODEL_PATH
 from magpie.evaluation.standard_evaluation import build_y_true, \
     calculate_basic_metrics
 from magpie.linear_classifier.base.build_matrices import build_train_matrices, build_test_matrices
 from magpie.linear_classifier.base.global_index import build_global_frequency_index
-from magpie.misc.labels import get_keywords
-from magpie.utils import get_documents, save_to_disk, load_from_disk
+from magpie.linear_classifier.base.model import LearningModel
+from magpie.linear_classifier.config import ONTOLOGY_PATH, MODEL_PATH
+from magpie.linear_classifier.labels import get_keywords
 from magpie.linear_classifier.utils import get_ontology
+from magpie.utils import get_documents, save_to_disk, load_from_disk
 
 
 def test(

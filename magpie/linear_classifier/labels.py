@@ -1,4 +1,4 @@
-from magpie.config import NO_OF_LABELS
+from magpie.linear_classifier.config import NO_OF_LABELS
 
 
 def get_labels(n=NO_OF_LABELS):
