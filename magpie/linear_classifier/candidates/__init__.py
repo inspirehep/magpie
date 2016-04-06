@@ -1,6 +1,6 @@
-from magpie.config import NO_OF_LABELS
+from magpie.linear_classifier.config import NO_OF_LABELS
 from magpie.linear_classifier.candidates.keyword_token import KeywordToken
-from magpie.misc.labels import get_keywords
+from magpie.linear_classifier.labels import get_keywords
 from ngram import generate_ngram_candidates
 from subgraph import generate_subgraph_candidates
 

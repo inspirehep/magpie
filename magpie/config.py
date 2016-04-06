@@ -2,7 +2,6 @@ import os
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CORPUS_DIR = os.path.join(ROOT_DIR, 'data', 'hep-keywords')
-LOG_FOLDER = os.path.join(os.environ['HOME'], 'keras-results')
 
 # word2vec & scaler
 EMBEDDING_SIZE = 100
@@ -26,6 +25,3 @@ NB_EPOCHS = 1
 
 # Number of tokens to save from the abstract, zero padded
 SAMPLE_LENGTH = 200
-
-# Number of labels that we consider for prediction
-NO_OF_LABELS = 100

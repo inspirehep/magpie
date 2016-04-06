@@ -1,10 +1,10 @@
 import itertools
 import time
 
-from magpie.linear_classifier.config import ONTOLOGY_PATH
 from magpie.linear_classifier.base.ontology import OntologyFactory
 from magpie.linear_classifier.candidates import generate_keyword_candidates
-from magpie.misc.labels import get_keywords
+from magpie.linear_classifier.config import ONTOLOGY_PATH
+from magpie.linear_classifier.labels import get_keywords
 from magpie.utils import get_documents, get_answers_for_doc
 
 
