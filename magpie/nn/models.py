@@ -5,24 +5,25 @@ from keras.layers.normalization import BatchNormalization
 from keras.layers.recurrent import GRU
 from keras.models import Sequential, Graph
 
-from magpie.config import NO_OF_LABELS, EMBEDDING_SIZE
-from magpie.nn.config import SAMPLE_LENGTH
+from magpie.config import EMBEDDING_SIZE, SAMPLE_LENGTH
+
+DEFAULT_LABELS = 1000
 
 
-def get_nn_model(nn_model):
+def get_nn_model(nn_model, embedding=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     if nn_model == 'berger_cnn':
-        return berger_cnn()
+        return berger_cnn(embedding_size=embedding, output_length=output_length)
     elif nn_model == 'berger_rnn':
-        return berger_rnn()
+        return berger_rnn(embedding_size=embedding, output_length=output_length)
     elif nn_model == 'crnn':
-        return crnn()
+        return crnn(embedding_size=embedding, output_length=output_length)
     elif nn_model == 'cnn_embedding':
-        return cnn_embedding()
+        return cnn_embedding(embedding_size=embedding, output_length=output_length)
     else:
         raise ValueError("Unknown NN type: {}".format(nn_model))
 
 
-def berger_cnn(embedding_size=EMBEDDING_SIZE, output_length=NO_OF_LABELS):
+def berger_cnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     """ Create and return a keras model of a CNN """
     NB_FILTER = 100
     NGRAM_LENGTHS = [1, 2, 3, 4, 5]
@@ -59,24 +60,14 @@ def berger_cnn(embedding_size=EMBEDDING_SIZE, output_length=NO_OF_LABELS):
     return model
 
 
-def crnn(embedding_size=EMBEDDING_SIZE, output_length=NO_OF_LABELS):
+def crnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     """ Create and return a keras model of a CNN with a GRU layer. """
     from keras.layers import AsymmetricZeroPadding1D
     NB_FILTER = 100
-    NGRAM_LENGTH = 3
     NGRAM_LENGTHS = [1, 2, 3, 4, 5]
     HIDDEN_LAYER_SIZE = 200
 
     model = Sequential()
-    # model.add(Convolution1D(
-    #     NB_FILTER,
-    #     NGRAM_LENGTH,
-    #     input_dim=EMBEDDING_SIZE,
-    #     input_length=SAMPLE_LENGTH,
-    #     init='lecun_uniform',
-    #     activation='tanh',
-    # ))
-    # model.add(Dropout(0.5))
 
     conv_layers = []
     for ngram_length in NGRAM_LENGTHS:
@@ -114,7 +105,7 @@ def crnn(embedding_size=EMBEDDING_SIZE, output_length=NO_OF_LABELS):
     return model
 
 
-def berger_rnn():
+def berger_rnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     """ Create and return a keras model of a RNN """
     HIDDEN_LAYER_SIZE = 256
 
@@ -122,7 +113,7 @@ def berger_rnn():
 
     model.add(GRU(
         HIDDEN_LAYER_SIZE,
-        input_dim=EMBEDDING_SIZE,
+        input_dim=embedding_size,
         input_length=SAMPLE_LENGTH,
         init='glorot_uniform',
         inner_init='normal',
@@ -134,7 +125,7 @@ def berger_rnn():
     # model.add(Dense(250, activation='relu'))
     # model.add(Dropout(0.5))
 
-    model.add(Dense(NO_OF_LABELS, activation='sigmoid'))
+    model.add(Dense(output_length, activation='sigmoid'))
 
     model.compile(
         loss='binary_crossentropy',
@@ -145,11 +136,11 @@ def berger_rnn():
     return model
 
 
-def rnn_embedding():
+def rnn_embedding(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     pass
 
 
-def cnn_embedding():
+def cnn_embedding(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     """ Create and return a keras model of a CNN with the embedding layer """
     NB_FILTER = 100
     NGRAM_LENGTHS = [1, 2, 3, 4]
@@ -160,7 +151,7 @@ def cnn_embedding():
 
     graph.add_node(Embedding(
         VOCAB_SIZE,  # integers in range 0...9999
-        EMBEDDING_SIZE,
+        embedding_size,
         input_length=SAMPLE_LENGTH,
     ), name='embedding', input='input')
 
@@ -170,7 +161,7 @@ def cnn_embedding():
         graph.add_node(Convolution1D(
             NB_FILTER,
             ngram_length,
-            input_dim=EMBEDDING_SIZE,
+            input_dim=embedding_size,
             input_length=SAMPLE_LENGTH,
             init='lecun_uniform',
             activation='tanh',
@@ -183,7 +174,7 @@ def cnn_embedding():
                    inputs=['pooling' + str(n) for n in NGRAM_LENGTHS])
     graph.add_node(Flatten(), name='flatten', input='dropout')
 
-    graph.add_node(Dense(NO_OF_LABELS, activation='sigmoid'),
+    graph.add_node(Dense(output_length, activation='sigmoid'),
                    name='dense', input='flatten')
 
     graph.add_output(name='output', input='dense')

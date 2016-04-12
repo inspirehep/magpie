@@ -1,40 +1,26 @@
 from __future__ import division, unicode_literals, print_function
 
+import sys
 import time
 
 import numpy as np
-import sys
+from gensim.models import Word2Vec
 
-from magpie.base.build_matrices import build_train_matrices, build_test_matrices
-from magpie.base.document import Document
-from magpie.base.global_index import build_global_frequency_index
-from magpie.base.model import LearningModel
-from magpie.base.word2vec import get_word2vec_model
-from magpie.config import MODEL_PATH, HEP_TRAIN_PATH, HEP_ONTOLOGY, \
-    HEP_TEST_PATH, BATCH_SIZE, NB_EPOCHS, WORD2VEC_MODELPATH
+from magpie.config import BATCH_SIZE, NB_EPOCHS, WORD2VEC_MODELPATH
 from magpie.evaluation.standard_evaluation import build_y_true, \
     calculate_basic_metrics
-from magpie.misc.labels import get_keywords
-from magpie.misc.utils import save_to_disk, load_from_disk
-from magpie.nn.nn import extract as nn_extract
-from magpie.utils import get_ontology, get_documents
-
-
-def extract_from_file(path_to_file, model, **kwargs):
-    """ Extract keywords from a file """
-    doc = Document(0, path_to_file)
-    return nn_extract(doc, model, **kwargs)
-
-
-def extract_from_text(text, model, **kwargs):
-    """ Extract keywords from a given text """
-    doc = Document(0, None, text=text)
-    return nn_extract(doc, model, **kwargs)
+from magpie.linear_classifier.base.build_matrices import build_train_matrices, build_test_matrices
+from magpie.linear_classifier.base.global_index import build_global_frequency_index
+from magpie.linear_classifier.base.model import LearningModel
+from magpie.linear_classifier.config import ONTOLOGY_PATH, MODEL_PATH
+from magpie.linear_classifier.labels import get_keywords
+from magpie.linear_classifier.utils import get_ontology
+from magpie.utils import get_documents, save_to_disk, load_from_disk
 
 
 def test(
-    testset_path=HEP_TEST_PATH,
-    ontology=HEP_ONTOLOGY,
+    testset_path,
+    ontology=ONTOLOGY_PATH,
     model=MODEL_PATH,
     recreate_ontology=False,
     verbose=True,
@@ -87,7 +73,7 @@ def test(
 # def batch_test(
 #     testset_path=HEP_TEST_PATH,
 #     batch_size=BATCH_SIZE,
-#     ontology=HEP_ONTOLOGY,
+#     ontology=ONTOLOGY_PATH,
 #     model=MODEL_PATH,
 #     recreate_ontology=False,
 #     verbose=True,
@@ -165,9 +151,9 @@ def test(
 
 
 def train(
-    trainset_dir=HEP_TRAIN_PATH,
+    trainset_dir,
     word2vec_path=WORD2VEC_MODELPATH,
-    ontology_path=HEP_ONTOLOGY,
+    ontology_path=ONTOLOGY_PATH,
     model_path=MODEL_PATH,
     recreate_ontology=False,
     verbose=True,
@@ -187,7 +173,7 @@ def train(
     docs = get_documents(trainset_dir)
 
     global_index = build_global_frequency_index(trainset_dir, verbose=verbose)
-    word2vec_model = get_word2vec_model(word2vec_path, trainset_dir, verbose=verbose)
+    word2vec_model = Word2Vec.load(word2vec_path)
     model = LearningModel(global_index, word2vec_model)
 
     tick = time.clock()
@@ -215,11 +201,11 @@ def train(
 
 
 def batch_train(
-    trainset_dir=HEP_TRAIN_PATH,
-    testset_dir=HEP_TEST_PATH,
+    trainset_dir,
+    testset_dir,
     nb_epochs=NB_EPOCHS,
     batch_size=BATCH_SIZE,
-    ontology_path=HEP_ONTOLOGY,
+    ontology_path=ONTOLOGY_PATH,
     model_path=MODEL_PATH,
     recreate_ontology=False,
     word2vec_path=WORD2VEC_MODELPATH,
@@ -242,13 +228,13 @@ def batch_train(
     ontology = get_ontology(path=ontology_path, recreate=recreate_ontology, verbose=False)
 
     global_index = build_global_frequency_index(trainset_dir, verbose=False)
-    word2vec_model = get_word2vec_model(word2vec_path, trainset_dir, verbose=False)
+    word2vec_model = Word2Vec.load(word2vec_path)
     model = LearningModel(global_index, word2vec_model)
     previous_best = -1
 
     for epoch in xrange(nb_epochs):
         doc_generator = get_documents(
-            data_dir=trainset_dir,
+            trainset_dir,
             as_generator=True,
             shuffle=True,
         )
@@ -289,7 +275,7 @@ def batch_train(
             print(" {0:.2f}s".format(time.clock() - epoch_start))
 
         metrics = test(
-            testset_path=testset_dir,
+            testset_dir,
             model=model,
             ontology=ontology,
             verbose=False
@@ -301,7 +287,3 @@ def batch_train(
         if metrics['map'] > previous_best:
             previous_best = metrics['map']
             save_to_disk(model_path, model, overwrite=True)
-
-
-if __name__ == '__main__':
-    train()

@@ -2,9 +2,9 @@ import os
 
 import click
 
-from magpie import api
-from magpie.config import HEP_ONTOLOGY, MODEL_PATH, HEP_TEST_PATH, \
-    HEP_TRAIN_PATH
+from magpie.config import MODEL_PATH
+from magpie.linear_classifier import api
+from magpie.linear_classifier.config import ONTOLOGY_PATH, MODEL_PATH
 
 
 @click.group()
@@ -19,7 +19,7 @@ def cli():
     '--ontology',
     '-o',
     # prompt='Path to the ontology',
-    default=HEP_ONTOLOGY,
+    default=ONTOLOGY_PATH,
     help='path to the ontology'
 )
 @click.option(
@@ -57,7 +57,7 @@ def extract(document, ontology, model, recreate_ontology, verbose):
     '--ontology',
     '-o',
     # prompt='Path to the ontology',
-    default=HEP_ONTOLOGY,
+    default=ONTOLOGY_PATH,
     help='path to the ontology'
 )
 @click.option(
@@ -95,7 +95,7 @@ def train(trainset_dir, ontology, model, recreate_ontology, verbose):
     '--ontology',
     '-o',
     # prompt='Path to the ontology',
-    default=HEP_ONTOLOGY,
+    default=ONTOLOGY_PATH,
     help='path to the ontology'
 )
 @click.option(
@@ -160,21 +160,19 @@ def candidate_recall(dataset_dir, recreate_ontology, verbose):
     '--train_set',
     '-train',
     # prompt='Path to the training set',
-    default=HEP_TRAIN_PATH,
     help='path to the training set'
 )
 @click.option(
     '--test_set',
     '-test',
     # prompt='Path to the test set',
-    default=HEP_TEST_PATH,
     help='path to the test set'
 )
 @click.option(
     '--ontology',
     '-o',
     # prompt='Path to the ontology',
-    default=HEP_ONTOLOGY,
+    default=ONTOLOGY_PATH,
     help='path to the ontology'
 )
 @click.option(

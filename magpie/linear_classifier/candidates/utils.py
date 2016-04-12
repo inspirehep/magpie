@@ -1,6 +1,6 @@
-from magpie.candidates.keyword_token import add_token, KeywordToken
-from magpie.config import NO_OF_LABELS
-from magpie.misc.labels import get_keywords
+from magpie.linear_classifier.config import NO_OF_LABELS
+from magpie.linear_classifier.candidates.keyword_token import add_token, KeywordToken
+from magpie.linear_classifier.labels import get_keywords
 from magpie.misc.stemmer import stem
 
 

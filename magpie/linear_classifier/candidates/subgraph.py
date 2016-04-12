@@ -1,8 +1,10 @@
 import collections
 import copy
-from rdflib.namespace import SKOS
+
 from magpie.candidates.keyword_token import KeywordToken
-from magpie.candidates.utils import get_anchors, remove_nostandalone_candidates, \
+from rdflib.namespace import SKOS
+
+from magpie.linear_classifier.candidates.utils import get_anchors, remove_nostandalone_candidates, \
     remove_not_considered_keywords
 
 
