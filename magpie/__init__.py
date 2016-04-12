@@ -51,7 +51,7 @@ class MagpieModel(object):
             print('WARNING! Overwriting already trained Keras model.')
 
         self.labels = vocabulary
-        self.keras_model = get_nn_model(nn_model)
+        self.keras_model = get_nn_model(nn_model, output_length=len(vocabulary))
 
         (x_train, y_train), test_data = get_data_for_model(
             train_dir,
@@ -106,7 +106,7 @@ class MagpieModel(object):
             print('WARNING! Overwriting already trained Keras model.')
 
         self.labels = vocabulary
-        self.keras_model = get_nn_model(nn_model)
+        self.keras_model = get_nn_model(nn_model, output_length=len(vocabulary))
 
         train_generator, test_data = get_data_for_model(
             train_dir,
