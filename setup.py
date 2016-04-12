@@ -71,15 +71,16 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
-        'marisa_trie',
-        'networkx',
-        'rdflib',
+        # 'marisa_trie',
+        # 'networkx',
+        # 'rdflib',
         'nltk',
+        'numpy',
         'scipy',
-        'pandas',
+        # 'pandas',
         'gensim',
         'sklearn',
-        'Click',
+        # 'Click',
         'keras',
     ],
 

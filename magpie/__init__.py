@@ -2,7 +2,7 @@ from __future__ import unicode_literals, print_function
 
 import os
 
-from theano.gradient import np
+import numpy as np
 
 from magpie.base.document import Document
 from magpie.base.word2vec import train_word2vec, fit_scaler
