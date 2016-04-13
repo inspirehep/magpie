@@ -25,7 +25,7 @@ def get_nn_model(nn_model, embedding=EMBEDDING_SIZE, output_length=DEFAULT_LABEL
 
 def berger_cnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     """ Create and return a keras model of a CNN """
-    NB_FILTER = 100
+    NB_FILTER = 256
     NGRAM_LENGTHS = [1, 2, 3, 4, 5]
 
     conv_layers = []
@@ -63,9 +63,9 @@ def berger_cnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
 def crnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     """ Create and return a keras model of a CNN with a GRU layer. """
     from keras.layers import AsymmetricZeroPadding1D
-    NB_FILTER = 100
+    NB_FILTER = 256
     NGRAM_LENGTHS = [1, 2, 3, 4, 5]
-    HIDDEN_LAYER_SIZE = 200
+    HIDDEN_LAYER_SIZE = 512
 
     model = Sequential()
 
@@ -84,15 +84,16 @@ def crnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
         conv_layers.append(ngram_layer)
 
     model.add(Merge(conv_layers, mode='concat'))
-    model.add(Dropout(0.5))
+    model.add(Dropout(0.3))
 
     model.add(GRU(
         HIDDEN_LAYER_SIZE,
         init='glorot_uniform',
         inner_init='normal',
+        activation='tanh',
     ))
     model.add(BatchNormalization())
-    model.add(Dropout(0.1))
+    model.add(Dropout(0.3))
 
     model.add(Dense(output_length, activation='sigmoid'))
 
@@ -117,13 +118,10 @@ def berger_rnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
         input_length=SAMPLE_LENGTH,
         init='glorot_uniform',
         inner_init='normal',
+        activation='relu',
     ))
     model.add(BatchNormalization())
     model.add(Dropout(0.1))
-
-    # We add a vanilla hidden layer:
-    # model.add(Dense(250, activation='relu'))
-    # model.add(Dropout(0.5))
 
     model.add(Dense(output_length, activation='sigmoid'))
 
