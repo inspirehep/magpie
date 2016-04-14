@@ -124,7 +124,7 @@ def calculate_keyword_distribution(data_dir, filtered_by=None):
     return histogram
 
 
-def calculate_number_od_keywords_distribution(data_dir, filtered_by=None):
+def calculate_number_of_keywords_distribution(data_dir, filtered_by=None):
     """ Look how many papers are there with 3 keywords, 4 keywords etc.
      Return a histogram. """
     answers = get_all_answers(data_dir, filtered_by=filtered_by).values()
