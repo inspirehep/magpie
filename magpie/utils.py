@@ -92,6 +92,25 @@ def get_answers_for_doc(doc_name, data_dir, filtered_by=None):
     return answers
 
 
+def get_augmented_answers_for_doc(doc_name, data_dir, filtered_by=None):
+    filename = os.path.join(data_dir, doc_name[:-4] + '.lab')
+
+    if not os.path.exists(filename):
+        raise ValueError("Answer file " + filename + " does not exist")
+
+    with open(filename, 'rb') as f:
+        answers_list = [line.decode('utf-8').rstrip('\n') for line in f]
+        answers = {}
+        for line in answers_list:
+            kw, dist = line.split(';')
+            answers[kw] = dist
+
+    if filtered_by:
+        answers = {kw: dist for kw, dist in answers.items() if kw in filtered_by}
+
+    return answers
+
+
 def calculate_keyword_distribution(data_dir, filtered_by=None):
     """
     Calculate the distribution of keywords in a directory. Function can be used

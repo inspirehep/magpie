@@ -8,7 +8,7 @@ from keras.models import Graph
 from magpie.base.document import Document
 from magpie.config import BATCH_SIZE, WORD2VEC_MODELPATH, EMBEDDING_SIZE,\
     SCALER_PATH, SAMPLE_LENGTH
-from magpie.utils import get_answers_for_doc, load_from_disk
+from magpie.utils import get_augmented_answers_for_doc, load_from_disk
 
 
 def get_data_for_model(train_dir, labels, test_dir=None, nn_model=None,
@@ -66,7 +66,7 @@ def build_x_and_y(filenames, file_directory, **kwargs):
     nn_model = kwargs['nn_model']
 
     x_matrix = np.zeros((len(filenames), SAMPLE_LENGTH, EMBEDDING_SIZE))
-    y_matrix = np.zeros((len(filenames), len(label_indices)), dtype=np.bool_)
+    y_matrix = np.zeros((len(filenames), len(label_indices)))
 
     for doc_id, fname in enumerate(filenames):
         doc = Document(doc_id, os.path.join(file_directory, fname + '.txt'))
@@ -77,15 +77,15 @@ def build_x_and_y(filenames, file_directory, **kwargs):
                 word_vector = word2vec_model[w].reshape(1, -1)
                 x_matrix[doc_id][i] = scaler.transform(word_vector, copy=True)[0]
 
-        labels = get_answers_for_doc(
+        labels = get_augmented_answers_for_doc(
             fname + '.txt',
             file_directory,
             filtered_by=set(label_indices.keys()),
         )
 
-        for lab in labels:
+        for lab, value in labels.iteritems():
             index = label_indices[lab]
-            y_matrix[doc_id][index] = True
+            y_matrix[doc_id][index] = value
 
     if nn_model and type(nn_model.input) == list:
         return_data = [x_matrix] * len(nn_model.input), y_matrix

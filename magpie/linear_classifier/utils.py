@@ -1,3 +1,4 @@
+import os
 import time
 
 from magpie.linear_classifier.base.ontology import OntologyFactory
@@ -22,6 +23,49 @@ def get_ontology(path=ONTOLOGY_PATH, recreate=False, verbose=True):
         print("Ontology loading time: {0:.2f}s".format(time.clock() - tick))
 
     return ontology
+
+
+def augment_the_training_dataset(data_dir):
+    """ Augment binary answer files with non-binary answers, that indicate
+     partial keyword relevance to the document. Those partial relevance values
+     are computed by analyzing the ontology relations between labels. """
+    ontology = get_ontology()
+
+    if not os.path.exists(data_dir):
+        raise ValueError("The path to the dataset does not exist")
+
+    files = {filename[:-4] for filename in os.listdir(data_dir)}
+    format_line = lambda s: (s + "\n").encode('utf-8')
+
+    for f in files:
+        answers = get_answers_for_doc(f + '.lab', data_dir, filtered_by=ontology)
+        augmented_answers = augment_answers(answers, ontology)
+        with open(os.path.join(data_dir, f + '.aug'), 'wb') as aug_file:
+            for aug_ans, weight in augmented_answers.iteritems():
+                line = aug_ans + u';' + unicode(weight)
+                aug_file.write(format_line(line))
+
+
+def augment_answers(answers, ontology):
+    aug_answers = dict()
+    ancestors = dict()
+
+    for ans in answers:
+        lab_ancestors = ontology.get_ancestors_of_label(ans)
+        for ancestor, distance in lab_ancestors.iteritems():
+            if ancestor in ancestors:
+                ancestors[ancestor] = min(ancestors[ancestor], distance)
+            else:
+                ancestors[ancestor] = distance
+
+    for ancestor, distance in ancestors.iteritems():
+        rel_value = 2 ** (-distance)
+        if ancestor in aug_answers:
+            aug_answers[ancestor] = max(aug_answers[ancestor], rel_value)
+        else:
+            aug_answers[ancestor] = rel_value
+
+    return aug_answers
 
 
 def calculate_recall_for_kw_candidates(data_dir, recreate_ontology=False, verbose=False):
