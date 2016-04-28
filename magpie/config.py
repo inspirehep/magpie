@@ -17,7 +17,7 @@ SCALER_PATH = os.path.join(
 )
 
 # Models
-NN_ARCHITECTURE = 'berger_cnn'
+NN_ARCHITECTURE = 'cnn'
 
 # Training parameters
 BATCH_SIZE = 64

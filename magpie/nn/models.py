@@ -11,10 +11,10 @@ DEFAULT_LABELS = 1000
 
 
 def get_nn_model(nn_model, embedding=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
-    if nn_model == 'berger_cnn':
-        return berger_cnn(embedding_size=embedding, output_length=output_length)
-    elif nn_model == 'berger_rnn':
-        return berger_rnn(embedding_size=embedding, output_length=output_length)
+    if nn_model == 'cnn':
+        return cnn(embedding_size=embedding, output_length=output_length)
+    elif nn_model == 'rnn':
+        return rnn(embedding_size=embedding, output_length=output_length)
     elif nn_model == 'crnn':
         return crnn(embedding_size=embedding, output_length=output_length)
     elif nn_model == 'cnn_embedding':
@@ -23,7 +23,7 @@ def get_nn_model(nn_model, embedding=EMBEDDING_SIZE, output_length=DEFAULT_LABEL
         raise ValueError("Unknown NN type: {}".format(nn_model))
 
 
-def berger_cnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
+def cnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     """ Create and return a keras model of a CNN """
     NB_FILTER = 256
     NGRAM_LENGTHS = [1, 2, 3, 4, 5]
@@ -106,7 +106,7 @@ def crnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     return model
 
 
-def berger_rnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
+def rnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     """ Create and return a keras model of a RNN """
     HIDDEN_LAYER_SIZE = 256
 
