@@ -1,0 +1,2 @@
+The Googly amplitudes in gauge theory
+The googly amplitudes in gauge theory are computed by using the off shell MHV vertices with the newly proposed rules of Cachazo, Svrcek and Witten. The result is in agreement with the previously well-known results. In particular we also obtain a simple result for the all negative but one positive helicity amplitude when one of the external line is off shell.

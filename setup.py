@@ -77,10 +77,8 @@ setup(
         'nltk',
         'numpy',
         'scipy',
-        # 'pandas',
         'gensim',
         'sklearn',
-        # 'Click',
         'keras',
     ],
 
@@ -105,6 +103,16 @@ setup(
     # http://docs.python.org/3.4/distutils/setupscript.html#installing-additional-files # noqa
     # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
     # data_files=[('my_data', ['data/data_file'])],
+
+    data_files=[('magpie_data/ontologies', [
+        'data/ontologies/HEPont.rdf',
+    ]), ('magpie_data/hep-corpus/data', [
+        'data/hep-corpus/data/*'
+    ]), ('magpie_data/hep-corpus/scalers', [
+        'data/hep-corpus/scalers/*'
+    ]), ('magpie_data/hep-corpus/w2v_models', [
+        'data/hep-corpus/w2v_models/*'
+    ])],
 
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow

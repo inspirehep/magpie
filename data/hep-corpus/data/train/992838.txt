@@ -1,0 +1,2 @@
+Note on the Unruh Effect
+It was suggested by Unruh that a uniformly accelerated detector in vacuum would perceive a noise with a thermal distribution. We obtain a representation of solutions of the wave equation in two dimensions suitable for the Rindler regions. The representation includes the dependence on a parameter. The Unruh field corresponds to a singular limit of the representation.

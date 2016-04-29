@@ -1,2 +1,0 @@
-Three-Algebras in N = 5, 6 Superconformal Chern-Simons Theories: Representations and Relations
-In this work we present 3-algebraic constructions and representations for three-dimensional N = 5 supersymmetric Chern-Simons theories, and show how they relate to theories with additional supersymmetries. The N = 5 structure constants give theories with Sp(2N) \times SO(M) gauge symmetry, as well as more exotic symmetries known from gauged supergravity. We find explicit lifts from N = 6 to 8, and N = 5 to 6 and 8, for appropriate gauge groups.

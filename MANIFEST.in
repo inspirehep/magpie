@@ -1,0 +1,7 @@
+include *.md
+include LICENSE
+recursive-include data *.rdf
+recursive-include data *.txt
+recursive-include data *.lab
+recursive-include data *.gensim
+recursive-include data *.pickle

@@ -1,2 +1,0 @@
-A new measurement of the neutron detection efficiency for the NaI Crystal Ball detector
-We report on a measurement of the neutron detection efficiency in NaI crystals in the Crystal Ball detector obtained from a study of single π(0) photoproduction on deuterium using the tagged photon beam at the Mainz Microtron. The results were obtained up to a neutron energy of 400 MeV . They are compared to previous measurements made more than 15 years ago at the pion beam at the BNL AGS.

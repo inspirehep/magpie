@@ -1,7 +1,7 @@
 import os
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CORPUS_DIR = os.path.join(ROOT_DIR, 'data', 'hep-keywords')
+CORPUS_DIR = os.path.join(ROOT_DIR, 'data', 'hep-corpus')
 
 # word2vec & scaler
 EMBEDDING_SIZE = 100
