@@ -1,4 +1,3 @@
-from keras.layers.embeddings import Embedding
 from keras.layers.convolutional import MaxPooling1D, Convolution1D
 from keras.layers.core import Flatten, Dropout, Dense, Merge
 from keras.layers.normalization import BatchNormalization
@@ -17,8 +16,6 @@ def get_nn_model(nn_model, embedding=EMBEDDING_SIZE, output_length=DEFAULT_LABEL
         return rnn(embedding_size=embedding, output_length=output_length)
     elif nn_model == 'crnn':
         return crnn(embedding_size=embedding, output_length=output_length)
-    elif nn_model == 'cnn_embedding':
-        return cnn_embedding(embedding_size=embedding, output_length=output_length)
     else:
         raise ValueError("Unknown NN type: {}".format(nn_model))
 
@@ -54,7 +51,7 @@ def cnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     model.compile(
         loss='binary_crossentropy',
         optimizer='adam',
-        class_mode='binary',
+        metrics=['accuracy'],
     )
 
     return model
@@ -62,6 +59,7 @@ def cnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
 
 def crnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     """ Create and return a keras model of a CNN with a GRU layer. """
+    # Works only with customized Keras and TensorFlow
     from keras.layers import AsymmetricZeroPadding1D
     NB_FILTER = 256
     NGRAM_LENGTHS = [1, 2, 3, 4, 5]
@@ -100,7 +98,7 @@ def crnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     model.compile(
         loss='binary_crossentropy',
         optimizer='adam',
-        class_mode='binary',
+        metrics=['accuracy'],
     )
 
     return model
@@ -128,55 +126,7 @@ def rnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     model.compile(
         loss='binary_crossentropy',
         optimizer='adam',
-        class_mode='binary',
+        metrics=['accuracy'],
     )
 
     return model
-
-
-def rnn_embedding(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
-    pass
-
-
-def cnn_embedding(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
-    """ Create and return a keras model of a CNN with the embedding layer """
-    NB_FILTER = 100
-    NGRAM_LENGTHS = [1, 2, 3, 4]
-    VOCAB_SIZE = 10000
-
-    graph = Graph()
-    graph.add_input(name='input', input_shape=(SAMPLE_LENGTH, ), dtype='int')
-
-    graph.add_node(Embedding(
-        VOCAB_SIZE,  # integers in range 0...9999
-        embedding_size,
-        input_length=SAMPLE_LENGTH,
-    ), name='embedding', input='input')
-
-    for ngram_length in NGRAM_LENGTHS:
-        conv_name = 'convolution' + str(ngram_length)
-        pool_name = 'pooling' + str(ngram_length)
-        graph.add_node(Convolution1D(
-            NB_FILTER,
-            ngram_length,
-            input_dim=embedding_size,
-            input_length=SAMPLE_LENGTH,
-            init='lecun_uniform',
-            activation='tanh',
-        ), input='embedding', name=conv_name)
-        pool_length = SAMPLE_LENGTH - ngram_length + 1
-        graph.add_node(MaxPooling1D(pool_length=pool_length),
-                       input=conv_name, name=pool_name)
-
-    graph.add_node(Dropout(0.5), name='dropout', merge_mode='concat',
-                   inputs=['pooling' + str(n) for n in NGRAM_LENGTHS])
-    graph.add_node(Flatten(), name='flatten', input='dropout')
-
-    graph.add_node(Dense(output_length, activation='sigmoid'),
-                   name='dense', input='flatten')
-
-    graph.add_output(name='output', input='dense')
-
-    graph.compile(optimizer='adam', loss={'output': 'binary_crossentropy'})
-
-    return graph
