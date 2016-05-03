@@ -125,10 +125,13 @@ class FilenameIterator(object):
 
     def next(self):
         with self.lock:
+
+            if self.i == len(self.files):
+                self.i = 0
+
             batch = self.files[self.i:self.i + self.batch_size]
             if len(batch) < self.batch_size:
-                self.i = self.batch_size - len(batch)
-                batch += self.files[:self.i]
+                self.i = 0
             else:
                 self.i += self.batch_size
 
