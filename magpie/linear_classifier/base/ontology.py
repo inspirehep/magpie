@@ -236,7 +236,7 @@ class Ontology(object):
     @staticmethod
     def parse_uri(uri):
         """ Parse the URI and return the concept name without the prefix """
-        return u'#'.join(unicode(uri).split('#')[1:])
+        return u'#'.join(unicode(uri).split('#')[1:]).strip()
 
     def _build_graph(self, source):
         """ Build a NetworkX graph. """
@@ -266,11 +266,11 @@ class Ontology(object):
                 g.add_edge(s, o, relation=p)
             elif p in labels:
                 if p == SKOS.prefLabel:
-                    g.add_node(s, {'canonical': o.value})
+                    g.add_node(s, {'canonical': o.value.strip()})
                 elif p == SKOS.altLabel:
                     if g.node.get(s, {}).get('alternative') is None:
                         g.add_node(s, {'alternative': []})
-                    g.node[s]['alternative'].append(o.value)
+                    g.node[s]['alternative'].append(o.value.strip())
             elif p == SKOS.note and o in flags:
                 g.add_node(s, {o.value: True})
 
