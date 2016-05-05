@@ -1,5 +1,7 @@
+from __future__ import division
 import os
 import time
+from collections import defaultdict
 
 from magpie.linear_classifier.base.ontology import OntologyFactory
 from magpie.linear_classifier.candidates import generate_keyword_candidates
@@ -25,7 +27,7 @@ def get_ontology(path=ONTOLOGY_PATH, recreate=False, verbose=True):
     return ontology
 
 
-def augment_the_training_dataset(data_dir):
+def augment_the_training_dataset(data_dir, augment_method='subtree', filtered_by=None):
     """ Augment binary answer files with non-binary answers, that indicate
      partial keyword relevance to the document. Those partial relevance values
      are computed by analyzing the ontology relations between labels. """
@@ -34,11 +36,17 @@ def augment_the_training_dataset(data_dir):
     if not os.path.exists(data_dir):
         raise ValueError("The path to the dataset does not exist")
 
+    if augment_method == 'exponential_decay':
+        augment_answers = exponential_decay
+    else:
+        augment_answers = subtree_comparison
+
     files = {filename[:-4] for filename in os.listdir(data_dir)}
     format_line = lambda s: (s + "\n").encode('utf-8')
+    lab_filter = filtered_by or ontology
 
     for f in files:
-        answers = get_answers_for_doc(f + '.lab', data_dir, filtered_by=ontology)
+        answers = get_answers_for_doc(f + '.lab', data_dir, filtered_by=lab_filter)
         augmented_answers = augment_answers(answers, ontology)
         with open(os.path.join(data_dir, f + '.aug'), 'wb') as aug_file:
             for aug_ans, weight in augmented_answers.iteritems():
@@ -46,7 +54,30 @@ def augment_the_training_dataset(data_dir):
                 aug_file.write(format_line(line))
 
 
-def augment_answers(answers, ontology):
+def subtree_comparison(answers, ontology, filtered_by=None):
+    computed_metrics = defaultdict(lambda: 999999)
+
+    for ans in answers:
+        lab_ancestors = ontology.get_ancestors_of_label(ans,
+                                                        filtered_by=filtered_by)
+        lab_descendants = set(ontology.get_descendants_of_label(ans).keys())
+
+        for anc in lab_ancestors.keys():
+            anc_descendants = set(ontology.get_descendants_of_label(anc).keys())
+            anc_descendants.add(ans)  # should never happen if ontology is good
+
+            intersection = anc_descendants & lab_descendants
+
+            precision = len(intersection) / len(anc_descendants)
+            recall = len(intersection) / len(lab_descendants)
+            f1 = 2 * precision * recall / (precision + recall)
+
+            computed_metrics[anc] = min(computed_metrics[anc], f1)
+
+    return computed_metrics
+
+
+def exponential_decay(answers, ontology):
     aug_answers = dict()
     ancestors = dict()
 
