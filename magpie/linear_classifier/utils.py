@@ -1,4 +1,3 @@
-import itertools
 import time
 
 from magpie.linear_classifier.base.ontology import OntologyFactory
@@ -85,21 +84,3 @@ def calculate_recall_for_kw_candidates(data_dir, recreate_ontology=False, verbos
         print("Time elapsed: " + str(time.clock() - start_time))
 
     return average_recall
-
-
-def get_all_permutations(phrase):
-    """ Generate all word permutations in a string. If a string contains more
-     than 3 words, only the original phrase is returned. Otherwise all
-     permutations of the phrase are generated and returned as a list. """
-    MAX_PERMUTATION_LENGTH = 3
-
-    words = phrase.split()
-
-    if len(words) > MAX_PERMUTATION_LENGTH:
-        return [phrase]
-
-    permutations = []
-    for p in itertools.permutations(words):
-        permutations.append(' '.join(p))
-
-    return permutations
