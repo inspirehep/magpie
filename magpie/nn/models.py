@@ -49,7 +49,7 @@ def cnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     model.add(Dense(output_length, activation='sigmoid'))
 
     model.compile(
-        loss='binary_crossentropy',
+        loss='mse',
         optimizer='adam',
         metrics=['accuracy'],
     )
@@ -96,7 +96,7 @@ def crnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     model.add(Dense(output_length, activation='sigmoid'))
 
     model.compile(
-        loss='binary_crossentropy',
+        loss='mse',
         optimizer='adam',
         metrics=['accuracy'],
     )
@@ -124,7 +124,7 @@ def rnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     model.add(Dense(output_length, activation='sigmoid'))
 
     model.compile(
-        loss='binary_crossentropy',
+        loss='mse',
         optimizer='adam',
         metrics=['accuracy'],
     )
