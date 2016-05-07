@@ -12,7 +12,7 @@ from rdflib.namespace import SKOS
 from magpie.linear_classifier.config import ONTOLOGY_DIR, NO_OF_LABELS
 from magpie.linear_classifier.candidates.trie import MarisaTrie
 
-PUNCTUATION_TABLE = dict((ord(c), None) for c in u',:;')
+PUNCTUATION_TABLE = dict((ord(c), None) for c in u':;')
 
 
 _ontology = dict()
