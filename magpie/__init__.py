@@ -153,11 +153,9 @@ class MagpieModel(object):
         :return: list of labels with corresponding confidence intervals
         """
         if type(self.keras_model.input) == list:
-            input_layer = self.keras_model.input[0]
+            _, sample_length, embedding_size = self.keras_model.input_shape[0]
         else:
-            input_layer = self.keras_model.input
-
-        _, sample_length, embedding_size = input_layer.get_shape()
+            _, sample_length, embedding_size = self.keras_model.input_shape
 
         words = doc.get_all_words()[:sample_length]
         x_matrix = np.zeros((1, sample_length, embedding_size))
