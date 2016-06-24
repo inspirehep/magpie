@@ -60,7 +60,17 @@ Trained models can be used for prediction with methods:
 ```
 
 ## Installation
-The package has several dependencies, we're working to reduce this number. The one that's not going anywhere is [Keras](https://github.com/fchollet/keras) with Theano or TensorFlow backend, so make sure to install them first. Afterwards, install the package from GitHub:
+The package has several dependencies, we're working to reduce this number. Before downloading Magpie, make sure to install:
+ - [numpy](http://www.numpy.org/)
+ - [keras](https://github.com/fchollet/keras) with Theano or TensorFlow backend.
+ - [gensim](http://radimrehurek.com/gensim/)
+ - [scikit-learn](http://scikit-learn.org/stable/index.html)
+ - [nltk](http://www.nltk.org/install.html)
+
+Afterwards, install the package from GitHub:
 ```
 $ pip install git+https://github.com/jstypka/magpie.git
 ```
+
+## Contact
+If you have any problems, feel free to open an issue. We'll do our best to help :+1:
