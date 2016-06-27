@@ -1,6 +1,4 @@
-![image](docs/img/logo.jpeg)
-
-[![Build Status](https://travis-ci.org/jstypka/magpie.svg?branch=master)](https://travis-ci.org/jstypka/magpie) 
+![image](docs/img/logo.png)
 
 Magpie is a deep learning tool for multi-label text classification. It learns on the training corpus to assign labels to arbitrary text and can be used to predict those labels on unknown data. It has been developed at CERN to assign subject categories to High Energy Physics abstracts and extract keywords from them.
 
