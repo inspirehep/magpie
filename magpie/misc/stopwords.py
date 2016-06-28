@@ -1,5 +1,5 @@
 
-PUNCTUATION = '.,:;!?()/-<>[]{}|\\@#`$%^&*'
+PUNCTUATION = '.,:;!?()/\"-<>[]{}|\\@#`$%^&*'
 
 # TODO try the nltk.corpus.stopwords
 STOPWORDS = {
