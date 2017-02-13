@@ -1,4 +1,5 @@
 import os
+import sys
 
 import nltk
 
@@ -25,7 +26,13 @@ class Document(object):
             self.filename = os.path.basename(filepath)
 
             with open(filepath, 'r') as f:
-                self.text = f.read().decode('utf-8')
+                try:
+                    self.text = f.read().decode('utf-8')
+                except AttributeError:
+                    if sys.version_info.major == 3:
+                        self.text = f.read()
+                    else:
+                        raise
 
         self.wordset = self.compute_wordset()
 
