@@ -81,7 +81,7 @@ setup(
         'gensim',
         'sklearn',
         # 'Click',
-        'keras',
+        'keras==1.1.1',
     ],
 
     # List additional groups of dependencies here (e.g. development
