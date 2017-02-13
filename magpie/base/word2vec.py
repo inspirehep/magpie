@@ -86,7 +86,7 @@ def fit_scaler(data_dir, word2vec_model=WORD2VEC_MODELPATH, batch_size=1024,
                     vectors.append(word2vec_model[word])
 
         matrix = np.array(vectors)
-        print "Fitted to {} vectors".format(matrix.shape[0])
+        print("Fitted to {} vectors".format(matrix.shape[0]))
 
         scaler.partial_fit(matrix)
 

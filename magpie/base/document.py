@@ -1,4 +1,5 @@
 import os
+import sys
 
 import nltk
 
@@ -25,7 +26,13 @@ class Document(object):
             self.filename = os.path.basename(filepath)
 
             with open(filepath, 'r') as f:
-                self.text = f.read().decode('utf-8')
+                try:
+                    self.text = f.read().decode('utf-8')
+                except AttributeError:
+                    if sys.version_info.major == 3:
+                        self.text = f.read()
+                    else:
+                        raise
 
         self.wordset = self.compute_wordset()
 
@@ -34,7 +41,13 @@ class Document(object):
 
     def compute_wordset(self):
         tokens = WordPunctTokenizer().tokenize(self.text)
-        lowercase = map(unicode.lower, tokens)
+        try:
+            lowercase = map(unicode.lower, tokens)
+        except NameError:
+            if sys.version_info.major == 3:
+                lowercase = map(str.lower, tokens)
+            else:
+                raise
         return set(lowercase) - {',', '.', '!', ';', ':', '-', '', None}
 
     def get_all_words(self):

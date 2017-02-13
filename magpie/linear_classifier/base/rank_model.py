@@ -72,7 +72,7 @@ def fast_transform_pairwise(x, y):
     hits = np.where(y[:, 0])[0]
     comparisons = len(hits) * (len(y) - len(hits))
     row_to_write = 0
-    print comparisons, x.shape
+    print(comparisons, x.shape)
     x_new = np.zeros((comparisons, len(x[0])))
     y_new = np.zeros(comparisons, dtype=np.int16)
 
