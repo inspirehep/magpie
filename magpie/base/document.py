@@ -1,3 +1,5 @@
+from __future__ import print_function, unicode_literals
+
 import os
 
 import nltk
@@ -25,7 +27,11 @@ class Document(object):
             self.filename = os.path.basename(filepath)
 
             with open(filepath, 'r') as f:
-                self.text = f.read().decode('utf-8')
+                self.text = f.read()
+
+                # Python 2 compatibility
+                if type(self.text) != str:
+                    self.text = self.text.decode('utf-8')
 
         self.wordset = self.compute_wordset()
 
@@ -34,7 +40,7 @@ class Document(object):
 
     def compute_wordset(self):
         tokens = WordPunctTokenizer().tokenize(self.text)
-        lowercase = map(unicode.lower, tokens)
+        lowercase = [t.lower() for t in tokens]
         return set(lowercase) - {',', '.', '!', ';', ':', '-', '', None}
 
     def get_all_words(self):
