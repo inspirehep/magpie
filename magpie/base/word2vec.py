@@ -1,6 +1,6 @@
 from __future__ import print_function, unicode_literals
 import os
-
+import six
 import numpy as np
 
 from gensim.models import Word2Vec
@@ -75,7 +75,7 @@ def fit_scaler(data_dir, word2vec_model=WORD2VEC_MODELPATH, batch_size=1024,
         batch = []
         for i in range(batch_size):
             try:
-                batch.append(doc_generator.next())
+                batch.append(six.next(doc_generator))
             except StopIteration:
                 no_more_samples = True
                 break
