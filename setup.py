@@ -71,17 +71,13 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
-        # 'marisa_trie',
-        # 'networkx',
-        # 'rdflib',
-        'nltk',
-        'numpy',
-        'scipy',
-        # 'pandas',
-        'gensim',
-        'sklearn',
-        # 'Click',
-        'keras',
+        'nltk~=3.2',    # most of these can probably be upgraded later
+        'numpy~=1.12',  # but keras should stay at 1.1.1
+        'scipy~=0.18',
+        'gensim~=0.13',
+        'scikit-learn~=0.18',
+        'keras==1.1.1',
+        'h5py~=2.6',
     ],
 
     # List additional groups of dependencies here (e.g. development
