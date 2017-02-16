@@ -60,34 +60,28 @@ model.predict_from_text(u'This text should preferably be longer to give more inf
 # yields [('label3', 0.47), ('label1', 0.12), ('label2', 0.003)]
 ```
 ## Saving & loading the model
-A `MagpieModel` object consists of three components - the word2vec mappings, a scaler and a `keras` model. In order to train Magpie you can either provide the word2vec mappings and a scaler in advance or let the program compute them for you on the training data. Usually you would want to train them yourself on a full dataset and reuse them afterwards. You can use the `magpie.utils.save_to_disk` function for that purpose:
+A `MagpieModel` object consists of three components - the word2vec mappings, a scaler and a `keras` model. In order to train Magpie you can either provide the word2vec mappings and a scaler in advance or let the program compute them for you on the training data. Usually you would want to train them yourself on a full dataset and reuse them afterwards. You can use the provided functions for that purpose:
 
 ```python
 model.init_word_vectors('/path/to/directory-with-text', vec_dim=100)
-magpie.utils.save_to_disk('/save/my/embeddings/here', model.word2vec_model)
-magpie.utils.save_to_disk('/save/my/scaler/here', model.scaler, overwrite=True)
-```
-
-However for `keras` model serialisation, it is recommended to use its own function:
-
-```python
 model.train('/train/path', ['cat', 'dog', 'cow'], nb_epochs=10)
-model.keras_model.save('/save/my/model/here.h5')
+
+model.save_word2vec_model('/save/my/embeddings/here')
+model.save_scaler('/save/my/scaler/here', overwrite=True)
+model.save_model('/save/my/model/here.h5')
 ```
 
-When you want to reinitialize your trained model, you only need to run:
+When you want to reinitialize your trained model, you can run:
 
 ```python
-from keras.models import load_model
-from magpie.utils import load_from_disk
-
-w2v = load_from_disk('/save/my/embeddings/here')
-scaler = load_from_disk('/save/my/scaler/here')
-keras_model = load_model('/save/my/model/here.h5')
-labels = ['cat', 'dog', 'cow']
-
-mm = MagpieModel(keras_model=keras_model, word2vec_model=w2v, scaler=scaler, labels=labels)
+mm = MagpieModel(
+    keras_model='/save/my/model/here.h5',
+    word2vec_model='/save/my/embeddings/here',
+    scaler='/save/my/scaler/here',
+    labels=['cat', 'dog', 'cow']
+)
 ```
+or just pass the objects directly!
 
 ## Installation
 The package has several dependencies, we're working to reduce this number. Before downloading Magpie, make sure to install:

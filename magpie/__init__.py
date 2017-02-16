@@ -1,7 +1,9 @@
 from __future__ import unicode_literals, print_function, division
 
 import os
+from six import string_types
 
+import keras.models
 import numpy as np
 
 from magpie.base.document import Document
@@ -9,16 +11,29 @@ from magpie.base.word2vec import train_word2vec, fit_scaler
 from magpie.config import NN_ARCHITECTURE, BATCH_SIZE, EMBEDDING_SIZE, NB_EPOCHS
 from magpie.nn.input_data import get_data_for_model
 from magpie.nn.models import get_nn_model
+from magpie.utils import save_to_disk, load_from_disk
 
 
 class MagpieModel(object):
 
     def __init__(self, keras_model=None, word2vec_model=None, scaler=None,
                  labels=None):
-        self.keras_model = keras_model
-        self.word2vec_model = word2vec_model
-        self.scaler = scaler
         self.labels = labels
+
+        if isinstance(keras_model, string_types):
+            self.load_model(keras_model)
+        else:
+            self.keras_model = keras_model
+
+        if isinstance(word2vec_model, string_types):
+            self.load_word2vec_model(word2vec_model)
+        else:
+            self.word2vec_model = word2vec_model
+
+        if isinstance(scaler, string_types):
+            self.load_scaler(scaler)
+        else:
+            self.scaler = scaler
 
     def train(self, train_dir, vocabulary, test_dir=None, callbacks=None,
               nn_model=NN_ARCHITECTURE, batch_size=BATCH_SIZE,
@@ -228,3 +243,31 @@ class MagpieModel(object):
         self.scaler = fit_scaler(train_dir, word2vec_model=self.word2vec_model)
 
         return self.scaler
+
+    def save_scaler(self, filepath, overwrite=False):
+        """ Save the scaler object to a file """
+        save_to_disk(filepath, self.scaler, overwrite=overwrite)
+
+    def load_scaler(self, filepath):
+        """ Load the scaler object from a file """
+        self.scaler = load_from_disk(filepath)
+
+    def save_word2vec_model(self, filepath, overwrite=False):
+        """ Save the word2vec model to a file """
+        save_to_disk(filepath, self.word2vec_model, overwrite=overwrite)
+
+    def load_word2vec_model(self, filepath):
+        """ Load the word2vec model from a file """
+        self.word2vec_model = load_from_disk(filepath)
+
+    def save_model(self, filepath):
+        """ Save the keras NN model to a HDF5 file """
+        if os.path.exists(filepath):
+            raise ValueError("File " + filepath + " already exists!")
+        self.keras_model.save(filepath)
+
+    def load_model(self, filepath):
+        """ Load the keras NN model from a HDF5 file """
+        if not os.path.exists(filepath):
+            raise ValueError("File " + filepath + " does not exist")
+        self.keras_model = keras.models.load_model(filepath)
