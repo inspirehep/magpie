@@ -5,7 +5,6 @@ import threading
 
 import numpy as np
 from gensim.models import Word2Vec
-from keras.models import Graph
 
 from magpie.base.document import Document
 from magpie.config import BATCH_SIZE, WORD2VEC_MODELPATH, EMBEDDING_SIZE,\
@@ -90,14 +89,9 @@ def build_x_and_y(filenames, file_directory, **kwargs):
             y_matrix[doc_id][index] = True
 
     if nn_model and type(nn_model.input) == list:
-        return_data = [x_matrix] * len(nn_model.input), y_matrix
+        return [x_matrix] * len(nn_model.input), y_matrix
     else:
-        return_data = [x_matrix], y_matrix
-
-    if type(nn_model) == Graph:
-        return {'input': return_data[0], 'output': return_data[1]}
-    else:
-        return return_data
+        return [x_matrix], y_matrix
 
 
 def iterate_over_batches(filename_it, **kwargs):
