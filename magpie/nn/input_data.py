@@ -7,8 +7,8 @@ import numpy as np
 from gensim.models import Word2Vec
 
 from magpie.base.document import Document
-from magpie.config import BATCH_SIZE, WORD2VEC_MODELPATH, EMBEDDING_SIZE,\
-    SCALER_PATH, SAMPLE_LENGTH
+from magpie.config import BATCH_SIZE, WORD2VEC_MODELPATH, SCALER_PATH,\
+    SAMPLE_LENGTH
 from magpie.utils import get_answers_for_doc, load_from_disk
 
 
@@ -32,8 +32,8 @@ def get_data_for_model(train_dir, labels, test_dir=None, nn_model=None,
 
     kwargs = dict(
         label_indices={lab: i for i, lab in enumerate(labels)},
-        word2vec_model=word2vec_model or Word2Vec.load(WORD2VEC_MODELPATH),
-        scaler=scaler or load_from_disk(SCALER_PATH),
+        word2vec_model=word2vec_model,
+        scaler=scaler,
         nn_model=nn_model,
     )
 
@@ -66,7 +66,7 @@ def build_x_and_y(filenames, file_directory, **kwargs):
     scaler = kwargs['scaler']
     nn_model = kwargs['nn_model']
 
-    x_matrix = np.zeros((len(filenames), SAMPLE_LENGTH, EMBEDDING_SIZE))
+    x_matrix = np.zeros((len(filenames), SAMPLE_LENGTH, word2vec_model.vector_size))
     y_matrix = np.zeros((len(filenames), len(label_indices)), dtype=np.bool_)
 
     for doc_id, fname in enumerate(filenames):
