@@ -84,17 +84,12 @@ mm = MagpieModel(
 or just pass the objects directly!
 
 ## Installation
-The package has several dependencies, we're working to reduce this number. Before downloading Magpie, make sure to install:
- - [numpy](http://www.numpy.org/)
- - [keras](https://github.com/fchollet/keras) with Theano or TensorFlow backend.
- - [gensim](http://radimrehurek.com/gensim/)
- - [scikit-learn](http://scikit-learn.org/stable/index.html)
- - [nltk](http://www.nltk.org/install.html)
 
-Afterwards, install the package from GitHub:
+The package is not on PyPi, but you can get it directly from GitHub:
 ```
-$ pip install git+https://github.com/jstypka/magpie.git
+$ pip install git+https://github.com/inspirehep/magpie.git
 ```
+If you encounter any problems with the installation, make sure to install the correct versions of dependencies listed in `setup.py` file.
 
 ## Contact
 If you have any problems, feel free to open an issue. We'll do our best to help :+1:
