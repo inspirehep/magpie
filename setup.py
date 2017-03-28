@@ -53,14 +53,11 @@ setup(
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
         'Programming Language :: Python :: 2',
-        # 'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
-        # 'Programming Language :: Python :: 3',
-        # 'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3',
     ],
 
     # What does your project relate to?
-    keywords='automatic keyword keyphrase extraction document classification',
+    keywords='multi-label classification nlp neural networks deep learning',
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
@@ -71,12 +68,12 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
-        'nltk~=3.2',    # most of these can probably be upgraded later
-        'numpy~=1.12',  # but keras should stay at 1.1.1
+        'nltk~=3.2',
+        'numpy~=1.12',
         'scipy~=0.18',
         'gensim~=0.13',
         'scikit-learn~=0.18',
-        'keras==1.1.1',
+        'keras~=1.2.2',
         'h5py~=2.6',
     ],
 

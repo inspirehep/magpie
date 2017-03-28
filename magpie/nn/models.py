@@ -2,7 +2,7 @@ from keras.layers.convolutional import MaxPooling1D, Convolution1D
 from keras.layers.core import Flatten, Dropout, Dense, Merge
 from keras.layers.normalization import BatchNormalization
 from keras.layers.recurrent import GRU
-from keras.models import Sequential, Graph
+from keras.models import Sequential
 
 from magpie.config import EMBEDDING_SIZE, SAMPLE_LENGTH
 

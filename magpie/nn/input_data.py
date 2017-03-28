@@ -5,11 +5,10 @@ import threading
 
 import numpy as np
 from gensim.models import Word2Vec
-from keras.models import Graph
 
 from magpie.base.document import Document
-from magpie.config import BATCH_SIZE, WORD2VEC_MODELPATH, EMBEDDING_SIZE,\
-    SCALER_PATH, SAMPLE_LENGTH
+from magpie.config import BATCH_SIZE, WORD2VEC_MODELPATH, SCALER_PATH,\
+    SAMPLE_LENGTH
 from magpie.utils import get_answers_for_doc, load_from_disk
 
 
@@ -33,8 +32,8 @@ def get_data_for_model(train_dir, labels, test_dir=None, nn_model=None,
 
     kwargs = dict(
         label_indices={lab: i for i, lab in enumerate(labels)},
-        word2vec_model=word2vec_model or Word2Vec.load(WORD2VEC_MODELPATH),
-        scaler=scaler or load_from_disk(SCALER_PATH),
+        word2vec_model=word2vec_model,
+        scaler=scaler,
         nn_model=nn_model,
     )
 
@@ -67,7 +66,7 @@ def build_x_and_y(filenames, file_directory, **kwargs):
     scaler = kwargs['scaler']
     nn_model = kwargs['nn_model']
 
-    x_matrix = np.zeros((len(filenames), SAMPLE_LENGTH, EMBEDDING_SIZE))
+    x_matrix = np.zeros((len(filenames), SAMPLE_LENGTH, word2vec_model.vector_size))
     y_matrix = np.zeros((len(filenames), len(label_indices)), dtype=np.bool_)
 
     for doc_id, fname in enumerate(filenames):
@@ -90,14 +89,9 @@ def build_x_and_y(filenames, file_directory, **kwargs):
             y_matrix[doc_id][index] = True
 
     if nn_model and type(nn_model.input) == list:
-        return_data = [x_matrix] * len(nn_model.input), y_matrix
+        return [x_matrix] * len(nn_model.input), y_matrix
     else:
-        return_data = [x_matrix], y_matrix
-
-    if type(nn_model) == Graph:
-        return {'input': return_data[0], 'output': return_data[1]}
-    else:
-        return return_data
+        return [x_matrix], y_matrix
 
 
 def iterate_over_batches(filename_it, **kwargs):
