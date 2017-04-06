@@ -1,5 +1,6 @@
 from __future__ import print_function, unicode_literals
 
+import io
 import os
 
 import nltk
@@ -26,12 +27,8 @@ class Document(object):
             self.filepath = filepath
             self.filename = os.path.basename(filepath)
 
-            with open(filepath, 'r') as f:
+            with io.open(filepath, 'r') as f:
                 self.text = f.read()
-
-                # Python 2 compatibility
-                if type(self.text) != str:
-                    self.text = self.text.decode('utf-8')
 
         self.wordset = self.compute_wordset()
 
