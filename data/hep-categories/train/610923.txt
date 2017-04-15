@@ -1,0 +1,2 @@
+Symmetries leading to inflation
+We present here the general transformation that leaves unchanged the form of the field equations for perfect fluid Friedmann--Robertson--Walker and Bianchi V cosmologies. The symmetries found can be used as algorithms for generating new cosmological models from existing ones. A particular case of the general transformation is used to illustrate the crucial role played by the number of scalar fields in the occurrence of inflation. Related to this, we also study the existence and stability of Bianchi V power law solutions.

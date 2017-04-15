@@ -1,0 +1,2 @@
+A Predictive seesaw scenario for EDMs
+The generation of electric dipole moments (EDMs) is addressed in the supersymmetric seesaw scenario realized through the exchange of SU(2)_W triplet states. In particular, we show that the triplet soft-breaking bilinear term can induce finite contributions to lepton and quark EDMs. Moreover, the peculiar flavour structure of the model allows us to predict the EDM ratios d_e/d_mu and d_mu/d_tau only in terms of the neutrino parameters.

@@ -1,0 +1,2 @@
+Linear Confinement for Mesons and Nucleons in AdS/QCD
+By using a new parametrization of the dilaton field and including a cubic term in the bulk scalar potential, we realize linear confinement in both meson and nucleon sectors within the framework of soft-wall AdS/QCD. At the same time this model also correctly incorporate chiral symmetry breaking. We compare our resulting mass spectra with experimental data and find good agreement between them.

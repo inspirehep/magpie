@@ -1,0 +1,2 @@
+The influence of Lorentz violation on UHE photon detection
+We show that violation of the Lorentz symmetry in quantum electrodynamics can suppress the rates of the interactions crucial for the formation of photon-induced air showers, such as pair production on nuclei and in the geomagnetic field. As a consequence, the allowed region in the space of Lorentz-violating parameters will be seriously restricted if several photons with energies $\gtrsim\,10^{19}\, {eV}$ are detected.

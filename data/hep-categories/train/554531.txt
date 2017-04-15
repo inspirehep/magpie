@@ -1,0 +1,2 @@
+Branes wrapped on coassociative cycles
+We obtain a supergravity solution arising when D6-branes are wrapped on coassociative four-cycles of constant curvature in seven manifolds of G_2 holonomy. The solutions preserve two supercharges and thus represent supergravity duals of three dimensional Yang-Mills with N=1 supersymmetry. When uplifted to eleven dimensions our solution describes M-theory on the background of an eight manifold with Spin(7) holonomy.

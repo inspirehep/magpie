@@ -1,0 +1,2 @@
+TFD approach for bosonic strings and D(p) branes
+In this work we explain the construction of the thermal vacuum for the bosonic string, as well that of the thermal boundary state interpreted as a $D_{p}$-brane at finite temperature. In both case we calculate the respective entropy using the entropy operator of the Thermo Field Dynamics Theory. We show that the contribution of the thermal string entropy is explicitly present in the $D_{p}$-brane entropy. Furthermore, we show that the Thermo Field approach is suitable to introduce temperature in boundary states.

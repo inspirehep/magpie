@@ -1,0 +1,2 @@
+Ultra High Energy Cosmic Rays Propagation and Spectrum
+The status of the observations of Ultra High Energy Cosmic Rays will be reviewed, focusing on the the latest results of HiRes and Auger observatories. A comprehensive analytical computation scheme to compute the expected UHECR spectrum on earth will be presented, applying such scheme to interpret the experimental results. The phenomenological scenarios favored by HiRes and Auger in terms of chemical composition and spectrum will be also presented.

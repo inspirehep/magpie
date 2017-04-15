@@ -1,0 +1,2 @@
+Recent developments in NLO QCD calculations: The Particular case of pp ---> ttjj
+A very brief status of next-to-leading order QCD calculations is given. As an example the next-to-leading order QCD calculations to the pp -> ttjj processes at the CERN Large Hardon Collider are presented. Results for integrated and differential cross sections are shown. They have been obtained in the framework of the HELAC-NLO system.

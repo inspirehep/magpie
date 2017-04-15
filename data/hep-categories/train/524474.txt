@@ -1,0 +1,2 @@
+A Component of superconnection of 11-dimensional curved superspace at second order in anti-commuting coordinates
+We calculate a component of connection superfields and Lorentz superparameter at second order in anticommuting coordinates in terms of the component fields of 11-dimensional on-shell supergravity by using `Gauge completion'. This configuration of superspace holds the $\kappa $-symmetry for supermembrane Lagrangian and represents 11-dimensional on-shell supergravity.

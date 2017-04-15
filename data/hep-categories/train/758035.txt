@@ -1,0 +1,2 @@
+On the dynamics of a quadratic scalar field potential
+We review the attractor properties of the simplest chaotic model of inflation, in which a minimally coupled scalar field is endowed with a quadratic scalar potential. The equations of motion in a flat Friedmann-Robertson-Walker universe are written as an autonomous system of equations, and the solutions of physical interest appear as critical points. This new formalism is then applied to the study of inflation dynamics, in which we can go beyond the known slow-roll formalism of inflation.

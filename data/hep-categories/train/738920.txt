@@ -1,0 +1,2 @@
+Novel Effects in Electroweak Breaking from a Hidden Sector
+The Higgs boson offers a unique window to hidden sector fields S_i, singlets under the Standard Model gauge group, via the renormalizable interactions |H|^2 S_i^2. We prove that such interactions can provide new patterns for electroweak breaking, including radiative breaking by dimensional transmutation consistent with LEP bounds, and trigger the strong enough first order phase transition required by electroweak baryogenesis.

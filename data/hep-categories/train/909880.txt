@@ -1,0 +1,2 @@
+Second-Order Approximate Corrections for QCD Processes
+I present generalized formulas for approximate corrections to QCD hard-scattering cross sections through second order in the perturbative expansion. The approximate results are based on recent two-loop calculations for soft and collinear emission near threshold and are illustrated by several applications to strong-interaction processes in hadron colliders.

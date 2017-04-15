@@ -1,0 +1,2 @@
+Gravitational Wave Background and Non-Gaussianity as a Probe of the Curvaton Scenario
+We study observational implications of the stochastic gravitational wave background and a non-Gaussian feature of scalar perturbations on the curvaton mechanism of the generation of density/curvature fluctuations, and show that they can determine the properties of the curvaton in a complementary manner to each other. Therefore even if Planck could not detect any non-Gaussianity, future space-based laser interferometers such as DECIGO or BBO could practically exhaust its parameter space.

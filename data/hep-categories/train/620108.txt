@@ -1,0 +1,2 @@
+Masses, lifetimes and decays of B hadrons at the Tevatron
+The latest results in B physics from the CDF and D0 experiments at the Tevatron are presented, including inclusive b lifetime measurement and exclusive lifetime measurement of the B_s. Promising samples collected by CDF with its Secondary Vertex Trigger are shown as well.

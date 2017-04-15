@@ -1,0 +1,2 @@
+Some peculiarities in response on filling up the Fermi sphere by quarks
+Considering quarks as the quasi-particles of the model Hamiltonian with four-fermion interaction we study response on the process of filling up the Fermi sphere by quarks.

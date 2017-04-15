@@ -1,0 +1,2 @@
+Scalar models for the unification of the dark sector
+We review the difficulties of the generalized Chaplygin gas model to fit observational data, due to the tension between background and perturbative tests. We argue that such issues may be circumvented by means of a self-interacting scalar field representation of the model. However, this proposal seems to be successful only if the self-interacting scalar field has a non-canonical form. The latter can be implemented in Rastall's theory of gravity.

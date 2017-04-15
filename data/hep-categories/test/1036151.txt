@@ -1,0 +1,2 @@
+Quantization, Holography and the Universal Coefficient Theorem
+I present a method of performing geometric quantization using cohomology groups extended via coefficient groups of different types. This is possible according to the Universal Coefficient Theorem (UTC). I also show that by using this method new features of quantum field theory not visible in the previous treatments emerge. The main observation is that the ideas leading to the holographic principle can be interpreted in the context of the universal coefficient theorem from a totally different perspective.

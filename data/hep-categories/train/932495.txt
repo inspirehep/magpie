@@ -1,0 +1,2 @@
+DEAP-3600 Dark Matter Search at SNOLAB
+The DEAP-3600 detector, currently under construction at SNOLAB, has been designed to achieve extremely low background rates from all sources, including 39Ar beta decays, neutron scatters (from internal and external sources), surface alpha contamination and radon. An overview of the detector and its sensitivity are presented.

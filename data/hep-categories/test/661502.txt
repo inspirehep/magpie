@@ -1,0 +1,2 @@
+Maximal CP violation hypothesis and phase convention of the CKM matrix
+The maximal CP violation hypothesis depends on the phase convention of the Cabibbo-Kobayashi-Maskawa matrix. A phase convention which leads to successful prediction under the maximal CP violation hypothesis is searched, and thereby, possible structures of the quark mass matrices are speculated.

@@ -1,0 +1,2 @@
+Puzzles for matrix models of chiral field theories
+We summarize the field-theory/matrix model correspondence for a chiral N=1 model with matter in the adjoint, antisymmetric and conjugate symmetric representations as well as eight fundamentals to cancel the chiral anomaly. The associated holomorphic matrix model is consistent only for two fundamental fields, which requires a modification of the original Dijkgraaf-Vafa conjecture. The modified correspondence holds in spite of this mismatch.

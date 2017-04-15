@@ -1,0 +1,2 @@
+Electromagnetic decays of radially excited mesons pi0', rho0', omega', and production of pi0' at lepton colliders
+Radiative decays I (0)(I (0')) -> l + l, I (0') -> I (0)(I ) + l, I (0')(I ') -> I (0) + l, I (0')(I ') -> I (0') + l, and some processes of I (0') production at lepton colliders are considered in the framework of the nonlocal SU(2) Oe SU(2) Nambu-Jona-Lasinio model. Mixing of the radially excited and the ground meson states is taken into account. Numerical results for the decay and production processes are presented.

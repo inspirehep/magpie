@@ -1,0 +1,2 @@
+Some Aspects of Low Energy Properties of Nucleons
+We conclude that nucleon is a many body complex system whose low-energy behaviour is determined mainly by strong interaction. Non-perturbative approach to QCD, such as QCD sum rule and the QCD based effective theory, and the models such as a statistical model, have a complementary role in exposing different aspects of nucleonic properties.

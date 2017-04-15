@@ -1,0 +1,2 @@
+Chiral supergravitons interacting with a 0 brane N extended NSR superVirasoro group
+We continue the development of the actions, S_{AFF}, by examining the cases where there are N fermionic degrees of freedom associated with a 0-brane. These actions correspond to the interaction of the N-extended super Virasoro algebra with the supergraviton and the associated SO(N) gauge field that accompanies the supermultiplet. The superfield formalism is used throughout so that supersymmetry is explicit.

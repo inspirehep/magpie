@@ -1,0 +1,2 @@
+PNJL Model Analysis of the Roberge-Weiss Transition Endpoint at Imaginary Chemical Potential
+Motivated by lattice QCD studies we investigate the RW transition endpoint at imaginary chemical potential in a two-flavor PNJL model. We focus on the quark-mass dependence of the endpoint using different forms of the Polyakov-loop potential.

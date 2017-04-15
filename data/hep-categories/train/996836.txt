@@ -1,0 +1,2 @@
+Some approaches to GPDs in AdS/QCD
+We discuss a way to get some generalized parton distributions (GPDs) of quarks using AdS/QCD models. The approach is based on a matching procedure of sum rules relating the electromagnetic form factors to GPDs and AdS modes. SOURCE = Polish Physical Society

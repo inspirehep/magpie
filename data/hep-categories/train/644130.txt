@@ -1,0 +1,2 @@
+Casimir effect for scalar fields with Robin boundary conditions in Schwarzschild background
+The stress tensor of a massless scalar field satisfying Robin boundary conditions on two one-dimensional wall in two-dimensional Schwarzschild background is calculated. We show that vacuum expectation value of stress tensor can be obtained explicitly by Casimir effect, trace anomaly and Hawking radiation.

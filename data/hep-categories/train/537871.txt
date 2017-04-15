@@ -1,0 +1,2 @@
+Exotic solutions to the solar neutrino problem and some implications for low-energy solar neutrino experiments
+In this talk, I review, from the phenomenological point of view, solutions to the solar neutrino problem, which are not provided by the conventional neutrino oscillation induced by mass and flavor mixing, and show that they can provide a good fit to the observed data. I also consider some simple implications for low energy solar neutrino experiments.

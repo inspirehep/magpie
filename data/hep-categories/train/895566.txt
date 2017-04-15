@@ -1,0 +1,2 @@
+An Alternative subtraction scheme for NLO calculations
+We present a new subtraction scheme for next-to-leading order QCD calculations, where the momentum mapping and the splitting functions have been derived in the context of an improved parton shower formulation. A main advantage of our scheme is the significantly reduced number of momentum mappings in the subtraction terms compared to standard schemes. We present the major features of our scheme and discuss the process e q -> e q (g) in more detail.

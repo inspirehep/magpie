@@ -1,0 +1,2 @@
+Comment on ` Light front Schwinger model at finite temperature'
+In a recent paper by A. Das and X. Zhou [Phys. Rev. D 68, 065017 (2003)] it is claimed that explicit evaluation of the thermal photon self-energy in the Schwinger model gives off-shell thermal Green functions that are different in light-front and conventional quantizations. We show that the claimed difference originates from an erroneous simplification of the fermion propagator used in the light-front calculation.

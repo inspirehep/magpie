@@ -1,0 +1,2 @@
+Spontaneous localization of bulk matter fields
+We study models compactified on S^1/Z_2 with bulk and brane matter fields charged under U(1) gauge symmetry. We calculate the FI-terms and show by minimizing the resulting potential that supersymmetry or gauge symmetry is spontaneously broken if the sum of the charges does not vanish. Even if this sum vanishes, there could be an instability as a consequence of localized FI-terms. This leads to a spontaneous localization of charged bulk fields on respective branes.

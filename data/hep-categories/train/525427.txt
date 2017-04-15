@@ -1,0 +1,2 @@
+Wavelets on nuclear interactions and QCD on jet multiplicities
+This talk at Fradkin conference is devoted to brief description of latest results in two topics I worked on during last years. The multiresolution analysis and fast wavelet transform became a standard procedure for pattern recognition and I describe how it has been used for analysis of high energy nucleus-nucleus interactions. Latest QCD results on multiplicities in quark and gluon jets are discussed and confronted to experimental data.

@@ -1,0 +1,2 @@
+Generalized Poisson sigma models
+A general master action in terms of superfields is given which generates generalized Poisson sigma models by means of a natural ghost number prescription. The simplest representation is the sigma model considered by Cattaneo and Felder. For Dirac brackets considerably more general models are generated.

@@ -1,0 +1,2 @@
+Fermions, Wigs, and Attractors
+We compute the modifications to the attractor mechanism due to fermionic corrections. In N=2, D=4 supergravity, at the fourth order, we find a new contribution to the horizon values of the scalar fields of the vector multiplets.

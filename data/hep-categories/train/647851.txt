@@ -1,0 +1,2 @@
+Quantum uncertainty in doubly special relativity
+The modification of the quantum mechanical commutators in a relativistic theory with an invariant length scale (DSR) is identified. Two examples are discussed where a classical behavior is approached in one case when the energy approaches the inverse of the invariant length which appears as a cutoff in the energy and in the second case when the mass is much larger than the inverse of the invariant length.

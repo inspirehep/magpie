@@ -1,0 +1,2 @@
+MATCHIG: A Program for matching charged Higgs boson production at hadron colliders
+This manual describes how to use the MatCHig code for matching the charged Higgs boson production processes gg->tbH+/- and gb->tH+/-. A negative term, correcting for the double-counting between these processes, is implemented as an external process to PYTHIA, allowing the Monte Carlo generation of matched events. Results from the matching were published in JHEP 0412, 050. The code can be downloaded from http://www.isv.uu.se/thep/MC/matchig/ .

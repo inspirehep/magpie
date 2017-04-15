@@ -1,0 +1,2 @@
+Quasinormal modes in time-dependent black hole background
+We have studied the evolution of the massless scalar field propagating in time-dependent charged Vaidya black hole background. A generalized tortoise coordinate transformation were used to study the evolution of the massless scalar field. It is shown that, for the slowest damped quasinormal modes, the approximate formulae in stationary Reissner-Nordstr{o}m black hole turn out to be a reasonable prescription, showing that results from quasinormal mode analysis are rather robust.

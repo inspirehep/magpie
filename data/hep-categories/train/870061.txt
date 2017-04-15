@@ -1,0 +1,2 @@
+Anomaly breaking of de Sitter symmetry
+To one loop order, interacting boson fields on de Sitter space have an 'infrared' anomaly that breaks the de Sitter symmetry for all vacua save the Euclidian one. The divergence of a symmetry current at point $x$ has a non-zero contribution at the antipodal point ${\bar x}$.

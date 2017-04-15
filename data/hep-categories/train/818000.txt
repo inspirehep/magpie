@@ -1,0 +1,2 @@
+Meson wave function from holographic models
+We consider the light-front wave function for the valence quark state of mesons using the AdS/CFT correspondence, as has been suggested by Brodsky and Teramond. Two kinds of wave functions, obtained in different holographic Soft-Wall models, are discussed.

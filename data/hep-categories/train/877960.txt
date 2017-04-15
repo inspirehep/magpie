@@ -1,0 +1,2 @@
+Cosmological properties of a generic (\cal R)^2-supergravity
+We investigate in detail the structure of the simplest non-trivial F(\cal R)-supergravity model, whose F-function is given by a generic quadratic polynomial in terms of the scalar supercurvature (\cal R). This toy-model admits a fully explicit derivation of the corresponding f(R)-gravity functions. We apply the stability conditions for selecting the physical f(R)-gravity functions, and discuss the phenomenological prospects of F(\cal R)-supergravity in its application to cosmology.

@@ -1,0 +1,2 @@
+Measurement of the Higgs boson decay branching ratio to charm quarks at the ILC
+We present an analysis for the measurement of the Higgs boson branching ratio H-> cc-bar for a light Standard Model-like Higgs boson produced at 250 GeV centre of mass energy at the International Linear Collider (ILC). The tools and technique used for the analysis are described and relative uncertainties are determined.

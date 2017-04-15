@@ -1,0 +1,2 @@
+Naturalness and Testability of TeV Seesaw Mechanisms
+After outlining some popular ways to go beyond the standard model so as to generate non-zero but tiny neutrino masses, I focus on several typical seesaw mechanisms and discuss how to get a balance between their theoretical naturalness and their experimental testability. Besides possible collider signatures at the Large Hadron Collider, new and non-unitary CP-violating effects are also expected to show up in neutrino oscillations for type-I, type-(I+II), type-III and double seesaws at the TeV scale.

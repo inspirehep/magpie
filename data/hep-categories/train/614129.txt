@@ -1,0 +1,2 @@
+Casimir effect in kappa deformed theory
+Quantum mechanical fluctuations in an interval give rise to the Casimir effect, which destabilizes the size of the interval. This can be problematic in constructing Kaluza-Klein theories. We consider the possibility that a breakdown of the Poincar\'e symmetry in an extra dimension can solve this instability problem. As a specific example, we consider the space-time with a $\kappa$-deformed Poincar\'e algebra, calculate the Casimir force between two plates, and find that we can have an interval with a stable size.

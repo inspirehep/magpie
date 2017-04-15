@@ -1,0 +1,2 @@
+On the accretion of phantom energy onto wormholes
+By using a properly generalized accretion formalism it is argued that the accretion of phantom energy onto a wormhole does not make the size of the wormhole throat to comovingly scale with the scale factor of the universe, but instead induces an increase of that size so big that the wormhole can engulf the universe itself before it reaches the big rip singularity, at least relative to an asymptotic observer.

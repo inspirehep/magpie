@@ -1,0 +1,2 @@
+Wigner Functions for harmonic oscillator in noncommutative phase space
+We study the Wigner Function in non-commutative quantum mechanics. By solving the time independent Schr\'{o}dinger equation both on a non-commutative (NC) space and a non-commutative phase space, we obtain the Wigner Function for the harmonic oscillator on NC space and NC phase space respectively.

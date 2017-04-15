@@ -1,0 +1,2 @@
+Power counting in relativistic baryon chiral perturbation theory
+We consider a renormalization scheme for relativistic baryon chiral perturbation theory which provides a simple and consistent power counting for renormalized diagrams. As an application we discuss the chiral expansion of the nucleon mass.

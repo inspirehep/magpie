@@ -1,0 +1,2 @@
+Models of gauge field theory on noncommutative spaces
+In this Diploma-thesis models of gauge field theory on noncommutative spaces are studied. On the canonically deformed plane we discuss the dependence of the established gauge theory on the choice of the star product. Furthermore, gauge field theory on the Eq(2)-symmetric plane is studied using two different approaches, a star product approach and an algebraic approach.

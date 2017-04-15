@@ -1,0 +1,2 @@
+Field propagation in de Sitter black holes
+We present an exhaustive analysis of scalar, electromagnetic and gravitational perturbations in the background of Schwarzchild-de Sitter and Reissner-Nordstrom-de Sitter spacetimes. The field propagation is considered by means of a semi-analytical (WKB) approach and two numerical schemes: the characteristic and general initial value integrations. The results are compared near the extreme cosmological constant regime, where analytical results are presented. A unifying picture is established for the dynamics of different spin fields.

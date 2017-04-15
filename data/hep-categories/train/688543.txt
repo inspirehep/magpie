@@ -1,0 +1,2 @@
+Non-concave bare actions with concave effective actions. 1. Zero dimensions
+We perform an explicit computation of the effective action for a few zero-dimensional Euclidean field theories in which the bare action exhibits several (or infinitely many) minima. In all cases the effective action is well-defined for all field values, as well as purely concave, in contrast to the bare action. We give arguments against the validity of the naive perturbative approach, which would lead to spontaneous symmetry breaking.

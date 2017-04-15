@@ -1,0 +1,2 @@
+Spinor representations of the Virasoro and superVirasoro algebras for conformal spin to be equal 1/k
+It is considered here the possibility of unitary spinor representations of the Virasoro and super-Virasoro algebras for conformal spin to be equal 1/k; k are integers.

@@ -1,0 +1,2 @@
+Chasing CHOOZ
+We relate the MNS and CKM mixing matrices using ideas from grand unification. We catalog models in terms of the family symmetries of the down quark mass matrices, and emphasize the role of the Cabibbo angle in the lepton mixing matrix. We find a large class of models with an observable CHOOZ angle \sim \lambda/\sqrt{2}

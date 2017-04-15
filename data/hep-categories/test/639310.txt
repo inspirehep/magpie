@@ -1,0 +1,2 @@
+Quantum Hall physics in string theory
+In certain backgrounds string theory exhibits quantum Hall-like behavior. These backgrounds provide an explicit realization of the effective non-commutative gauge theory description of the fractional quantum Hall effect (FQHE), and of the corresponding large N matrix model. I review results on the string theory realization of the two-dimensional fractional quantum Hall fluid (FQHF), and describe new results on the stringy description of higher-dimensional analogs.

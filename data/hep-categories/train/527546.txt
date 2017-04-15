@@ -1,0 +1,2 @@
+QCD factorization for B ---> pi K decays
+We examine some consequences of the QCD factorization approach to non-leptonic B decays into $\pi K$ and $\pi \pi$ final states, including a set of enhanced power corrections. Among the robust predictions of the approach we find small strong-interaction phases (with one notable exception) and a pattern of CP-averaged branching fractions, which in some cases differ significantly from the current central values reported by the CLEO Collaboration.

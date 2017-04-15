@@ -1,0 +1,2 @@
+Jet calculus problems of the perturbative quantum chromodynamics
+The perturbative quantum chromodynamics (pQCD) has been extremely successful in the prediction and description of main properties of quark and gluon jets. There are, however, some problems of the jet calculus with the higher order corrections of the modified perturbative expansion which should be resolved to get more precise statements. Some of them are discussed here.

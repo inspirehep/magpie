@@ -1,0 +1,2 @@
+Past Eras In Cyclic Cosmological Models
+In infinitely cyclic cosmology past eras are discussed using set theory and transfinite numbers. One consistent scenario, already in the literature, is where there is always a countably infinite number, $\aleph_0$, of universes and no big bang. I describe here an alternative where the present number of universes is $\aleph_0$ and in the infinite past there was only a finite number of universes. In this alternative model it is also possible that there was no big bang.

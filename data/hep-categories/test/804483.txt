@@ -1,0 +1,2 @@
+Results on inclusive jets and jet properties
+We report on a measurement of the inclusive jet cross section in proton-antiproton collisions at a center-of-mass energy of 1.96 TeV using data collected by the D0 experiment at the Fermilab Tevatron Collider corresponding to an integrated luminosi ty of 0.70 fb-1. Detailed studies of correlations between systematic uncertainties in transverse momentum and rapidity are presented, and the cross section measurements are found to be in good agreement with next-to-leading order QCD calculations.

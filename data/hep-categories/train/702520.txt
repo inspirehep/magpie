@@ -1,0 +1,2 @@
+Addendum to `Decoupling of pion coupling f(pi) from quarks at high density in three models, and its possible observational consequences'
+The pions decouple from quarks while their coupling to nucleons $g_{\pi NN}$ remains unchanged at high density. This will have consequences for some recent papers.

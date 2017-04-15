@@ -1,0 +1,2 @@
+String loop threshold corrections for N=1 generalized coxeter orbifolds
+We discuss the calculation of threshold corrections to gauge coupling constants for the, only, non-decomposable class of abelian (2, 2) symmetric N=1 four dimensional heterotic orbifold models, where the internal twist is realized as a generalized Coxeter automorphism. The latter orbifold was singled out in earlier work as the only N=1 heterotic $Z_N$ orbifold that satisfy the phenomenological criteria of correct minimal gauge coupling unification and cancellation of target space modular anomalies.

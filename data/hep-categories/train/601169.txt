@@ -1,0 +1,2 @@
+Explicit generating functional for pions and virtual photons
+We construct the explicit one-loop functional of chiral perturbation theory for two light flavours, including virtual photons. We stick to contributions where 1 or 2 mesons and at most one photon are running in the loops. With the explicit functional at hand, the evaluation of the relevant Green functions boils down to performing traces over the flavour matrices. For illustration, we work out the pi+ pi- -> pi0 pi0 scattering amplitude at threshold at order p^4, e^2p^2.

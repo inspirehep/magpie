@@ -1,0 +1,2 @@
+In search for physics beyond the standard model at Tevatron
+We present the most recent results of searches for physics beyond the Standard Model using the CDF and the D$\not$O detector at the Fermilab Tevatron Collider. All results shown correspond to analysis performed using the past 1992-1996 Fermilab Tevatron run I data (roughly 110 $pb^{-1}$ per each experiment). In particular we report on searches for scalar top and scalar bottom particles together with other {\it classic} Supersymmetry analysis. Results from non Standard Model Higgs searches are also summarized.

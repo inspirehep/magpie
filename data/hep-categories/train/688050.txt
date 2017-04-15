@@ -1,0 +1,2 @@
+Sivers effect in semi-inclusive deeply inelastic scattering
+The Sivers function is extracted from HERMES data on single spin asymmetries in semi-inclusive deeply inelastic scattering. Our analysis use a simple Gaussian model for the distribution of transverse parton momenta, together with the flavor dependence given by the leading 1/Nc approximation and a neglect of the Sivers antiquark distribution. We find that within the errors of the data these approximations are sufficient.

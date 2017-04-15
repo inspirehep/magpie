@@ -1,0 +1,2 @@
+SUSY Breaking from Exotic U(1)
+We propose a mechanism that the soft supersymmetry breaking masses can be induced from the dynamical rearrangement of local U(1) symmetry in a five-dimensional model. The U(1) symmetry possesses several extraordinary features. The eigenstates of U(1) do not equal to those of boundary conditions. The U(1) charge of standard model particles does not equal to that of superpartners. A large U(1) charge hierarchy among superpartners and a standard model gauge singlet is necessary in order to obtain the masses of O(1)TeV.

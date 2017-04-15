@@ -1,0 +1,2 @@
+Dark chiral symmetry breaking and the origin of the electroweak scale
+We study a classically scale-invariant model in which strong dynamics in a dark sector sets the scale of electroweak symmetry breaking. Our model is distinct from others of this type that have appeared in the recent literature. We show that the Higgs sector of the model is phenomenologically viable and that the spectrum of dark sector states includes a partially composite dark matter candidate.

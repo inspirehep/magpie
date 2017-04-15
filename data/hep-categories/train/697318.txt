@@ -1,0 +1,2 @@
+Scalar field theory at finite temperature in D=2+1
+We discuss the $\phi^6 $ theory defined in $D=2+1$-dimensional space-time and assume that the system is in equilibrium with a thermal bath at temperature $\beta^{-1}$. We use the $ 1/N $ expansion and the method of the composite operator (CJT) for summing a large set of Feynman graphs.We demonstrate explicitly the Coleman-Mermin-Wagner theorem at finite temperature.

@@ -1,0 +1,2 @@
+Low-energy diffraction: A Direct channel point of view: The Background
+We argue that at low-energies, typical of the resonance region, the contribution from direct-channel exotic trajectories replaces the Pomeron exchange, typical of high energies. A dual model realizing this idea is suggested. While at high energies it matches the Regge pole behavior, dominated by a Pomeron exchange, at low energies it produces a smooth, structureless behavior of the total cross section determined by a direct-channel nonlinear exotic trajectory, dual to the Pomeron exchange.

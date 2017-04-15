@@ -1,0 +1,2 @@
+Parton model in Lorentz invariant non-commutative space
+We consider the Lorentz invariant non-commutative QED and complete the Feynman rules for the theory up to the order $\theta^2$. In the Lorentz invariant version of the non-commutative QED the particles with fractional charges can be also considered. We show that in the parton model, even at the lowest order, the Bjorken scaling violates as $\sim\theta^2Q^4$.

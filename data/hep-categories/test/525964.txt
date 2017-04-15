@@ -1,0 +1,2 @@
+A Calculation of Higgs mass in the standard model
+The assumption that the ratio of the Higgs self-coupling to the square of its yukawa coupling to the top is (almost) independent of the renormalization scale fixes the Higgs mass within narrow limits at m=160 GeV using only the values of gauge couplings and top mass.

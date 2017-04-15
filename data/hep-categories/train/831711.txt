@@ -1,0 +1,2 @@
+Transversity in exclusive meson electroproduction
+In this talk various spin effects in hard exclusive electroproduction of mesons are briefly reviewed and the data discussed in the light of recent theoretical calculations within the frame work of the handbag approach. For electroproduction of positively charged pions it is shown that there is a strong contribution from photon-pion transitions which can be modeled by the transversity GPD H_T accompanied by the twist-3 pion wave function.

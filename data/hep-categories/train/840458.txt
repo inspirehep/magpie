@@ -1,0 +1,2 @@
+Dark spinor driven inflation
+Inflation is considered to be the best paradigm for describing the early universe. However, it is still unclear what is the nature of the field which drives inflation. In this talk, we discuss the possibility of spinor field driving inflation. Spinflaton -- a scalar condensate of the dark spinor field -- has a single scalar degree of freedom and leads to the identical acceleration equation as the scalar field. We also discuss the advantages of this model compared to the scalar field driven inflation and discuss its observational relevance.

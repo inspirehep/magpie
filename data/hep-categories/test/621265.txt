@@ -1,0 +1,2 @@
+chi(c1) and chi(c2) decay angular distributions at the Fermilab Tevatron
+We consider the hadroproduction of chi_{c1} and chi_{c2} mesons and their subsequent radiative decays to J/psi mesons and photons in the factorization formalism of nonrelativistic quantum chromodynamics, and study the decay angular distributions, by means of helicity density matrices, in view of their sensitivity to color-octet processes. We present numerical results appropriate for the Fermilab Tevatron.

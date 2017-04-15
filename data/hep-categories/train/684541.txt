@@ -1,0 +1,2 @@
+Nucleon polarizabilities in the perturbative chiral quark model
+The nucleon polarizabilities alpha(E) and beta(M) are studied in the context of the perturbative chiral quark model. We demonstrate that meson cloud effects are sufficient to explain the electric polarizability of nucleon. Contributions of excite quark states to the paramagnetic polarizability are dominant and cancel the diamagnetic polarizability arising from the chiral field. The obtained results are compared to data and other theoretical predictions.

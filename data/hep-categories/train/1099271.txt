@@ -1,0 +1,2 @@
+Theoretical results for electroweak-boson and single-top production
+I present results from recent high-order calculations for the production of electroweak bosons and top quarks. In particular, I discuss $W$ and $Z$ boson production at large transverse momentum, single-top production, and FCNC top production. Theoretical predictions which include higher-order soft-gluon corrections are presented for total cross sections and differential distributions at the LHC.

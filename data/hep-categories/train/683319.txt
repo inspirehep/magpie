@@ -1,0 +1,2 @@
+Flow of geometries and instantons on the null orbifold
+We study condensation of twisted sector states in the null orbifold geometry. As the singularity is time-dependent, we probe it using D-Instantons. We present evidence that the null-orbifold flows to the $Z_N$ orbifold. We also comment on the subtleties of quantizing the closed superstring in this background.

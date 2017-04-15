@@ -1,0 +1,2 @@
+Research of the natural neutrino fluxes by use of large volume scintillation detector at Baksan
+A large volume scintillation detector is supposed to install at Baksan neutrino observatory INR RAS at Caucasus. The detector will register all possible neutrino fluxes, but mainly geo-neutrinos. In the article the neutrino fluxes are discussed and expected effects in proposed detector are estimated. The design and construction of such a detector is expected to be a part of all the world similar detectors net that is under construction in modern times.

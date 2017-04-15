@@ -1,0 +1,2 @@
+Fixed points of quantum gravity
+Euclidean quantum gravity is studied with renormalisation group methods. Analytical results for a non-trivial ultraviolet fixed point are found for arbitrary dimensions and gauge fixing parameter in the Einstein-Hilbert truncation. Implications for quantum gravity in four dimensions are discussed.

@@ -1,0 +1,2 @@
+Energy disturbances due to a moving quark from gauge-string duality
+Using AdS/CFT, we calculate the energy density of a quark moving through a thermal state of N=4 super-Yang-Mills theory. Relying on previous work for momentum-space representations as well as asymptotic behaviors, we Fourier transform to position space and exhibit a sonic boom at a speed larger than the speed of sound. Nontrivial structure is found at small length scales, confirming earlier analytical work by the authors.

@@ -1,0 +1,2 @@
+Generalized distribution amplitudes: New tools to study hadrons' structure and interaction
+A non-perturbative approach to Generalized Parton Distributions, and to Deeply Virtual Compton Scattering in particular, based on off mass shell extension of dual amplitudes with Mandelstam analyticity (DAMA) is developed with the spin and helicity structure as well as the threshold behavior accounted for. The model is tested against the data on deep inelastic electron-proton scattering from JLab.

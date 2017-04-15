@@ -1,0 +1,2 @@
+Stability of de Sitter solutions sourced by dark spinors
+Cosmology of ELKO and Lorentz Invariant NSS has been investigated using dynamical system method starting from the proposal of Boehmer et al [arXiv:1003.3858]. Some different results have been obtained by a different approach. The exact solutions described by fixed points of the dynamical system and their stability have been discussed. Some stable solutions corresponding to de Sitter universes have been obtained.

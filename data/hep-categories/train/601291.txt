@@ -1,0 +1,2 @@
+Comment on the paper by Arik, Gun and Yildiz (hep-th/0212129) on `Invariance quantum group of the fermionic oscillator'
+A non-trivial q-deformation of the fermionic oscillator proposed by us in 1991 is recalled in view of the result of the paper cited in the title.

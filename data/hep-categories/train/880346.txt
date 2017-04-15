@@ -1,0 +1,2 @@
+New Chern-Simons densities in both odd and even dimensions
+After reviewing briefly the dimensional reduction of Chern--Pontryagin densities, we define new Chern--Simons densities expressed in terms of Yang-Mills and Higgs fields. These are defined in all dimensions, including in even dimensional spacetimes. They are constructed by subjecting the dimensionally reduced Chern--Pontryagin densites to further descent by two steps.

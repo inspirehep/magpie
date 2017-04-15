@@ -1,0 +1,2 @@
+Distribution of the largest eigenvalues of the Levi-Smirnov ensemble
+We calculate the distribution of the k-th largest eigenvalue in the random matrix Levi-Smirnov (LSE) ensemble, using the spectral dualism between LSE and chiral Gaussian Unitary Ensemble (GUE). Then we reconstruct universal spectral oscillations and we investigate an asymptotic behavior of the spectral distribution.

@@ -1,0 +1,2 @@
+Reflection, radiation and interference for black holes
+Black holes are capable of reflection: there is a finite probability for any particle that approaches the event horizon to bounce back. The albedo of the black hole depends on its temperature and the energy of the incoming particle. The reflection shares its physical origins with the Hawking process of radiation, both of them arise as consequences of the mixing of the incoming and outgoing waves that takes place on the event horizon.

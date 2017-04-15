@@ -1,0 +1,2 @@
+The Two exponential Liouville theory and the uniqueness of the three point function
+It is shown that in the two-exponential version of Liouville theory the coefficients of the three-point functions of vertex operators can be determined uniquely using the translational invariance of the path integral measure and the self-consistency of the two-point functions. The result agrees with that obtained using conformal bootstrap methods. Reflection symmetry and a previously conjectured relationship between the dimensional parameters of the theory and the overall scale are derived.

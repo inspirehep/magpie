@@ -1,0 +1,2 @@
+Is Non-minimal Inflation Eternal?
+The possibility that the non-minimal coupling inflation could be eternal is investigated. We calculate the quantum fluctuation of the inflaton in a Hubble time and find that it has the same value as in the minimal case in the slow-roll limit. Armed with this result, we have studied some concrete non-minimal inflationary models including the chaotic inflation and the natural inflation while the inflaton is non-minimally coupled to the gravity and we find that these non-minimal inflations could be eternal in some parameter regions.

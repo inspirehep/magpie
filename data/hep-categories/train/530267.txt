@@ -1,0 +1,2 @@
+A New measurement of the radiative K(e)3 branching ratio and photon spectrum
+We present a preliminary report on a new measurement of the radiative neutral Ke3 branching ratio and the first study of the photon spectrum in this decay. We find BR(Ke3g, E*_g>30 GeV, Th*_eg>20 deg)/BR(Ke3) = 0.911+-0.009(stat)+0.021-0.010(syst)%. Our measurement of the spectrum is consistent with inner bremsstrahlung only as the source of photons at the 2 sigma level.

@@ -1,0 +1,2 @@
+Holographic CFTs on maximally symmetric spaces: correlators, integral transforms and applications
+We study one- and two-point functions of conformal field theories (CFTs) on spaces of maximal symmetry with and without boundaries and investigate their spectral representations. Integral transforms are found, relating the spectral decomposition to renormalized position-space correlators. Several applications are presented, including the holographic boundary CFTs as well as spacelike boundary CFTs, which provide realizations of the pseudoconformal universe.

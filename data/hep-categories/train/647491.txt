@@ -1,0 +1,2 @@
+Dimensional reduction of quantum fields on a brane
+If we restrict a quantum field defined on a regular D dimensional curved manifold to a d dimensional submanifold then the resulting field will still have the singularity of the original D dimensional model. We show that a singular background metric can force the restricted field to behave as a d dimensional quantum field.

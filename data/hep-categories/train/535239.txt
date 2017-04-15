@@ -1,0 +1,2 @@
+DVCS on the nucleon: Study of the twist - three effects
+We estimate the size of the twist-3 effects on deeply virtual Compton scattering (DVCS) observables, in the Wandzura-Wilczek approximation. We present results in the valence region for the DVCS cross sections, charge asymmetries and single spin asymmetries, to twist-3 accuracy.

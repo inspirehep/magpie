@@ -1,0 +1,2 @@
+Effect of supersymmetric phases on lepton dipole moments and rare lepton decays
+We study the effect of SUSY phases on rare decays of leptons and on their magnetic and electric dipole moments. We consider the most general mass matrices for sleptons within the MSSM including left--right mixing, flavour mixing and complex phases. We show that the phases also affect CP even observables. Moreover, we demonstrate that contrary to common belief the phase of mu can be large even for slepton masses as small as 200 GeV provided the lepton flavour violating parameters are complex.

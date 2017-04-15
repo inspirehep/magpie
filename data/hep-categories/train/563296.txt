@@ -1,0 +1,2 @@
+Remark on the perturbative component of inclusive tau decay
+In the context of the inclusive $\tau$-decay, we analyze various forms of perturbative expansions which have appeared as modifications of the original perturbative series. We argue that analytic perturbation theory, which combines renormalization-group invariance and $Q^2$-analyticity, has significant merits favoring its use to describe the perturbative component of $\tau$-decay.

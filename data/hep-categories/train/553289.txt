@@ -1,0 +1,2 @@
+Super-Kamiokande atmospheric neutrinos: Status of subdominant oscillations
+In the context of the recent (79.5 kTy) Super-Kamiokande atmospheric neutrino data, we concisely review the status of muonic-tauonic flavor oscillations and of the subdominant electron or sterile neutrino mixing, in schemes with three or four families and one dominant mass scale. In the three-family case, where we include the full CHOOZ spectral data, we also show, through a specific example, that ``maximal'' violations of the one-dominant mass scale approximation are not ruled out yet.

@@ -1,0 +1,2 @@
+Solution of the Boltzmann equation for gluons after a heavy ion collision
+A non-linear Boltzmann equation describing the time evolution of a partonic system in the central rapidity region after a heavy ion collision is solved numerically. A particular model of the collinear logarithmic divergences due to small angle scattering is employed in the numerical solution. The system is followed until it reaches kinetic equilibrium where the equilibration time, temperature and chemical potential are determined for both RHIC and LHC.

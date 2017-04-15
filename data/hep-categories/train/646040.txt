@@ -1,0 +1,2 @@
+Pentaquark baryons in SU(3) quark model
+We study the SU(3) group structure of pentaquark baryons which are made of four quarks and one antiquark. The pentaquark baryons form {1}, {8}, {10}, {10}-bar, {27}, and {35} multiplets in SU(3) quark model. First, the flavor wave functions of all the pentaquark baryons are constructed in SU(3) quark model and then the flavor SU(3) symmetry relations for the interactions of the pentaquarks with three-quark baryons and pentaquark baryons are obtained.

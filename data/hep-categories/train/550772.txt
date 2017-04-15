@@ -1,0 +1,2 @@
+New limits on the color octet technirho mass from its decay to dijets
+Recently has been shown that the physical (mass eigenstate) color-octet technirho does not couple to two gluons. In this letter we study how this result affects the presently accepted limits for the color-octet technirho mass obtained from the study of dijets production at the Tevatron. First we show that data from Tevatron Run 1b can not exclude any mass range. Finally, we obtain limits for the Tevatron Run II.

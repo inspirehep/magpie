@@ -1,0 +1,2 @@
+Patching up the monopole potential
+It is well known that a vector potential cannot be defined over the whole surface of a sphere around a magnetic monopole. A recent claim to the contrary is shown to have problems. It is explained however that a potential of the proposed type works if two patches are used instead of one. A general derivation of the Dirac quantization condition attempted with a single patch is corrected by introducing two patches. Further, the case of more than two patches using the original Wu-Yang type of potential is discussed in brief.

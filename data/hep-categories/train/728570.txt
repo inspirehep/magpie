@@ -1,0 +1,2 @@
+Generalized Electromagnetic Fields of Dyons in Isotropic Medium
+Strating with the Maxwell's equations in presence of electric and magnetic sources in an isotropic homogenous medium, we have derived the various quantum equations of dyons in consistent and manifest covariant way. It has been shown that the presented theory of dyons remains invariant under the duality transformations in isotropic homogeneous medium.

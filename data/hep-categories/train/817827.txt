@@ -1,0 +1,2 @@
+Implications of D0 - anti-D0 on the rare top quark decays t ---> u gamma and t ---> u g
+The recently observed mass difference of the $D^0-\overline{D^0}$ mixing is used to predict the branching ratios of the rare top quark decays $t\to u\gamma$ and $t\to ug$ in a model independent way using the effective Lagrangian approach. It is found that $Br(t\to u\gamma)<4\times 10^{-4}$ and $Br(t\to ug)<2\times 10^{-3}$, which still may be within reach of the LHC collider.

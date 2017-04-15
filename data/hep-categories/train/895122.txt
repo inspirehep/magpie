@@ -1,0 +1,2 @@
+Search for WIMPs in liquid argon
+Our group from the University of Zurich is performing R&D work towards the design of a large liquid argon detector to detect Weakly Interacting Massive Particles (WIMPs). This project is developed within the DARWIN Collaboration funded by ASPERA to prepare a proposal for the next generation of WIMP searches using noble liquids. We are performing R&D to detect the VUV light from recoiling argon nuclei. Results obtained with one ton of liquid argon (ArDM prototype) and prospects using a monoenergetic neutron source are discussed.

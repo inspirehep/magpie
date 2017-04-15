@@ -1,0 +1,2 @@
+Review on Extended Approaches in the Kaluza-Klein Model
+A review of the Kaluza-Klein formulation is provided, with a particular emphasis on the geometrization issue. The failure at reproducing quantum numbers of particles and the appearance of huge mass terms are outlined. The possibility to solve these points by an extended approach based on an averaging procedure is discussed.

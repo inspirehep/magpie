@@ -1,0 +1,2 @@
+Complete factorization of equations of motion in Wess-Zumino theory
+We prove that the equations of motion describing domain walls in a Wess-Zumino theory involving only one chiral matter multiplet can be factorized into first order Bogomol'nyi equations, so that all the topological defects are of the Bogomol'nyi-Prasad-Sommerfield type.

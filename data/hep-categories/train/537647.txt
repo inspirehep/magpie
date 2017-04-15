@@ -1,0 +1,2 @@
+Strings on Calabi-Yau spaces and toric geometry
+After a brief introduction into the use of Calabi--Yau varieties in string dualities, and the role of toric geometry in that context, we review the classification of toric Calabi-Yau hypersurfaces and present some results on complete intersections. While no proof of the existence of a finite bound on the Hodge numbers is known, all new data stay inside the familiar range $h_{11}+h_{12}\le 502$.

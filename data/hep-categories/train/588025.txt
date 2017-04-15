@@ -1,0 +1,2 @@
+The Anomalous chromomagnetic dipole moment of the top quark in different frameworks
+We give explicit formulae for the anomalous chromomagnetic dipole moment of the top quark in the framework of the standard model, the two higgs doublet model and the minimal supersymmetric standard model. Finally, we compare the results for this coupling with the bound -0.03 <= Delta kappa <= 0.01 coming from analysis of b --> s gamma process whith an on-shell gluon.

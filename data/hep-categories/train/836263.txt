@@ -1,0 +1,2 @@
+Super Yang-Mills theory from nonlinear supersymmetry
+The relation between a nonlinear supersymmetic (NLSUSY) theory and a SUSY Yang-Mills (SYM) theory is studied for N = 3 SUSY in two-dimensional space-time. We explicitly show the NL/L SUSY relation for the (pure) SYM theory by means of cancellations among Nambu-Goldstone fermion self-interaction terms.

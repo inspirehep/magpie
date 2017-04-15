@@ -1,0 +1,2 @@
+A Holographic bound on the scaling contribution to black hole entropy
+We discuss the existence of scaling solutions for multicenter black hole configurations. One of the central results is the equivalence between the existence of two centered scaling solutions and the holographic entropy bound. This equivalence (and another one) are proved rigorously at the end of the paper, and allow to simplify the process counting of certain (fuzzball-like) contributions to black hole entropy.

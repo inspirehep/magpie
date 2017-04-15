@@ -1,0 +1,2 @@
+Backgrounds in Boundary String Field Theory
+We study the role of closed string backgrounds in boundary string field theory. Background independence requires the introduction of dual boundary fields, which are reminiscent of the doubled field formalism. We find a correspondence between closed string backgrounds and collective excitations of open strings described by vertex operators involving dual fields. Renormalization group flow, solutions and stability are discussed in an example.

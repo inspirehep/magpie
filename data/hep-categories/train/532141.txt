@@ -1,0 +1,2 @@
+Infinite symmetries in the Skyrme model
+We show that the Skyrme theory possesses a submodel with an infinite number of local conserved currents. The constraints leading to the submodel explore a decomposition of SU(2) with a complex field parametrizing the symmetric space SU(2)/U(1) and a real field in the direction of U(1). We demonstrate that the Skyrmions of topological charges $\pm 1$ belong to such integrable sector of the theory. Our results open ways to the development of exact methods, compensating for the non-existence of a BPS type sector in the Skyrme theory.

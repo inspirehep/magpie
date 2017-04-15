@@ -1,0 +1,2 @@
+Viable Singularity-Free f(R) Gravity Without a Cosmological Constant
+Several authors have argued that self-consistent $f(R)$ gravity models distinct from $\Lambda $CDM are almost ruled out. Confronting such claims, we present a particular two-parameter $f(R)$ model that: (a) is cosmologically viable and distinguishable from $\Lambda $CDM/ (b) is compatible with the existence of relativistic stars/ (c) is free of singularities of the Ricci scalar during the cosmological evolution and (d) allows the addition of high curvature corrections that could be relevant for inflation.

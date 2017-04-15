@@ -1,0 +1,2 @@
+Hunting for the alpha: B ---> rho rho, B ---> pi pi, B ---> pi rho
+The hypothesis of the smallness of penguin contribution to charmless strangeless $B_d (\bar B_d)$ decays allows to determine with high accuracy the value of angle $\alpha$ from the currently available $B \to \rho\rho$, $B \to \pi\pi$ and $B\to \rho\pi$ decay data.

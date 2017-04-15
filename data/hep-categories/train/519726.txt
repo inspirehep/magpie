@@ -1,0 +1,2 @@
+Lifshitz phase gauge symmetry breaking and application to E(6) and E(8) grand unification
+This paper has been withdrawn, because the argument for generating Goldstone modes at a Lifshitz point is incorrect.

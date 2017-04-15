@@ -1,0 +1,2 @@
+Understanding skyrmions using rational maps
+We discuss an ansatz for Skyrme fields in three dimensions which uses rational maps between Riemann spheres, and produces shell-like structures of polyhedral form. Houghton, Manton and Sutcliffe showed that a single rational map gives good approximations to the minimal energy Skyrmions up to baryon number of order ten. We show how the method can be generalised by using two or more rational maps to give a double-shell or multi-shell structure. Particularly interesting examples occur at baryon numbers twelve and fourteen.

@@ -1,0 +1,2 @@
+Precursors, black holes, and a locality bound
+We revisit the problem of precursors in the AdS/CFT correspondence. Identification of the precursors is expected to improve our understanding of the tension between holography and bulk locality and of the resolution of the black hole information paradox. Previous arguments that the precursors are large, undecorated Wilson loops are found to be flawed. We argue that the role of precursors should become evident when one saturates a certain locality bound. The spacetime uncertainty principle is a direct consequence of this bound.

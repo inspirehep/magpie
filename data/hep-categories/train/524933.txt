@@ -1,0 +1,2 @@
+Canonical description of strangeness enhancement from p-A to Pb Pb collisions
+We consider the production of strange particles in Pb-Pb and p-A collisions at the SPS energy reported by the WA97 experiment. We show that the observed enhancement of strange baryon and antibaryon yields in Pb-Pb collisions relative to p-Be and p-Pb can be explained in terms of the statistical model formulated in canonical ensemble with respect to strangeness conservation. The importance and the role of strangeness under saturation is also discussed.

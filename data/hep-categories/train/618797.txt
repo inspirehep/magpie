@@ -1,0 +1,2 @@
+Vector manifestation in hot matter and violation of vector dominance
+We summarize main mechanisms to realize the vector manifestation (VM), in which the massless vector meson becomes the chiral partner of pion, at the critical temperature in hot QCD within the framework of the model based on the hidden local symmetry. Then, we show a recent analysis on the direct photon-pi-pi coupling which measures the validity of the vector dominance (VD) of the electromagnetic form factor of the pion: The VM predicts that the VD is largely violated at the critical temperature.

@@ -1,0 +1,2 @@
+Gravity localization on thick branes: A Numerical approach
+We introduce a numerical procedure to investigate the spectrum of massive modes and its contribution for gravity localization on thick branes. After considering a model with an analytically known Schroedinger potential, we present the method and discuss its applicability. With this procedure we can study several models even when the Schroedinger potential is not known analytically. We discuss both the occurrence of localization of gravity and the correction to the Newtonian potential given by the massive modes.

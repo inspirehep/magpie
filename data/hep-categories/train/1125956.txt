@@ -1,0 +1,2 @@
+Pion's valence-quark GPD and its extension beyond DGLAP region
+We briefly report on a recent computation, with the help of a fruitful algebraic model, sketching the pion valence dressed-quark generalized parton distribution and, very preliminary, discuss on a possible avenue to get reliable results in both Dokshitzer-Gribov-Lipatov-Altarelli-Parisi (DGLAP) and Efremov-Radyushkin-Brodsky-Lepage (ERBL) kinematial regions.
