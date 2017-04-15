@@ -23,7 +23,7 @@ def evaluate_results(kw_conf, kw_vector, gt_answers):
     y_true, y_pred = build_result_matrices(kw_conf, kw_vector, gt_answers)
 
     y_pred = np.fliplr(y_pred.argsort())
-    for i in xrange(len(y_true)):
+    for i in range(len(y_true)):
         y_pred[i] = y_true[i][y_pred[i]]
 
     return calculate_basic_metrics(y_pred)
@@ -111,7 +111,7 @@ def compute_hierarchical_metric(y_true, y_pred, labels, get_related_nodes):
 
     # Transform the y_true matrix
     bit_sets = []
-    for i in xrange(total_samples):
+    for i in range(total_samples):
         bit_set = 0
         for label in compress(labels, y_true[i]):
             for label_idx in get_related_nodes(label):
@@ -123,13 +123,13 @@ def compute_hierarchical_metric(y_true, y_pred, labels, get_related_nodes):
 
     # Fill up the priority queue
     heap = []
-    for row in xrange(total_samples):
-        for col in xrange(len(y_pred[0])):
+    for row in range(total_samples):
+        for col in range(len(y_pred[0])):
             heapq.heappush(heap, (-y_pred[row][col], row, col))
 
     # Transform the y_pred matrix
-    y_pred = [0 for _ in xrange(total_samples)]
-    y_pred_size = [0 for _ in xrange(total_samples)]
+    y_pred = [0 for _ in range(total_samples)]
+    y_pred_size = [0 for _ in range(total_samples)]
 
     precision = np.ones(total_samples)
     recall = np.zeros(total_samples)
@@ -200,7 +200,7 @@ def build_y_true(gt_answers, label_indices, min_docid):
     """
     y_true = np.zeros((len(gt_answers), len(label_indices)), dtype=np.bool_)
 
-    for doc_id, labels in gt_answers.iteritems():
+    for doc_id, labels in gt_answers.items():
         for lab in labels:
             if lab in label_indices:
                 index = label_indices[lab]
