@@ -1,2 +1,0 @@
-Scaling study of an improved fermion action on quenched lattices
-We present scaling studies for heavy-quark observables calculated with an $O(a^2)$-improved fermion action on tree-level Symanzik improved gauge configurations. Lattices of $1/a = $ 2.0-3.8 GeV with an equal physical volume 1.6 fm are used. The results are compared with the standard domain-wall and naive Wilson fermions.
