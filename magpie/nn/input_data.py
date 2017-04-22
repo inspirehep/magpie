@@ -7,8 +7,7 @@ import numpy as np
 from gensim.models import Word2Vec
 
 from magpie.base.document import Document
-from magpie.config import BATCH_SIZE, WORD2VEC_MODELPATH, SCALER_PATH,\
-    SAMPLE_LENGTH
+from magpie.config import BATCH_SIZE, SAMPLE_LENGTH
 from magpie.utils import get_answers_for_doc, load_from_disk
 
 
