@@ -27,4 +27,4 @@ install:
   - python setup.py install
 
 script:
-  - python -m unittest discover --start-directory magpie/tests
+  - python -m unittest discover
