@@ -36,7 +36,7 @@ class MagpieModel(object):
             self.scaler = scaler
 
     def train(self, train_dir, vocabulary, test_dir=None, callbacks=None,
-              nn_model=NN_ARCHITECTURE, batch_size=BATCH_SIZE,
+              nn_model=NN_ARCHITECTURE, batch_size=BATCH_SIZE, test_split=0.0,
               nb_epochs=NB_EPOCHS, verbose=1):
         """
         Train the model on given data
@@ -48,6 +48,7 @@ class MagpieModel(object):
         :param callbacks: objects passed to the Keras fit function as callbacks
         :param nn_model: string defining the NN architecture e.g. 'crnn'
         :param batch_size: size of one batch
+        :param test_split: split the training data into train/test sets
         :param nb_epochs: number of epochs to train
         :param verbose: 0, 1 or 2. As in Keras.
 
@@ -89,6 +90,7 @@ class MagpieModel(object):
             batch_size=batch_size,
             nb_epoch=nb_epochs,
             validation_data=test_data,
+            validation_split=test_split,
             callbacks=callbacks or [],
             verbose=verbose,
         )
