@@ -1,0 +1,2 @@
+Convergence of the expansion of the Laplace-Borel integral in perturbative QCD improved by conformal mapping
+The optimal conformal mapping of the Borel plane was recently used to accelerate the convergence of the perturbation expansions in QCD. In this work we discuss the relevance of the method for the calculation of the Laplace-Borel integral expressing formally the QCD Green functions. We define an optimal expansion of the Laplace-Borel integral in the principal value prescription and establish conditions under which the expansion is convergent.

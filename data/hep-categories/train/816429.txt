@@ -1,0 +1,2 @@
+Status and recent results of MAGIC
+MAGIC is a single-dish Cherenkov telescope located on La Palma (Spain), hence with an optimal view on the Northern sky. Sensitive in the 30 GeV-30 TeV energy band, it is nowadays the only ground-based instrument being able to measure high-energy gamma-rays below 100 GeV. We review the most recent experimental results obtained using MAGIC.

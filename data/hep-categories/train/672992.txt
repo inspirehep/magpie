@@ -1,0 +1,2 @@
+New features of two-particle correlations
+We show that a recently proposed derivation of Bose-Einstein correlations (BEC) by means of thermal Quantum Field Theory, supplemented by operator-field evolution of Langevin type, allows a deeper understanding of a possible coherent behaviour of the emitting source and a clear identification of the origin of the observed shape of the 2-particle BEC function $C_2(Q)$. We explain the origin of the dependence of the measured correlation radius on the hadron mass. The lower bound of the particle source size is estimated.

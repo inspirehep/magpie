@@ -1,0 +1,2 @@
+Electromagnetic radiation from relativistic nuclear collisions
+We review some of the results obtained in the study of the production of electromagnetic radiation in relativistic nuclear collisions. We concentrate on the emission of real photons and dileptons from the hot and dense strongly interacting phases of the reaction. We examine the contributions from the partonic sector, as well as those from the nonperturbative hadronic sector. We examine the current data, some of the predictions for future measurements, and comment on what has been learnt so far.

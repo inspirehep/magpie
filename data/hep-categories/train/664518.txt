@@ -1,0 +1,2 @@
+The Circular loop equation of a cosmid string in Kerr-di Sitter spacetimes
+The equation of cosmic string loops in Kerr-de Sitter spacetimes is derived. Having solved the equation numerically, we find that the loops can expand and exist except for too small ones.

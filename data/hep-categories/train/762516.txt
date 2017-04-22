@@ -1,0 +1,2 @@
+Structure constants of the OSP(1|2) WZNW model
+We propose exact formulas for the 2- and 3-point functions of the WZNW model on the non-compact supergroup OSP(1|2). Using the path integral approach that was recently developed in arXiv:0706.1030 we show how local correlation functions in the OSP(p|2) WZNW models can be obtained from those of N=p supersymmetric Liouville field theory for p=1,2. We then employ known results on correlators in N=1 Liouville theory to determine the structure constants of the OSP(1|2) theory.

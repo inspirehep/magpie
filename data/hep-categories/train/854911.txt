@@ -1,0 +1,2 @@
+Ultraviolet Extension of a Model with Dynamical Electroweak Symmetry Breaking by Both Top-Quark and Technifermion Condensates
+We construct and analyze an ultraviolet extension of a model in which electroweak symmetry breaking is due to both technifermion and top-quark condensates. The model includes dynamical mechanisms for all of the various gauge symmetry breakings. We discuss certain aspects in which it requires additional ingredients to be more realistic.

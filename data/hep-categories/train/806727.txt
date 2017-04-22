@@ -1,0 +1,2 @@
+Decaying gravitino dark matter and an upper bound on the gluino mass
+We show that, if decaying gravitino dark matter is responsible for the PAMELA and ATIC/PPB-BETS anomalies in the cosmic-ray electron and positron fluxes, both a reheating temperature and a gluino mass are constrained from above. In particular, the gluino mass is likely within the reach of LHC, if the observed baryon asymmetry is explained by thermal leptogenesis scenario.

@@ -1,0 +1,2 @@
+The BV Master Equation for the Wilson Action in general Yang-Mills Gauge Theory
+The Wilson effective action for general Yang-Mills gauge theory is shown to satisfy the usual form of Batalin-Vilkovisky (BV) master equation, despite that a momentum cutoff apparently breaks the gauge invariance. In the case of Abelian gauge theory, in particular, it actually deduces the Ward-Takahashi identity for Wilson action recently derived by Sonoda.

@@ -1,0 +1,2 @@
+On the gravitational collapse in anti-de Sitter space-time
+We study the semiclassical evolution of a self-gravitating thick shell in Anti-de Sitter space-time. We treat the matter on the shell as made of quantized bosons and evaluate the back-reaction of the loss of gravitational energy which is radiated away as a non-adiabatic effect. A peculiar feature of anti-de Sitter is that such an emission also occurs for large shell radius, contrary to the asymptotically flat case.

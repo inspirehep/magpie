@@ -1,0 +1,2 @@
+Infrared Limit of Gluon Amplitudes at Strong Coupling
+In this note, we propose that the infrared structure of gluon amplitudes at strong coupling can be fully extracted from a local consideration near cusps. This is consistent with field theory and correctly reproduces the infrared divergences of the four-gluon amplitude at strong coupling calculated recently by Alday and Maldacena.

@@ -1,0 +1,2 @@
+Analysis of Longitudinal Air Shower Profiles measured by the Pierre Auger Observatory
+We describe the analysis of longitudinal air shower profiles as measured by the fluorescence detectors of the Pierre Auger Observatory and present the measurement of the depth of maximum of extensive air showers, Xmax, with energies >10^18 eV. The measured energy evolution of the average of Xmax and its fluctuations are compared to air shower simulations for different primary particles.

@@ -1,0 +1,2 @@
+Conformal higher spin currents in any dimension and AdS / CFT correspondence
+The full list of conserved conformal higher spin currents built from massless scalar and spinor fields is presented. It is shown that, analogously to the relationship between usual conformal and AdS symmetries, the set of the conformal higher spin symmetry parameters associated with the conformal conserved currents in d dimensions is in the one-to-one correspondence with the result of the dimensional reduction of the usual (i.e., non-conformal) higher spin symmetry parameters in d+1 dimensions.

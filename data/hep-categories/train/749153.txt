@@ -1,0 +1,2 @@
+The Black hole in the throat: Thermodynamics of strongly coupled cascading gauge theories
+We numerically construct black hole solutions corresponding to the deconfined, chirally symmetric phase of strongly coupled cascading gauge theories at various temperatures. We compute the free energy as a function of the temperature, and we show that it becomes positive below some critical temperature, indicating the possibility of a first order phase transition at which the theory deconfines and restores the chiral symmetry.

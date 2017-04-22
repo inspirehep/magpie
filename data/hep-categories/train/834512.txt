@@ -1,0 +1,2 @@
+On Large N Solution of ABJM Theory
+We investigate the large N limit of the expectation value W(\lambda) of a BPS Wilson loop in ABJM theory, using an integral expression of the partition function obtained recently by Kapustin et.al. Certain saddle-point equations provide the correct perturbative expansion of W(\lambda). The large \lambda behavior of W(\lambda) is also obtained from the saddle-point equations. The result is compatible with AdS/CFT correspondence.

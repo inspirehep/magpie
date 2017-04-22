@@ -1,0 +1,2 @@
+Wavelet based regularization for Euclidean field theory
+It is shown that Euclidean field theory with polynomial interaction, can be regularized using the wavelet representation of the fields. The connections between wavelet based regularization and stochastic quantization are considered.

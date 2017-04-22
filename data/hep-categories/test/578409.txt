@@ -1,0 +1,2 @@
+Lorentz violation at one loop
+The proof of one-loop renormalizability of the general Lorentz- and CPT-violating extension of quantum electrodynamics is described. Application of the renormalization-group method is discussed and implications for theory and experiment are considered.

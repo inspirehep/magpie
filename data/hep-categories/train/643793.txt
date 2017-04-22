@@ -1,0 +1,2 @@
+Remark on the core / halo model of Bose-Einstein correlations in multiple particle production processes
+The core/halo model describes the Bose-Einstein correlations in multihadron production taking into account the effects of long-lived resonances. The model contains the combinatorial coefficients alpha_j which were originally calculated from a recurrence relation. We show that alpha_j is the integer nearest to j!/e.

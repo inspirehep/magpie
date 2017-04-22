@@ -1,0 +1,2 @@
+Double beta decay versus cosmology: Majorana CP phases and nuclear matrix elements
+We discuss the relation between the absolute neutrino mass scale, the effective mass measured in neutrinoless double beta decay, and the Majorana CP phases. Emphasis is placed on estimating the upper bound on the nuclear matrix element entering calculations of the double beta decay half life. Consequently, one of the Majorana CP phases can be constrained when combining the claimed evidence for neutrinoless double beta decay with the neutrino mass bound from cosmology.

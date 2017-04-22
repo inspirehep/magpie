@@ -1,0 +1,2 @@
+A Nonperturbative study of three-dimensional phi**4 theory
+The spherical field formalism---a nonperturbative approach to quantum field theory---was recently introduced and applied to phi^4 theory in two dimensions. The spherical field method reduces a quantum field theory to a finite-dimensional quantum mechanical system by expanding field configurations in terms of spherical partial wave modes. We extend the formalism to phi^4 theory in three dimensions and demonstrate the application of the method by analyzing the phase structure of this theory.

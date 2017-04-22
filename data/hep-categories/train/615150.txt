@@ -1,0 +1,2 @@
+Bose-Einstein correlations in WW pair production at LEP
+This paper presents an overview of the latest results from the L3 and DELPHI collaborations concerning the measurement of Bose-Einstein correlations between identical bosons coming from different W's in fully hadronic WW decays. Using the same method, L3 sees no indication of any inter-W BEC effect, while DELPHI reports an indication of inter-W BEC between like-charged particles of the order of three standard deviations.

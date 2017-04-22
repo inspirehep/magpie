@@ -1,0 +1,2 @@
+Duality and enhancement of symmetry in 5d gauge theories
+We study various cases of dualities between $ \mathcal{N}=1 $ 5d supersymmetric gauge theories. We motivate the dualities using brane webs, and provide evidence for them by comparing the superconformal index. In many cases we find that the classical global symmetry is enhanced by instantons to a larger group including one where the enhancement is to the exceptional group G$_{2}$.

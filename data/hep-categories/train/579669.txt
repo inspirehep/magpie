@@ -1,0 +1,2 @@
+Effects of the magnetic fields on the protoneutron star structure
+The equation of state of a protoneutron star matter including the effects of magnetic field, temperature, nuclear asymmetry and trapped neutrinos are studied. Using the Oppenheimer-Volkoff-Tolman equation global parameters of the protoneutron star are obtained. Presence of the nuclear asymmetry and magnetic field make the protoneutron star more compact.

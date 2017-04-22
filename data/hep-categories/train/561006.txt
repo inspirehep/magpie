@@ -1,0 +1,2 @@
+QCD string model for hybrid adiabatic potentials
+Hybrid adiabatic potentials are considered in the framework of the QCD string model. The einbein field formalism is applied to obtain the large-distance behaviour of adiabatic potentials. The calculated excitation curves are shown to be the result of interplay between potential-type longitudinal and string-type transverse vibrations. The results are compared with recent lattice data.

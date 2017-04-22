@@ -1,0 +1,2 @@
+$J/\psi$ production via chi($c$) decays in 920-GeV pA interactions
+Using data collected by the HERA-B experiment, we have measured the fraction of J\psi's produced via radiative chi_c decays in interactions of 920 GeV protons with carbon and titanium targets. We obtained R_{\chi_c} = 0.32 \pm 0.06_{stat} \pm 0.04_{sys} for the fraction of J\psi from chi_c decays averaged over proton-carbon and proton-titanium collisions. This result is in agreement with previous measurements and is compared with theoretical predictions.

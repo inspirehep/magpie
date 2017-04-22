@@ -1,0 +1,2 @@
+Tensor susceptibility of the QCD vacuum from an effective quark quark interaction
+Treating the bilocal quark-quark interaction kernel as an input parameter, the self-energy functions can be determined from the ``rainbow'' Dyson-Schwinger equation, which is obtained in the global color symmetry model. The tensor susceptibility of QCD vacuum can be calculated directly from these self-energy functions. The values we obtained are much smaller than the estimations from QCD sum rules and from chiral constituent quark model.

@@ -1,0 +1,2 @@
+Domain wall solution of the Skyrme model
+A class of domain-wall-like solutions of the Skyrme model is obtained analytically. They are described by the tangent hyperbolic function, which is a special limit of the Weierstrass $\wp$ function. The behavior of one of the two terms in the static energy density is like that of a domain wall. The other term in the static energy density does not vanish but becomes constant at the points far apart from the wall.

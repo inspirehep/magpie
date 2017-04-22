@@ -1,0 +1,2 @@
+Constraints on the interacting holographic dark energy model
+We examined the interacting holographic dark energy model in a universe with spatial curvature. Using the near-flatness condition and requiring that the universe is experiencing an accelerated expansion, we have constrained the parameter space of the model and found that the model can accommodate a transition of the dark energy from $\omega_D>-1$ to $\omega_D<-1$.

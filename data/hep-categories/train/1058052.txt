@@ -1,0 +1,2 @@
+Horava-Lifshitz-like extensions of supersymmetric theories
+Within the superfield approach, we formulate two different extensions of the Wess-Zumino model and super-QED with Horava-Lifshitz-like additive terms, discuss their quantum properties and calculate lower contributions to the effective action. In the case of the gauge theory, the one-loop effective potential turns out to be gauge independent.

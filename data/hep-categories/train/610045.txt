@@ -1,0 +1,2 @@
+ZZH coupling: A Probe to the origin of EWSB?
+We argue that the $ZZH$ coupling constitutes a simple probe of the nature of the scalar sector responsible for electroweak symmetry breaking. We demonstrate the efficacy of this measure through an analysis of four-dimensional models containing scalars in arbitrary representation of $SU(2) \times U(1)$, as well as extra-dimensional models with a non-factorizable geometry. A possible role for the $t \bar t H$ couplings is also discussed.

@@ -1,0 +1,2 @@
+Early reionization by cosmic strings revisited
+Measurements of the CMB temperature anisotropy and the temperature-polarization cross correlation by WMAP suggest a reionization redshift of $z \sim 17 \pm 5$. On the other hand, observations of high redshift galaxies indicate a presence of a significant fraction of neutral hydrogen at redshift $z\sim 6-7$. We show that cosmic strings with tensions well within, but not far from, current observation bounds could cause early star formation at a level sufficient to explain the high reionization redshift.

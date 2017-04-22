@@ -1,0 +1,2 @@
+Sleptons at post-WMAP benchmark points at LHC(CMS)
+We study a possibility to detect sleptons at post-WMAP benchmark points at LHC(CMS). We find that at $L_{tot}=30 fb^{-1}$ it would be possible to detect sleptons at points A, B, C, D, G. We also investigate the production and decays of right and left sleptons separately. We find that at $L_{tot}=30 fb^{-1}$ it would be possible to detect right sleptons with a mass up to 200 GeV and left ones with a mass up to 300 GeV.

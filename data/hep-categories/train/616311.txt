@@ -1,0 +1,2 @@
+Tree unitarity and partial wave expansion in noncommutative quantum field theory
+The validity of the tree-unitarity criterion for scattering amplitudes on the noncommutative space-time is considered, as a condition that can be used to shed light on the problem of unitarity violation in noncommutative quantum field theories when time is noncommutative. The unitarity constraints on the partial wave amplitudes in the noncommutative space-time are also derived.

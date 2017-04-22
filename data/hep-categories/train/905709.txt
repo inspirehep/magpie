@@ -1,0 +1,2 @@
+Underlying Event in pp Collisions at LHC Energies
+Hadron production is investigated in proton-proton (pp) collisions at \surds = 7 TeV LHC energy - especially outside the cones of identified jets. We improved the original CDF definition of underlying event and introduce surrounding rings/belts (SB) around the cone of identified jets. We compare the characteristics of hadron production using the original CDF-based and the new SB-based via analysing PYTHIA generated fluxes of these hadrons within the geometrical regions of pp collisions.

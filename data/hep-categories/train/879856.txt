@@ -1,0 +1,2 @@
+Lorentz Symmetry Violation in Neutrinos in Curved Spacetime and its Consequences
+The neutrino propagating in curved spacetimes, e.g. around black holes, in early curved universe, violates Lorentz and then CPT symmetry, at least in the local coordinate. This occurs due to coupling of spin of the neutrino to background spin connection which modifies the underlying dispersion relation. This results in the neutrino asymmetry and hence as a consequence neutrino oscillation probability gets affected.

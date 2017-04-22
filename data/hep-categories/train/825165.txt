@@ -1,0 +1,2 @@
+Higgsing M2-brane Theories
+Connections between different M2-brane theories are established via the Higgs mechanism, which can be most efficiently studied on brane tilings. This leads to several M2-brane models, with brane tilings or Chern-Simons levels which have not been considered so far. The moduli spaces of these models are identified and examined in detail. The toric diagrams are constructed using Kasteleyn matrices and the forward algorithm.

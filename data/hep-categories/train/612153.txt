@@ -1,0 +1,2 @@
+Supergravity duals of supersymmetric four-dimensional gauge theories
+This article contains an overview of some recent attempts at understanding supergravity and string duals of four dimensional gauge theories using the AdS/CFT correspondence. We discuss the general philosophy underlying the various ways to realize Super Yang-Mills theories in terms of systems of branes. We then review some of the existing duals for N=2 and N=1 theories. We also discuss differences and similarities with realistic theories.

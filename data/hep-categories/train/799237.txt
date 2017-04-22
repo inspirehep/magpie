@@ -1,0 +1,2 @@
+Consistent Loop Quantum Cosmology
+A consistent combination of quantum geometry effects rules out a large class of models of loop quantum cosmology and their critical densities as they have been used in the recent literature. In particular, the critical density at which an isotropic universe filled with a free, massless scalar field would bounce must be well below the Planck density. In the presence of anisotropy, no model of the Schwarzschild black hole interior analyzed so far is consistent.

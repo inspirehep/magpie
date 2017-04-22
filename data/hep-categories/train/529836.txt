@@ -1,0 +1,2 @@
+Atmospheric secondary particles in near earth space
+The Alpha Magnetic Spectrometer detects a large amount of particles below rigidity cutoff. Those high energy particles create questions related to radiation belts and atmospheric neutrinos. To understand the origin of these particles, we use a trajectory tracing program to simulate particle trajectories in realistic geomagnetic field. The complex behaviors and large e^+/e^- are explained here.

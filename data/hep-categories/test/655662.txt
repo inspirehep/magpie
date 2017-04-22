@@ -1,0 +1,2 @@
+Dynamical gauge-Higgs unification (SUSY04)
+Dynamical gauge-Higgs unification is presented in higher dimensional gauge theory, in which both adjoint and fundamental Higgs fields are a part of gauge fields. Dynamical gauge symmetry breaking is induced through the Hosotani mechanism. Gauge theory, including the U(3) x U(3) model, is examined on M^4 x (T^2/Z_2).

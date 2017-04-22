@@ -1,0 +1,2 @@
+Dual description of U(1) charged fields in (2+1)-dimensions
+We show that the functional bosonization procedure can be generalized in such a way that, to any field theory with a conserved Abelian charge in (2+1) dimensions, there corresponds a dual Abelian gauge field theory. The properties of this mapping and of the dual theory are discussed in detail, presenting different explicit examples. In particular, the meaning and effect of the coefficient of the Chern-Simons term in the dual action is interpreted in terms of the spin and statistics connection.

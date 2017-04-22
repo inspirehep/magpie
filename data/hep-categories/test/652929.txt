@@ -1,0 +1,2 @@
+Gravity localisation in a 6-dimensional brane world
+We study a 6-dimensional Einstein-Born-Infeld-Higgs model. In the limit of infinite Born-Infeld coupling, this model reduces to an Einstein-Abelian-Higgs model, in which gravity localising solutions were shown to exist. In this proceeding, we discuss further properties of the gravity localising solutions as well as of the solutions in the limit of vanishing cosmological constant.

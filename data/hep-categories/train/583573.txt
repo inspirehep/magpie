@@ -1,0 +1,2 @@
+A Representation of the Virasoro algebra via Wigner-Heisenberg algebraic technique to bosonic systems
+Using the Wigner-Heisenberg algebra for bosonic systems in connection with oscillators we find a new representation for the Virasoro algebra.

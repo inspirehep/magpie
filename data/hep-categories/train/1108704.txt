@@ -1,0 +1,2 @@
+Scale invariant Volkov–Akulov supergravity
+A scale invariant goldstino theory coupled to supergravity is obtained as a standard supergravity dual of a rigidly scale-invariant higher-curvature supergravity with a nilpotent chiral scalar curvature. The bosonic part of this theory describes a massless scalaron and a massive axion in a de Sitter Universe.

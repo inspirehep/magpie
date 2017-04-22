@@ -1,2 +1,0 @@
-Three lectures on chiral symmetry
-In these lectures I cover various aspects of Chiral Symmetry in the hadronic world from a pre-QCD perspective. I also discuss the absence of spontaneous symmetry breaking in d=4 large N O(N) models.

@@ -1,0 +1,2 @@
+Strictly static spacetimes and positive mass in the Einstein-Gauss-Bonnet theory
+In the Einstein gravity, it is well known that strictly stationary and vacuum regular spacetime should be the Minkowski spacetime. In the Einstein-Gauss-Bonnet theory, we shall show that strictly static (no event horizon), vacuum, and asymptotically flat spacetimes with conformally static slices are the Minkowski spacetime when the curvature corrections are small.

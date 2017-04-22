@@ -1,0 +1,2 @@
+Hamiltonian Dyson--Schwinger Equations of QCD
+The general method for treating non-Gaussian wave functionals in the Hamiltonian formulation of a quantum field theory, which was previously developed and applied to Yang--Mills theory in Coulomb gauge, is generalized to full QCD. The Hamiltonian Dyson-Schwinger equations as well as the quark and gluon gap equations are derived and analysed in the IR and UV momentum regime. The back-reaction of the quarks on the gluon sector is investigated.

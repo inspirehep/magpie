@@ -1,0 +1,2 @@
+Probing the Majorana nature of the neutrino with neutrinoless double beta decay
+Neutrinoless double beta decay (NDBD) is the only experiment that could probe the Majorana nature of the neutrino. Here we study the theoretical implications of NDBD for models yielding tri-bimaximal lepton mixing like A4 and S4.

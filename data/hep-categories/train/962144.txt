@@ -1,0 +1,2 @@
+The masses and residues of doubly heavy spin-3/2 baryons
+The masses and residues of the spin-3/2 doubly heavy baryons are calculated within the QCD sum rules method. A comparison of our predictions with those existing in the literature is also made.

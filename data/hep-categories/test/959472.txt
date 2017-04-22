@@ -1,0 +1,2 @@
+Angular distrubution of Drell-Yan leptons in the Parton Reggeization Approach
+We study angular distributions of Drell-Yan leptons in the proton-proton collisions invoking the hypothesis of quark Reggeization in t-channel exchanges at high energy.

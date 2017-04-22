@@ -1,0 +1,2 @@
+Unparticle decay of neutrinos and it's effect on ultra high energy neutrinos
+The unparticle is proposed by Georgi as a conceptual new physics beyond the standard model to describe the low energy sector of a nontrivial scale invariant sector of an effective theory. We consider the neutrino decay in unparticle scenario and investigate the effect of such decay for the case of ultra high energy neutrinos from GRB. The effect on the detection yield of these neutrinos are also probed for a kilometer scale ice-Cerenkov detector.

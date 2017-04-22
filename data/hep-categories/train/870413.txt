@@ -1,0 +1,2 @@
+On Critical Massive (Super)Gravity in adS3
+We review the status of three-dimensional 'general massive gravity' (GMG) in its linearization about an anti-de Sitter (adS) vacuum, focusing on critical points in parameter space that yield generalizations of 'chiral gravity'. We then show how these results extend to N=1 super-GMG, expanded about a supersymmetric adS vacuum, and also to the most general `curvature-squared' N=1 supergravity model.

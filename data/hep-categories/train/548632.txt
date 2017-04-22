@@ -1,0 +1,2 @@
+An Inclusive cross-section for the nucleus-nucleus interaction at RHIC energies
+We discuss the saturation of the parton density in heavy ion collisions at RHIC energiesusing a Pomeron approach. Our predictions for the particle density in ion-ion collisions at RHIC energies can be utilized as the background for the observation of possible quark-gluon plasma production.

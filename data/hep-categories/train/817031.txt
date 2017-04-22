@@ -1,0 +1,2 @@
+Single Production of Fourth Family t-prime Quarks at LHeC
+We study the single production of fourth-family $t'$ quarks via the process $ep\to t'\nu$ at Large Hadron electron Collider (LHeC). We calculate the background and signal cross sections for the mass range 300-800 GeV. It is shown that the LHeC can discover single $t'$ quark up to the mass of 800 GeV for the optimized mixing parameters.

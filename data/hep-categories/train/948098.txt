@@ -1,0 +1,2 @@
+Some problems of classical electrodynamics
+In this lecture, I discuss issues that usually escape attention of students in electrodynamics. These are the questions of (1) what the photon observed in nature looks like, (2) how an interference pattern arises from a source containing a lot of incoherently emitting atoms, and (3) how light slows down in a medium. Answers to these questions, if discussed at all, are scattered over various textbooks. Here, I follow our textbook [1].

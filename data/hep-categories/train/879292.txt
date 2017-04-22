@@ -1,0 +1,2 @@
+Anisotropic Fluid and Bianchi Type III Model in f(R) Gravity
+This paper is devoted to study the Bianchi type III model in the presence of anisotropic fluid in f(R) gravity. Exponential and power-law volumetric expansions are used to obtain exact solutions of the field equations. We discuss the physical behavior of the solutions and anisotropy behavior of the fluid, the expansion parameter and the model in future evolution of the universe.

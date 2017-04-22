@@ -1,0 +1,2 @@
+Neutrino flavor mixing in an SU(3) symmetry for light neutrinos
+It is proposed that light neutrinos form a triplet in a global SU(3) flavor symmetry. Within this framework, a symmetry principle predicts sin^2 theta_{23}=0.5 and gives the so called inverted neutrino mass hierarchy, theta _{13}=0 and a small deviation from pi/4 for theta_{12}.

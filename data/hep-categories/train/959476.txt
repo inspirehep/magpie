@@ -1,0 +1,2 @@
+Forward dihadron correlations in the Gaussian approximation of JIMWLK
+We compute forward dihadron azimuthal correlations in deuteron-gold collisions using a Gaussian approximation for the quadrupole operator. The double parton scattering contribution is found to be part of our dihadron calculation. We obtain a good description of the PHENIX data for the azimuthal-angle dependent away side peak and a relatively good estimate for the pedestal contribution.

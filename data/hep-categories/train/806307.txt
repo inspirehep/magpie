@@ -1,0 +1,2 @@
+Absorption on horizon-wrapped branes
+We compute the absorption cross section of space-time scalars on a static D2 rane, in global coordinates, wrapped on the S^2 of an AdS_2 X S^2 X CY_3 geometry. We discuss its relevance for the construction of the dual quantum mechanics of Calabi-Yau black holes.

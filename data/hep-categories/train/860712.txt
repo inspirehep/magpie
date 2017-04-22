@@ -1,0 +1,2 @@
+Action Principle for the Generalized Harmonic Formulation of General Relativity
+An action principle for the generalized harmonic formulation of general relativity is presented. The action is a functional of the spacetime metric and the gauge source vector. An action principle for the Z4 formulation of general relativity has been proposed recently by Bona, Bona--Casas and Palenzuela (BBP). The relationship between the generalized harmonic action and the BBP action is discussed in detail.

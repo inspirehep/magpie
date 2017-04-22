@@ -1,0 +1,2 @@
+Multisupergravity from latticized extra dimension
+The construction of the linearized four-dimensional multisupergravity from five-dimensional linearized supergravity with discretized fifth dimension is presented. The one-loop vacuum energy is evaluated when (anti)periodic boundary conditions are chosen for (bosons) fermions, respectively or vice-versa. It is proposed that the relation between discretized M-theory and strings may be found in the same fashion.

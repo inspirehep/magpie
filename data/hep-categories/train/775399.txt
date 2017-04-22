@@ -1,0 +1,2 @@
+D(4) Flavor Symmetry for Neutrino Masses and Mixing
+We present the $D_4\times Z_2$ flavor symmetry, which is different from the previous work by Grimus and Lavoura. Our model reduces to the standard model in the low energy and there is no FCNC at the tree level. Putting the experimental data, parameters are fixed, and then the implication of our model is discussed. The condition to realize the tri-bimaximal mixing is presented. The possibility for stringy realization of our model is also discussed.

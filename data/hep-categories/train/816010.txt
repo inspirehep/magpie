@@ -1,0 +1,2 @@
+Cancellation of ultra-violet infinities in one loop gravity
+This is a historical note. In 1974 I was an undergraduate student of L.D. Faddeev. I was working on quantum gravity [without matter] in one loop approximation. I discovered [simultaneously with G. t'Hooft M. Veltman] that on mass shell ultra-violet divergences cancel. The submission is a translation of the Diploma.

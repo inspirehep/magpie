@@ -1,0 +1,2 @@
+Schwinger Effect in (A)dS and Charged Black Hole
+In an (Anti-) de Sitter space and a charged black hole the Schwinger effect is either enhanced by the Hawking radiation or suppressed by the negative curvature. We use the contour integral method to calculate the production of charged pairs in the global (A)dS space. The charge emission from near-extremal black hole is found from the AdS geometry near the horizon and interpreted as the Schwinger effect in a Rindler space with the surface gravity for the acceleration as well as the Schwinger effect in AdS space.

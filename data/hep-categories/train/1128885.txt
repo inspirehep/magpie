@@ -1,0 +1,2 @@
+Complex Spacetimes and the Newman-Janis trick
+In this MSc thesis, we explore the subject of complex spacetimes, in which the mathematical theory of complex manifolds gets modified for application to General Relativity. We will also explore the mysterious Newman-Janis trick, which is an elementary and quite short method to obtain the Kerr black hole from the Schwarzschild black hole through the use of complex variables. This exposition will cover variations of the Newman-Janis trick, partial explanations, as well as original contributions

@@ -1,12 +1,18 @@
 language: python
-sudo: required
+sudo: false
 python:
   - 2.7
-  # - 3.5
+  - 3.6
+
+addons:
+  apt:
+    packages:
+      - liblapack-dev
+      - python-h5py
+      - libhdf5-serial-dev
+      - hdf5-tools
 
 before_install:
- - sudo apt-get update
- - sudo apt-get install liblapack-dev python-h5py libhdf5-serial-dev hdf5-tools
  - travis_retry wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
  - chmod +x miniconda.sh
  - bash miniconda.sh -b -p $HOME/miniconda
@@ -21,4 +27,4 @@ install:
   - python setup.py install
 
 script:
-  - python -m unittest discover
+  - python -m unittest discover --start-directory magpie/tests

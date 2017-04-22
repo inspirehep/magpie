@@ -1,0 +1,2 @@
+Nearly Tribimaximal Neutrino Mixing without Discrete Symmetry
+Based on a new approach to quark and lepton masses, where the mass spectra originate in vacuum expectation values of U(3)-flavor nonet (gauge singlet) scalars, a neutrino mass matrix of a new type is speculated. The mass matrix is described in terms of the up-quark and charged lepton masses, and it can lead to a nearly tribimaximal mixing without assuming any discrete symmetry. Quark mass relations are also discussed based on the new approach.

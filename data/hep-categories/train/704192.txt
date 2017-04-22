@@ -1,0 +1,2 @@
+Quantum field theory in curved spacetime
+An encyclopedia article on mathematical aspects of quantum field theory in curved spacetime. Section titles are: Introduction and preliminaries: Construction of *-algebra for a real linear scalar field on globally hyperbolic spacetimes and some general theorems: Particle creation and the limitations of the particle concept: Theory of the stress-energy tensor: Hawking and Unruh effects: Non-globally hyperbolic spacetimes and the time-machine question: Other related topics and some warnings.

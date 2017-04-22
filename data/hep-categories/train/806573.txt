@@ -1,0 +1,2 @@
+Looking for a gift of Nature: Hadron loops and hybrid mixing
+We investigate how coupling of valence q qbar to meson pairs can modify the properties of conventional q qbar and hybrid mesons. In a symmetry limit the mixing between hybrids and conventional q qbar with the same J^PC is shown to vanish. Flavor mixing between heavy and light q qbar due to meson loops is shown to be dual to the results of gluon mediated pQCD, and qualitatively different from mixing involving light flavors alone. The validity of the OZI rule for conventional q qbar and hybrid mesons is discussed.

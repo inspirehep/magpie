@@ -1,0 +1,2 @@
+Topological Pions
+We study the collider signatures of new pions, composite particles which emerge from a TeV-scale, confining gauge theory with vector-like matter. Similar to the neutral pion in QCD, these new pions mainly decay into a pair of standard model (SM) gauge bosons via triangular anomaly diagrams. One of the new pions, which decays to a gluon plus a photon, has excellent discovery potential at the LHC.

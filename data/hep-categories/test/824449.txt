@@ -1,0 +1,2 @@
+Gravitational Corrections to Yukawa and phi**4 Interactions
+We consider the lowest order quantum gravitational corrections to Yukawa and phi^4 interactions. Our results show that quantum gravity leads to contributions to the running coupling constants if the particles are massive. Furthermore we find that the gravitational contributions to the running of the masses vanish.

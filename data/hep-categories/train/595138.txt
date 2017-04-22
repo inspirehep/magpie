@@ -1,0 +1,2 @@
+ERG as a tool for nonperturbative studies
+Basic elements of the exact renormalization group method and recent results within this approach are reviewed. Topics covered are the derivation of equations for the effective action and relations between them, derivative expansion, solutions of fixed point equations and the calculation of the critical exponents, construction of the c-function and a description of the chiral phase transition.

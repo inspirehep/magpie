@@ -1,0 +1,2 @@
+Twisted Covariance vs Weyl Quantisation
+In this letter we wish to clarify in which sense the tensor nature of the commutation relations [x^mu,x^nu]=i theta ^{mu nu} underlying Minkowski spacetime quantisation cannot be suppressed even in the twisted approach to Lorentz covariance. We then address the vexata quaestio "why theta"?

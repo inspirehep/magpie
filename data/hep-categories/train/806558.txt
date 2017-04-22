@@ -1,0 +1,2 @@
+Production of charged pions off nuclei with 3...30 GeV incident protons and pions
+We compare calculations for the production of charged pions by pion or proton beams off nuclei calculated within our coupled channel transport model (GiBUU) with recent data of the HARP collaboration for beam energies from 3 up to 13 GeV. Predictions for the 30 GeV data for pions and kaons from the NA61/SHINE experiment are included.

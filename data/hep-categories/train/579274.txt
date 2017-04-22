@@ -1,0 +1,2 @@
+Photon colliders in physical program for large colliders
+In this report our main attention is focused on the problems which can be solved at Photon Colliders naturally but are hardly solved at LHC and e^+e^- Linear Collider: The New Physics - new particles, new interactions, supersymmetry, Dirac monopole, extra dimensions... SM and the case of a SM--like scenario - EWSB, Higgs bosons, anomalies in interactions of gauge bosons, QCD, Pomeron and odderon... By-product: Production of light Goldstone particles from region of e\to\gamma conversion.

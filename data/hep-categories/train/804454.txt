@@ -1,0 +1,2 @@
+Measurement of W boson helicity fractions in t anti-t decays at DZero and CDF
+The properties of the W boson can be probed in top quark decays t -> bW. The CDF and DZero collaborations have released updated measurements of the W boson helicity fractions f0, f+ and f-. The analysis techniques and updated measurements are discu ssed. This paper summarizes the talk [1] given at the DIS2008 conference.

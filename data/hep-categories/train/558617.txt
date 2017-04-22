@@ -1,0 +1,2 @@
+Quantum energies of solitons
+For renormalizable models a method is presented to unambiguously compute the energy that is carried by localized field configurations (solitons). A variational approach for the total energy is utilized to search for soliton configurations. As an example a 1+1 dimensional model is considered. The quantum energy of configurations that are translationally invariant for a subset of coordinates is discussed.

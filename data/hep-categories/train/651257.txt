@@ -1,0 +1,2 @@
+Q**2 dependence of the azimuthal asymmetry in unpolarized Drell-Yan
+We study the azimuthal asymmetry of the unpolarized Drell-Yan in the framework of the T-odd functions. We find, on the basis of quite general arguments, that for |{\bf q}_{\perp}| << Q such an asymmetry decreases as Q^{-2}, where {\bf q}_{\perp} and Q are respectively the transverse momentum and the center-of-mass energy of the muon pair. The experimental results support this conclusion.

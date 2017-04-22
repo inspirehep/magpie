@@ -1,0 +1,2 @@
+Evidence for the decay D0 ---> K* pi- pi+ pi-
+We present a search for the ``wrong-sign'' decay D0 -> K+ pi- pi+ pi- using 9 fb-1 of e+e- collisions on and just below the Upsilon(4S) resonance. This decay can occur either through a doubly Cabibbo-suppressed process or through mixing to a D0bar followed by a Cabibbo-favored process. Our result for the time-integrated wrong-sign rate relative to the decay D0 -> K- pi+ pi- pi+ is (0.0041 +0.0012-0.0011(stat.) +-0.0004(syst.))x(1.07 +-0.10)(phase space), which has a statistical significance of 3.9 standard deviations.

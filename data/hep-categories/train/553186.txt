@@ -1,0 +1,2 @@
+B physics at LEP and SLD
+Recent B physics results from LEP and SLD are reviewed. In particular, results of B lifetimes, semileptonic B decays, charm counting, CKM matrix elements, and mixing are presented.

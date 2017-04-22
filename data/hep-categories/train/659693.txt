@@ -1,0 +1,2 @@
+The N = 2 and N = 4 supersymmetric extensions of the Lorentz and CPT-violating term in Abelian gauge theories
+In this work, we propose the N=2 and N=4 supersymmetric extensions of the Lorentz-breaking Abelian Chern-Simons term. We formulate the question of the Lorentz violation in 6 and 10 dimensions to obtain the bosonic sectors of N=2, and N=4, supersymmetries, respectively. From this, we carry out an analysis in N=1, D=4 superspace and, in terms of N=1, superfields, we are able to write down the N=2 and N=4 supersymmetric versions of the Lorentz-violating action term.

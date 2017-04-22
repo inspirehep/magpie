@@ -1,0 +1,2 @@
+Two-loop supersymmetric QCD corrections to Higgs-quark-quark couplings in the generic MSSM
+A typesetting mistake in Eq. (25) is corrected. The numerical analysis and the conclusions remain unchanged.

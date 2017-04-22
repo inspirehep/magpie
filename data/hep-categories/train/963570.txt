@@ -1,0 +1,2 @@
+A Torsional Model of Leptons
+Quite recently it was shown that torsion induces interactions among leptons that are identical to the weak interactions of leptons of the Weinberg standard model, if it is in terms of leptonic bound states that the bosonic sector is built: here we obtain the partially conserved axial currents showing that they are the same of the standard model, if the composite mediators have specific mass relationships: we show that their masses are indeed the measured ones, if reasonable approximations are taken.

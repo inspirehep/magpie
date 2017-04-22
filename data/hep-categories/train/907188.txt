@@ -1,0 +1,2 @@
+Spontaneous Breaking of Lorentz Symmetry by Ghost Condensation in Perturbative Quantum Gravity
+In this paper we will study the spontaneous breakdown of the Lorentz symmetry by ghost condensation in perturbative quantum gravity. Our analysis will be done in the Curci-Ferrari gauge. We will also analyse modification of the BRST and the anti-BRST transformations by the formation of this ghost condensate. It will be shown that even though the modified BRST and the modified anti-BRST transformations are not nilpotent, their nilpotency is restored on-shell.

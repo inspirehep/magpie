@@ -1,0 +1,2 @@
+Scaling in a SU(2)/Z_3 model of cosmic superstring networks
+Motivated by recent developments in superstring theory in the cosmological context, we examine a field theory which contains string networks with 3-way junctions. We perform numerical simulations of this model, identify the length scales of the network that forms, and provide evidence that the length scales tend towards a scaling regime, growing in proportion to time. We infer that the presence of junctions does not in itself cause a superstring network to dominate the energy density of the early Universe.

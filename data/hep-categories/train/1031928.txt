@@ -1,0 +1,2 @@
+Stability of composite vacuum Heckmann wormholes in Brans-Dicke theory
+This paper discusses linearized (spherically symmetric) perturbation of static Heckmann composite thin shell wormholes in Brans-Dicke gravity. The equation of state $P= \beta^2 \sigma$ at the throat is linearized around the static solution where $\sigma$ energy density of the shell and $P$ the presume. We have shown that this thin shell wormholes is stable within the range $0\leq\beta<1$ and with all values of $\omega$ except $\omega=-2$.

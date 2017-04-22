@@ -1,0 +1,2 @@
+Charmless B decays at LHCb
+The study of charmless b-hadron decays provides information for testing the CKM picture of CP violation in the Standard Model. In addition, as they can proceed through loop diagrams, they are also sensitive to physics beyond the Standard Model. A review of recent results from LHCb on charmless b-hadron decays is presented.

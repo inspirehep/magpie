@@ -1,0 +1,2 @@
+Colorless mesons in a polychromatic world
+The limit of a large number of QCD colours gives a useful approximation scheme to the physical hadronic world. A brief overview of the mesonic sector is presented. The large-Nc constraints on the low-energy chiral couplings are summarized and the role of unitarity corrections is discussed. As an important illustration of the 1/Nc expansion techniques, the Standard Model prediction of epsilon'/epsilon is reviewed.

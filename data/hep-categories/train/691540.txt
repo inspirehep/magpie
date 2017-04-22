@@ -1,0 +1,2 @@
+High density preheating effects on Q-ball decays and MSSM inflation
+Non-perturbative preheating decay of post-inflationary condensates often results in a high density, low momenta, non-thermal gas. In the case where the non-perturbative classical evolution also leads to Q-balls, this effect shields them from instant dissociation, and may radically change the thermal history of the universe. For example, in a large class of inflationary scenarios, motivated by the MSSM and its embedding in string theory, the reheat temperature changes by a multiplicative factor of $10^{12}$.

@@ -1,0 +1,2 @@
+Imprints of energy limitation in transverse momentum distributions of jets
+Using a Tsallis nonextensive approach, we analyse distributions of transverse spectra of jets. We discuss the possible influence of energy conservation laws on these distributions. Transverse spectra of jets exhibit a power-law behavior of $1/p_T^n$ with the power indices $n$ similar to those for transverse spectra of hadrons.

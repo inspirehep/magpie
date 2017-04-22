@@ -1,0 +1,2 @@
+One-loop effective potential in N=1/2 generic chiral superfield model
+We obtain the one-loop quantum corrections to the Kahlerian and superpotentials in the generic chiral superfield model on the nonanticommutative superspace. Unlike all previous works, we use a method which does not require to rewrite a star-product of superfields in terms of ordinary products. In the Kahlerian potential sector the one-loop contributions are analogous to ones in the undeformed theory while in the chiral potential sector the quantum corrections contain a deformation parameter.

@@ -1,0 +1,2 @@
+World-sheet dynamics of ZZ branes
+We show how non-compact space-time (ZZ branes) emerges as a limit of compact space-time (FZZT branes) for specific ratios between the square of the boundary cosmological constant and the bulk cosmological constant in the (2,2m-1) minimal model coupled to two-dimensional quantum gravity.

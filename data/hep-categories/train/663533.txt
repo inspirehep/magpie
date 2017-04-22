@@ -1,0 +1,2 @@
+Electrically charged dilatonic black rings
+In this note we present (electrically) charged dilatonic black ring solutions of the Einstein-Maxwell-dilaton theory in five dimensions and we consider their physical properties. These solutions are static and as in the neutral case possess a conical singularity. We show how one may remove the conical singularity by application of a Harrison transformation, which physically corresponds to supporting the charged ring with an electric field. Finally, we discuss the slowly rotating case for arbitrary dilaton coupling.

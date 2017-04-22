@@ -1,0 +1,2 @@
+Reduced Hamiltonian for intersecting shells and Hawking radiation
+We consider the dynamics of one or more self gravitating shells of matter in a centrally symmetric gravitational field in the Painleve' family of gauges. We give the reduced hamiltonian for two intersecting shells, both massless and massive. Such a formulation is applied to the computation of the semiclassical action of two intersecting shells. The relation of the imaginary part of the space-part of the action to the computation of the Bogoliubov coefficients is revisited.

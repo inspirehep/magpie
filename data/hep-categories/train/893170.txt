@@ -1,0 +1,2 @@
+The bigravity black hole and its thermodynamics
+We argue that the Isham-Storey exact solution to bigravity does not describe black holes because the horizon is a singular surface. However, this is not a generic property of bigravity, but a property of a particular potential. More general potentials do accept regular black holes. For regular black holes, we compute the total energy and thermodynamical parameters. Phase transitions occur for certain critical temperatures. We also find a novel region on phase space describing up to 4 allowed states for a given temperature.

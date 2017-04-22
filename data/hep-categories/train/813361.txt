@@ -1,0 +1,2 @@
+New form of the T-duality due to the stability of a compact dimension
+We study behaviors of a compact dimension and the T-duality, in the presence of the wrapped closed bosonic strings. When the closed strings interact and form another system of strings, the radius of compactification increases. This modifies the T-d uality, which we call it as T-duality-like. Some effects of the T-duality-like will be studied.

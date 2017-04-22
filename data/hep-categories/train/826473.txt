@@ -1,0 +1,2 @@
+Construction of chiral superstring measure
+The mathematically rigorous definition and construction of the amplitudes in superstring theory is still an open problem. Here, we describe some recent development in the construction of the superstring measures in $g=3,4$ and we point out some aspects that are not yet clear.

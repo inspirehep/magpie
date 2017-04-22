@@ -1,0 +1,2 @@
+|V(cb)| and |V(ub)| determinations from inclusive semileptonic B decays
+The determinations of |V_{cb}| and |V_{ub}| from inclusive semileptonic B decays are reviewed. A comparison of the light-cone approach with the heavy quark expansion approach is made. The perspective for further improvement of the |V_{cb}| and |V_{ub}| determinations is discussed.

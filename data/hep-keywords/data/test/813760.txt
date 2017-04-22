@@ -1,2 +1,0 @@
-Measurement of the matrix element for the decay eta-prime ---> eta pi0 pi0 with the GAMS-4pi spectrometer
-The parameters of the Dalitz diagram for the decay ' -> I (0) I (0) in a generalized and a linear representation were determined by using a statistical sample of 15 Oe 10(3) events. A charge-exchange reaction at a momentum of 32 GeV/c was a source of monoenergetic ' mesons. The experiment was performed with the aid of the GAMS-4I spectrometer.

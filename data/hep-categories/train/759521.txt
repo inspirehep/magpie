@@ -1,0 +1,2 @@
+MOND, dark matter, and conservation of energy
+The MOND equation $m \vec a \mu(a) = \vec F$ could be transformed to the equivalent form $m \vec a = \vec{F'}$, where $\Vec{F'}$ is a transformed force. Using this transformation we argue that MOND could not avoid introducing dark matter, and introduces nonconservative terms to the equations of motion.

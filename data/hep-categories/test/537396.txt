@@ -1,0 +1,2 @@
+A Feynman graph selection tool in GRACE system
+We present a Feynman graph selection tool {\tt grcsel}, which is an interpreter written in C language. In the framework of {\tt GRACE}, it enables us to get a subset of Feynman graphs according to given conditions.

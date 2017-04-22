@@ -1,0 +1,2 @@
+Inclusive searches for SUSY at LHC
+This note describes the search for generic SUSY models with R-parity conservation in the ATLAS and CMS detectors at the CERN Large Hadron Collider. Such particles would be produced in pairs and decay to the lightest SUSY particle which escapes the detector, giving signatures involving jets, possible leptons, and T. Results of simulation studies performed by the CMS [3] and ATLAS [2] collaborations are presented. The discovery reach of new physics within the first fb-1 of collected integrated lumino sity is shown.

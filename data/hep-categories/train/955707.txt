@@ -1,0 +1,2 @@
+Angular momentum of the physical electron
+The angular momentum of the physical electron, modeled as a Dirac fermion coupled to the electromagnetic field, is found to be c/2, the same as that of a bare Dirac fermion and independent of the sign and magnitude of the electric charge. The contribution of the electromagnetic field to the angular momentum is zero.

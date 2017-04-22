@@ -1,0 +1,2 @@
+Pi- p atom in ChPT: Strong energy level shift
+The general formula of the pi(-)p atom strong energy-level shift in the 1s state is derived in the next-to-leading order in the isospin breaking, and in all orders in chiral expansion. Isospin-breaking corrections to the level shift are explicitly evaluated at order p^2 in ChPT. The results clearly demonstrate the necessity to critically reaccess the values of the piN scattering lengths, extracted from the energy-level shift measurement by means of the potential model-based theoretical analysis.

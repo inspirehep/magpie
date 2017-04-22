@@ -1,0 +1,2 @@
+$B_c \to J/\psi (B_s, B^{â}_s) + n\pi$ Decays
+The Bc -> J/psi(Bs,Bs*)+ n pi decay amplitudes are calculated in the frame work of factorization model, which allows to represent this processes as Bc decay into J/psi Bs+W* followed by the virtual W*-boson decay into the final set of pi mesons. The module for the generation of Bc meson decays into J/psi + n pi and Bs(*) + n pi (n <= 3) is implemented into the GAUSS program package of the LHCb Collaboration.

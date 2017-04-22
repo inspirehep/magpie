@@ -1,0 +1,2 @@
+Review of Exotic Hadrons
+I review here the most recent results about the observation and the study of hadronic bound states that do not fit well in the standard quarkonium picture. Several new states have been observed in the last few years, at B-, tau-Factories and hadron colliders. For most of them, quantum number determinations are available and allow to develop the basis of a new spectroscopy based on exotic compounds like tetraquarks or meson molecules. Nonetheless, there is still a lot of work to do to complete the picture.

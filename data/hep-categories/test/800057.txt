@@ -1,0 +1,2 @@
+Observability of glueball spectrum in QCD and the width of sigma resonance
+We prove a theorem in QCD stating that in the limit of strong coupling, $g\to\infty$, the observed spectrum of glueballs in QCD is the same of a pure Yang-Mills theory, being mixing effects due to the next-to-leading order. A full effective theory for QCD is obtained and the width of the $\sigma$ resonance decay is straightforwardly computed. This appears as the lowest glueball state.

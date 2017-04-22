@@ -1,0 +1,2 @@
+HidSecFTSUSY: Incorporating effects from hidden sectors in the numerical computation of the MSSM spectrum
+SOFTSUSY is a software designed to solve the RG equations of the MSSM and compute its low energy spectrum. HidSecSOFTSUSY is an extension of the SOFTSUSY package which modifies the beta functions to include contributions from light dynamic fields in the hidden sector.

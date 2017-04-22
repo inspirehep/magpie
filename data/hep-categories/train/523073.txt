@@ -1,0 +1,2 @@
+Effective theory of NN interactions in a separable representation
+We consider the effective field theory of the NN system in a separable representation. The pionic part of the effective potential is included nonperturbatively and approximated by a separable potential. The use of a separable representation allows for the explicit solution of the Lippmann-Schwinger equation and a consistent renormalization procedure. The phase shifts in the $^1S_0$ channel are calculated to subleading order.

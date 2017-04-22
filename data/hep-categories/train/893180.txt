@@ -1,0 +1,2 @@
+W' and Z' limits for Minimal Walking Technicolor
+We interpret the recent data on non-observation of Z'- and W'-bosons, reported by CMS, within Minimal Walking Technicolor models and use them to constrain the couplings and spectrum of the theory. We provide the reach for both exclusion and possible observation for the LHC with 5 fb^-1 at 7 TeV in the centre of mass energy, and 100 fb^-1 at 13 TeV.
