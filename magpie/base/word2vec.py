@@ -7,7 +7,7 @@ from gensim.models import Word2Vec
 from sklearn.preprocessing import StandardScaler
 
 from magpie.base.document import Document
-from magpie.config import WORD2VEC_MODELPATH, EMBEDDING_SIZE
+from magpie.config import EMBEDDING_SIZE
 from magpie.utils import get_documents, save_to_disk
 
 
@@ -60,8 +60,7 @@ def compute_word2vec_for_phrase(phrase, model):
     return result
 
 
-def fit_scaler(data_dir, word2vec_model=WORD2VEC_MODELPATH, batch_size=1024,
-               persist_to_path=None):
+def fit_scaler(data_dir, word2vec_model, batch_size=1024, persist_to_path=None):
     """ Get all the word2vec vectors in a 2D matrix and fit the scaler on it.
      This scaler can be used afterwards for normalizing feature matrices. """
     if type(word2vec_model) == str:

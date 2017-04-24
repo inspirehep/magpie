@@ -4,12 +4,10 @@ from keras.layers.normalization import BatchNormalization
 from keras.layers.recurrent import GRU
 from keras.models import Sequential
 
-from magpie.config import EMBEDDING_SIZE, SAMPLE_LENGTH
-
-DEFAULT_LABELS = 1000
+from magpie.config import SAMPLE_LENGTH
 
 
-def get_nn_model(nn_model, embedding=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
+def get_nn_model(nn_model, embedding, output_length):
     if nn_model == 'cnn':
         return cnn(embedding_size=embedding, output_length=output_length)
     elif nn_model == 'rnn':
@@ -20,7 +18,7 @@ def get_nn_model(nn_model, embedding=EMBEDDING_SIZE, output_length=DEFAULT_LABEL
         raise ValueError("Unknown NN type: {}".format(nn_model))
 
 
-def cnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
+def cnn(embedding_size, output_length):
     """ Create and return a keras model of a CNN """
     NB_FILTER = 256
     NGRAM_LENGTHS = [1, 2, 3, 4, 5]
@@ -57,7 +55,7 @@ def cnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     return model
 
 
-def crnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
+def crnn(embedding_size, output_length):
     """ Create and return a keras model of a CNN with a GRU layer. """
     # Works only with customized Keras and TensorFlow
     from keras.layers import AsymmetricZeroPadding1D
@@ -104,7 +102,7 @@ def crnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
     return model
 
 
-def rnn(embedding_size=EMBEDDING_SIZE, output_length=DEFAULT_LABELS):
+def rnn(embedding_size, output_length):
     """ Create and return a keras model of a RNN """
     HIDDEN_LAYER_SIZE = 256
 
