@@ -17,7 +17,7 @@ class TestAPI(unittest.TestCase):
 		from magpie import MagpieModel
 		model = MagpieModel()
 		model.init_word_vectors(DATA_DIR, vec_dim=100)
-		history = model.train(DATA_DIR, labels, test_split=0.3, nb_epochs=3)
+		history = model.train(DATA_DIR, labels, test_ratio=0.3, nb_epochs=3)
 		assert history is not None
 
 		# Do a simple prediction

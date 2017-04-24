@@ -44,9 +44,11 @@ magpie.init_word_vectors('data/hep-categories', vec_dim=100)
 If you plan to reuse the trained word representations, you might want to save them and pass in the constructor to `MagpieModel` next time. For the training, just type:
 ```python
 labels = ['Gravitation and Cosmology', 'Experiment-HEP', 'Theory-HEP']
-magpie.train('data/hep-categories', labels, test_split=0.2, nb_epochs=30)
+magpie.train('data/hep-categories', labels, test_ratio=0.2, nb_epochs=30)
 ```
-By providing the `test_split` argument, the model splits data into train & test datasets and evaluates itself after every epoch displaying it's current loss and accuracy. If your data doesn't fit into memory, you can also run `magpie.batch_train()` which has the same API, but is more memory efficient.
+By providing the `test_ratio` argument, the model splits data into train & test datasets (in this example into 80/20 ratio) and evaluates itself after every epoch displaying it's current loss and accuracy. The default value of `test_ratio` is 0 meaning that all the data will be used for training.
+
+If your data doesn't fit into memory, you can also run `magpie.batch_train()` which has a similar API, but is more memory efficient.
 
 Trained models can be used for prediction with methods:
 ```python
