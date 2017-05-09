@@ -52,7 +52,7 @@ If your data doesn't fit into memory, you can also run `magpie.batch_train()` wh
 
 Trained models can be used for prediction with methods:
 ```python
->>> model.predict_from_file('data/hep-categories/1002413.txt')
+>>> magpie.predict_from_file('data/hep-categories/1002413.txt')
 [('Experiment-HEP', 0.47593361),
  ('Gravitation and Cosmology', 0.055745006),
  ('Theory-HEP', 0.02692855)]
