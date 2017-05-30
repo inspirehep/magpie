@@ -22,13 +22,13 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.2',
+    version='1.0',
 
     description='Automatic text classification tool',
     # long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/jstypka/magpie',
+    url='https://github.com/inspirehep/magpie',
 
     # Author details
     author='Jan Stypka',
@@ -43,7 +43,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
 
         'Topic :: Text Processing',
 
