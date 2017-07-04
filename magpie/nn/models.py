@@ -47,7 +47,7 @@ def cnn(embedding_size, output_length):
     model.compile(
         loss='binary_crossentropy',
         optimizer='adam',
-        metrics=['accuracy'],
+        metrics=['top_k_categorical_accuracy'],
     )
 
     return model
@@ -75,7 +75,7 @@ def rnn(embedding_size, output_length):
     model.compile(
         loss='binary_crossentropy',
         optimizer='adam',
-        metrics=['accuracy'],
+        metrics=['top_k_categorical_accuracy'],
     )
 
     return model
