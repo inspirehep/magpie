@@ -1,6 +1,11 @@
 # word2vec & scaler
 EMBEDDING_SIZE = 100
 
+# Cores to use while fitting word2vec vectors
+WORD2VEC_WORKERS = 4
+MIN_WORD_COUNT = 5
+WORD2VEC_CONTEXT = 5
+
 # Models
 NN_ARCHITECTURE = 'cnn'
 
