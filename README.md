@@ -87,7 +87,7 @@ or just pass the objects directly!
 
 The package is not on PyPi, but you can get it directly from GitHub:
 ```
-$ pip install git+https://github.com/inspirehep/magpie.git
+$ pip install git+https://github.com/inspirehep/magpie.git@v1.0
 ```
 If you encounter any problems with the installation, make sure to install the correct versions of dependencies listed in `setup.py` file.
 
