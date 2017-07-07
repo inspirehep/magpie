@@ -7,7 +7,8 @@ from gensim.models import Word2Vec
 from sklearn.preprocessing import StandardScaler
 
 from magpie.base.document import Document
-from magpie.config import EMBEDDING_SIZE
+from magpie.config import EMBEDDING_SIZE, WORD2VEC_WORKERS, MIN_WORD_COUNT, \
+    WORD2VEC_CONTEXT
 from magpie.utils import get_documents, save_to_disk
 
 
@@ -22,19 +23,13 @@ def train_word2vec_in_memory(docs, vec_dim=EMBEDDING_SIZE):
     doc_sentences = map(lambda d: d.read_sentences(), docs)
     all_sentences = reduce(lambda d1, d2: d1 + d2, doc_sentences)
 
-    # Set values for various parameters
-    num_features = vec_dim  # Word vector dimensionality
-    min_word_count = 5      # Minimum word count
-    num_workers = 4         # Number of threads to run in parallel
-    context = 5             # Context window size
-
     # Initialize and train the model
     model = Word2Vec(
         all_sentences,
-        workers=num_workers,
-        size=num_features,
-        min_count=min_word_count,
-        window=context,
+        workers=WORD2VEC_WORKERS,
+        size=vec_dim,
+        min_count=MIN_WORD_COUNT,
+        window=WORD2VEC_CONTEXT,
     )
 
     # If you don't plan to train the model any further, calling
@@ -115,19 +110,13 @@ def train_word2vec(doc_directory, vec_dim=EMBEDDING_SIZE):
                 for sentence in d.read_sentences():
                     yield sentence
 
-    # Set values for various parameters
-    num_features = vec_dim  # Word vector dimensionality
-    min_word_count = 5      # Minimum word count
-    num_workers = 4         # Number of threads to run in parallel
-    context = 5             # Context window size
-
     # Initialize and train the model
     model = Word2Vec(
         SentenceIterator(doc_directory),
-        workers=num_workers,
-        size=num_features,
-        min_count=min_word_count,
-        window=context,
+        workers=WORD2VEC_WORKERS,
+        size=vec_dim,
+        min_count=MIN_WORD_COUNT,
+        window=WORD2VEC_CONTEXT,
     )
 
     # If you don't plan to train the model any further, calling

@@ -4,6 +4,11 @@ python:
   - 2.7
   - 3.6
 
+notifications:
+  email:
+    on_success: never
+    on_failure: change
+
 addons:
   apt:
     packages:
