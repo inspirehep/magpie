@@ -2,6 +2,7 @@ from __future__ import print_function, unicode_literals
 import os
 import six
 import numpy as np
+from functools import reduce
 
 from gensim.models import Word2Vec
 from sklearn.preprocessing import StandardScaler
