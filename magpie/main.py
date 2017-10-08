@@ -1,5 +1,6 @@
 from __future__ import unicode_literals, print_function, division
 
+import math
 import os
 import sys
 from six import string_types
@@ -9,7 +10,7 @@ import numpy as np
 
 from magpie.base.document import Document
 from magpie.base.word2vec import train_word2vec, fit_scaler
-from magpie.config import NN_ARCHITECTURE, BATCH_SIZE, EMBEDDING_SIZE, NB_EPOCHS
+from magpie.config import NN_ARCHITECTURE, BATCH_SIZE, EMBEDDING_SIZE, EPOCHS
 from magpie.nn.input_data import get_data_for_model
 from magpie.nn.models import get_nn_model
 from magpie.utils import save_to_disk, load_from_disk
@@ -38,7 +39,7 @@ class MagpieModel(object):
 
     def train(self, train_dir, vocabulary, test_dir=None, callbacks=None,
               nn_model=NN_ARCHITECTURE, batch_size=BATCH_SIZE, test_ratio=0.0,
-              nb_epochs=NB_EPOCHS, verbose=1):
+              epochs=EPOCHS, verbose=1):
         """
         Train the model on given data
         :param train_dir: directory with data files. Text files should end with
@@ -51,7 +52,7 @@ class MagpieModel(object):
         :param batch_size: size of one batch
         :param test_ratio: the ratio of samples that will be withheld from training
         and used for testing. This can be overridden by test_dir.
-        :param nb_epochs: number of epochs to train
+        :param epochs: number of epochs to train
         :param verbose: 0, 1 or 2. As in Keras.
 
         :return: History object
@@ -99,7 +100,7 @@ class MagpieModel(object):
             x_train,
             y_train,
             batch_size=batch_size,
-            nb_epoch=nb_epochs,
+            epochs=epochs,
             validation_data=test_data,
             validation_split=test_ratio,
             callbacks=callbacks or [],
@@ -108,7 +109,7 @@ class MagpieModel(object):
 
     def batch_train(self, train_dir, vocabulary, test_dir=None, callbacks=None,
                     nn_model=NN_ARCHITECTURE, batch_size=BATCH_SIZE,
-                    nb_epochs=NB_EPOCHS, verbose=1):
+                    epochs=EPOCHS, verbose=1):
         """
         Train the model on given data
         :param train_dir: directory with data files. Text files should end with
@@ -119,7 +120,7 @@ class MagpieModel(object):
         :param callbacks: objects passed to the Keras fit function as callbacks
         :param nn_model: string defining the NN architecture e.g. 'crnn'
         :param batch_size: size of one batch
-        :param nb_epochs: number of epochs to train
+        :param epochs: number of epochs to train
         :param verbose: 0, 1 or 2. As in Keras.
 
         :return: History object
@@ -163,10 +164,13 @@ class MagpieModel(object):
             scaler=self.scaler,
         )
 
+        nb_of_files = len({filename[:-4] for filename in os.listdir(train_dir)})
+        steps_per_epoch = math.ceil(nb_of_files / batch_size)
+
         return self.keras_model.fit_generator(
             train_generator,
-            len({filename[:-4] for filename in os.listdir(train_dir)}),
-            nb_epochs,
+            steps_per_epoch=steps_per_epoch,
+            epochs=epochs,
             validation_data=test_data,
             callbacks=callbacks or [],
             verbose=verbose,

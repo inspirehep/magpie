@@ -7,7 +7,7 @@ Magpie is a deep learning tool for multi-label text classification. It learns on
 >>> from magpie import MagpieModel
 >>> magpie = MagpieModel()
 >>> magpie.init_word_vectors('/path/to/corpus', vec_dim=100)
->>> magpie.train('/path/to/corpus', ['label1', 'label2', 'label3'], nb_epochs=3)
+>>> magpie.train('/path/to/corpus', ['label1', 'label2', 'label3'], epochs=3)
 Training...
 >>> magpie.predict_from_text('Well, that was quick!')
 [('label1', 0.96), ('label3', 0.65), ('label2', 0.21)]
@@ -44,7 +44,7 @@ magpie.init_word_vectors('data/hep-categories', vec_dim=100)
 If you plan to reuse the trained word representations, you might want to save them and pass in the constructor to `MagpieModel` next time. For the training, just type:
 ```python
 labels = ['Gravitation and Cosmology', 'Experiment-HEP', 'Theory-HEP']
-magpie.train('data/hep-categories', labels, test_ratio=0.2, nb_epochs=30)
+magpie.train('data/hep-categories', labels, test_ratio=0.2, epochs=30)
 ```
 By providing the `test_ratio` argument, the model splits data into train & test datasets (in this example into 80/20 ratio) and evaluates itself after every epoch displaying it's current loss and accuracy. The default value of `test_ratio` is 0 meaning that all the data will be used for training.
 
