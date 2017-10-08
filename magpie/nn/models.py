@@ -1,8 +1,6 @@
-from keras.layers.convolutional import MaxPooling1D, Convolution1D
-from keras.layers.core import Flatten, Dropout, Dense, Merge
-from keras.layers.normalization import BatchNormalization
-from keras.layers.recurrent import GRU
-from keras.models import Sequential
+from keras.layers import Input, Dense, GRU, Dropout, BatchNormalization, \
+                         MaxPooling1D, Conv1D, Flatten, Concatenate
+from keras.models import Model
 
 from magpie.config import SAMPLE_LENGTH
 
@@ -18,31 +16,33 @@ def get_nn_model(nn_model, embedding, output_length):
 
 def cnn(embedding_size, output_length):
     """ Create and return a keras model of a CNN """
+
     NB_FILTER = 256
     NGRAM_LENGTHS = [1, 2, 3, 4, 5]
 
-    conv_layers = []
+    conv_layers, inputs = [], []
+
     for ngram_length in NGRAM_LENGTHS:
-        ngram_layer = Sequential()
-        ngram_layer.add(Convolution1D(
+        current_input = Input(shape=(SAMPLE_LENGTH, embedding_size))
+        inputs.append(current_input)
+
+        convolution = Conv1D(
             NB_FILTER,
             ngram_length,
-            input_dim=embedding_size,
-            input_length=SAMPLE_LENGTH,
-            init='lecun_uniform',
+            kernel_initializer='lecun_uniform',
             activation='tanh',
-        ))
-        pool_length = SAMPLE_LENGTH - ngram_length + 1
-        ngram_layer.add(MaxPooling1D(pool_length=pool_length))
-        conv_layers.append(ngram_layer)
+        )(current_input)
 
-    model = Sequential()
-    model.add(Merge(conv_layers, mode='concat'))
+        pool_size = SAMPLE_LENGTH - ngram_length + 1
+        pooling = MaxPooling1D(pool_size=pool_size)(convolution)
+        conv_layers.append(pooling)
 
-    model.add(Dropout(0.5))
-    model.add(Flatten())
+    merged = Concatenate()(conv_layers)
+    dropout = Dropout(0.5)(merged)
+    flattened = Flatten()(dropout)
+    outputs = Dense(output_length, activation='sigmoid')(flattened)
 
-    model.add(Dense(output_length, activation='sigmoid'))
+    model = Model(inputs=inputs, outputs=outputs)
 
     model.compile(
         loss='binary_crossentropy',
@@ -57,20 +57,21 @@ def rnn(embedding_size, output_length):
     """ Create and return a keras model of a RNN """
     HIDDEN_LAYER_SIZE = 256
 
-    model = Sequential()
+    inputs = Input(shape=(SAMPLE_LENGTH, embedding_size))
 
-    model.add(GRU(
+    gru = GRU(
         HIDDEN_LAYER_SIZE,
-        input_dim=embedding_size,
-        input_length=SAMPLE_LENGTH,
-        init='glorot_uniform',
-        inner_init='normal',
+        input_shape=(SAMPLE_LENGTH, embedding_size),
+        kernel_initializer="glorot_uniform",
+        recurrent_initializer='normal',
         activation='relu',
-    ))
-    model.add(BatchNormalization())
-    model.add(Dropout(0.1))
+    )(inputs)
 
-    model.add(Dense(output_length, activation='sigmoid'))
+    batch_normalization = BatchNormalization()(gru)
+    dropout = Dropout(0.1)(batch_normalization)
+    outputs = Dense(output_length, activation='sigmoid')(dropout)
+
+    model = Model(inputs=inputs, outputs=outputs)
 
     model.compile(
         loss='binary_crossentropy',
