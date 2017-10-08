@@ -90,5 +90,8 @@ $ pip install git+https://github.com/inspirehep/magpie.git@v2.0
 ```
 If you encounter any problems with the installation, make sure to install the correct versions of dependencies listed in `setup.py` file.
 
+## Magpie v1.0 vs v2.0
+Magpie v1.0 depends on Keras v1.X, while Magpie v2.0 on Keras v2.X. You can install and use either of those, but bear in mind that only v2.0 will be developed in the future. If you have troubles with installation, make sure that both Magpie and Keras have the same major version.
+
 ## Contact
 If you have any problems, feel free to open an issue. We'll do our best to help :+1:
