@@ -1,1 +1,1 @@
-from .main import MagpieModel
+from .main import Magpie

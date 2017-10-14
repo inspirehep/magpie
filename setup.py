@@ -22,7 +22,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='1.0',
+    version='2.0',
 
     description='Automatic text classification tool',
     # long_description=long_description,
@@ -73,7 +73,7 @@ setup(
         'scipy~=0.18',
         'gensim~=0.13',
         'scikit-learn~=0.18',
-        'keras~=1.2.2',
+        'keras~=2.0',
         'h5py~=2.6',
     ],
 

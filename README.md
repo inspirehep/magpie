@@ -4,10 +4,9 @@ Magpie is a deep learning tool for multi-label text classification. It learns on
 
 ## Very short introduction
 ```
->>> from magpie import MagpieModel
->>> magpie = MagpieModel()
+>>> magpie = Magpie()
 >>> magpie.init_word_vectors('/path/to/corpus', vec_dim=100)
->>> magpie.train('/path/to/corpus', ['label1', 'label2', 'label3'], nb_epochs=3)
+>>> magpie.train('/path/to/corpus', ['label1', 'label2', 'label3'], epochs=3)
 Training...
 >>> magpie.predict_from_text('Well, that was quick!')
 [('label1', 0.96), ('label3', 0.65), ('label2', 0.21)]
@@ -24,9 +23,9 @@ $ ls data/hep-categories
 
 Before you train the model, you need to build appropriate word vector representations for your corpus. In theory, you can train them on a different corpus or reuse already trained ones ([tutorial](http://rare-technologies.com/word2vec-tutorial/)), however Magpie enables you to do that as well.
 ```python
-from magpie import MagpieModel
+from magpie import Magpie
 
-magpie = MagpieModel()
+magpie = Magpie()
 magpie.train_word2vec('data/hep-categories', vec_dim=100)
 ```
 
@@ -41,10 +40,10 @@ You would usually want to combine those two steps, by simply running:
 magpie.init_word_vectors('data/hep-categories', vec_dim=100)
 ```
 
-If you plan to reuse the trained word representations, you might want to save them and pass in the constructor to `MagpieModel` next time. For the training, just type:
+If you plan to reuse the trained word representations, you might want to save them and pass in the constructor to `Magpie` next time. For the training, just type:
 ```python
 labels = ['Gravitation and Cosmology', 'Experiment-HEP', 'Theory-HEP']
-magpie.train('data/hep-categories', labels, test_ratio=0.2, nb_epochs=30)
+magpie.train('data/hep-categories', labels, test_ratio=0.2, epochs=30)
 ```
 By providing the `test_ratio` argument, the model splits data into train & test datasets (in this example into 80/20 ratio) and evaluates itself after every epoch displaying it's current loss and accuracy. The default value of `test_ratio` is 0 meaning that all the data will be used for training.
 
@@ -63,7 +62,7 @@ Trained models can be used for prediction with methods:
  ('Theory-HEP', 0.20917746)]
 ```
 ## Saving & loading the model
-A `MagpieModel` object consists of three components - the word2vec mappings, a scaler and a `keras` model. In order to train Magpie you can either provide the word2vec mappings and a scaler in advance or let the program compute them for you on the training data. Usually you would want to train them yourself on a full dataset and reuse them afterwards. You can use the provided functions for that purpose:
+A `Magpie` object consists of three components - the word2vec mappings, a scaler and a `keras` model. In order to train Magpie you can either provide the word2vec mappings and a scaler in advance or let the program compute them for you on the training data. Usually you would want to train them yourself on a full dataset and reuse them afterwards. You can use the provided functions for that purpose:
 
 ```python
 magpie.save_word2vec_model('/save/my/embeddings/here')
@@ -74,7 +73,7 @@ magpie.save_model('/save/my/model/here.h5')
 When you want to reinitialize your trained model, you can run:
 
 ```python
-magpie = MagpieModel(
+magpie = Magpie(
     keras_model='/save/my/model/here.h5',
     word2vec_model='/save/my/embeddings/here',
     scaler='/save/my/scaler/here',
@@ -87,9 +86,12 @@ or just pass the objects directly!
 
 The package is not on PyPi, but you can get it directly from GitHub:
 ```
-$ pip install git+https://github.com/inspirehep/magpie.git@v1.0
+$ pip install git+https://github.com/inspirehep/magpie.git@v2.0
 ```
 If you encounter any problems with the installation, make sure to install the correct versions of dependencies listed in `setup.py` file.
+
+## Magpie v1.0 vs v2.0
+Magpie v1.0 depends on Keras v1.X, while Magpie v2.0 on Keras v2.X. You can install and use either of those, but bear in mind that only v2.0 will be developed in the future. If you have troubles with installation, make sure that both Magpie and Keras have the same major version.
 
 ## Contact
 If you have any problems, feel free to open an issue. We'll do our best to help :+1:
