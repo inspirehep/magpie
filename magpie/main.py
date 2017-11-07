@@ -39,7 +39,7 @@ class Magpie(object):
 
     def train(self, train_dir, vocabulary, test_dir=None, callbacks=None,
               nn_model=NN_ARCHITECTURE, batch_size=BATCH_SIZE, test_ratio=0.0,
-              epochs=EPOCHS, verbose=1):
+              epochs=EPOCHS, metrics=[], verbose=1):
         """
         Train the model on given data
         :param train_dir: directory with data files. Text files should end with
@@ -82,7 +82,8 @@ class Magpie(object):
         self.keras_model = get_nn_model(
             nn_model,
             embedding=self.word2vec_model.vector_size,
-            output_length=len(vocabulary)
+            output_length=len(vocabulary),
+            metrics=metrics
         )
 
         (x_train, y_train), test_data = get_data_for_model(
@@ -109,7 +110,7 @@ class Magpie(object):
 
     def batch_train(self, train_dir, vocabulary, test_dir=None, callbacks=None,
                     nn_model=NN_ARCHITECTURE, batch_size=BATCH_SIZE,
-                    epochs=EPOCHS, verbose=1):
+                    epochs=EPOCHS, metrics=[], verbose=1):
         """
         Train the model on given data
         :param train_dir: directory with data files. Text files should end with
@@ -150,7 +151,8 @@ class Magpie(object):
         self.keras_model = get_nn_model(
             nn_model,
             embedding=self.word2vec_model.vector_size,
-            output_length=len(vocabulary)
+            output_length=len(vocabulary),
+            metrics=metrics
         )
 
         train_generator, test_data = get_data_for_model(

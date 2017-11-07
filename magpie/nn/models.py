@@ -5,16 +5,16 @@ from keras.models import Model
 from magpie.config import SAMPLE_LENGTH
 
 
-def get_nn_model(nn_model, embedding, output_length):
+def get_nn_model(nn_model, embedding, output_length, metrics):
     if nn_model == 'cnn':
-        return cnn(embedding_size=embedding, output_length=output_length)
+        return cnn(embedding, output_length, metrics)
     elif nn_model == 'rnn':
-        return rnn(embedding_size=embedding, output_length=output_length)
+        return rnn(embedding, output_length, metrics)
     else:
         raise ValueError("Unknown NN type: {}".format(nn_model))
 
 
-def cnn(embedding_size, output_length):
+def cnn(embedding_size, output_length, metrics):
     """ Create and return a keras model of a CNN """
 
     NB_FILTER = 256
@@ -47,13 +47,13 @@ def cnn(embedding_size, output_length):
     model.compile(
         loss='binary_crossentropy',
         optimizer='adam',
-        metrics=['top_k_categorical_accuracy'],
+        metrics=['top_k_categorical_accuracy'] + metrics,
     )
 
     return model
 
 
-def rnn(embedding_size, output_length):
+def rnn(embedding_size, output_length, metrics):
     """ Create and return a keras model of a RNN """
     HIDDEN_LAYER_SIZE = 256
 
@@ -76,7 +76,7 @@ def rnn(embedding_size, output_length):
     model.compile(
         loss='binary_crossentropy',
         optimizer='adam',
-        metrics=['top_k_categorical_accuracy'],
+        metrics=['top_k_categorical_accuracy'] + metrics,
     )
 
     return model
