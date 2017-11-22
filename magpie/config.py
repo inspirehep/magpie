@@ -14,4 +14,4 @@ BATCH_SIZE = 64
 EPOCHS = 1
 
 # Number of tokens to save from the abstract, zero padded
-SAMPLE_LENGTH = 200
+SAMPLE_LENGTH = 700
