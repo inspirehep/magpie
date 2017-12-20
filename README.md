@@ -14,7 +14,7 @@ Training...
 
 
 ## Short introduction
-To train the model you need to have a large corpus of labeled data in a text format. An example corpus can be found under `data/hep-categories` directory. Magpie looks for `.txt` files containing the text to predict on and corresponding `.lab` files with assigned labels in separate lines. A pair of files containing the labels and the text should have the same name and differ only in extensions e.g.
+To train the model you need to have a large corpus of labeled data in a text format encoded as UTF-8. An example corpus can be found under data/hep-categories directory. Magpie looks for `.txt` files containing the text to predict on and corresponding `.lab` files with assigned labels in separate lines. A pair of files containing the labels and the text should have the same name and differ only in extensions e.g.
 
 ```
 $ ls data/hep-categories
@@ -61,6 +61,7 @@ Trained models can be used for prediction with methods:
  ('Experiment-HEP', 0.64958507),
  ('Theory-HEP', 0.20917746)]
 ```
+
 ## Saving & loading the model
 A `Magpie` object consists of three components - the word2vec mappings, a scaler and a `keras` model. In order to train Magpie you can either provide the word2vec mappings and a scaler in advance or let the program compute them for you on the training data. Usually you would want to train them yourself on a full dataset and reuse them afterwards. You can use the provided functions for that purpose:
 
