@@ -91,6 +91,9 @@ $ pip install git+https://github.com/inspirehep/magpie.git@v2.0
 ```
 If you encounter any problems with the installation, make sure to install the correct versions of dependencies listed in `setup.py` file.
 
+## Disclaimer & citation
+The neural network models used within Magpie are based on work done by [Yoon Kim](https://arxiv.org/abs/1408.5882) and subsequently [Mark Berger](https://cs224d.stanford.edu/reports/BergerMark.pdf).
+
 ## Magpie v1 vs v2
 Magpie v1.0 depends on Keras v1.X, while Magpie v2.0 on Keras v2.X. You can install and use either of those, but bear in mind that only v2.0 will be developed in the future. For the change details between the two versions, consult [the releases page](https://github.com/inspirehep/magpie/releases/tag/v2.0).
 
