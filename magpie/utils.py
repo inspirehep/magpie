@@ -141,10 +141,10 @@ def get_coverage_ratio_for_label_subset(no_of_labels, hist=None):
     total_shots = sum([x[0] * x[1] for x in hist])
     labels_collected = 0
     hits_collected = 0
-    for papers, labs in reversed(hist):
-        hits_collected += papers * labs
-        labels_collected += labs
-        if labels_collected >= no_of_keywords:
+    for docs, label_count in reversed(hist):
+        hits_collected += docs * label_count
+        labels_collected += label_count
+        if labels_collected >= no_of_labels:
             return labels_collected, hits_collected / float(total_shots)
 
     return -1
