@@ -73,8 +73,9 @@ setup(
         'scipy~=0.18',
         'gensim~=0.13',
         'scikit-learn~=0.18',
-        'keras~=2.0',
+        'keras~=2.1.6',
         'h5py~=2.6',
+        'tensorflow~=1.11.0'
     ],
 
     # List additional groups of dependencies here (e.g. development

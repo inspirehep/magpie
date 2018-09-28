@@ -28,7 +28,6 @@ install:
   - conda create --yes -n test python=$TRAVIS_PYTHON_VERSION
   - source activate test
   - pip install -U pip six wheel setuptools
-  - conda install --yes numpy scipy scikit-learn nltk gensim theano tensorflow
   - python setup.py install
 
 script:
