@@ -70,7 +70,7 @@ setup(
     install_requires=[
         'nltk~=3.2',
         'numpy~=1.12',
-        'scipy~=0.18',
+        'scipy~=1.1.0',
         'gensim~=0.13',
         'scikit-learn~=0.18',
         'keras~=2.1.6',
