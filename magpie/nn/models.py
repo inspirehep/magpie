@@ -1,20 +1,25 @@
 from keras.layers import Input, Dense, GRU, Dropout, BatchNormalization, \
                          MaxPooling1D, Conv1D, Flatten, Concatenate
 from keras.models import Model
+import keras.backend as K
 
 from magpie.config import SAMPLE_LENGTH
 
+def top_custom_categorical_accuracy(k=1):
+    def top_k_categorical_accuracy(y_true, y_pred, k=1):
+        return K.mean(K.in_top_k(y_pred, K.argmax(y_true, axis=-1), k), axis=-1)
+    return top_k_categorical_accuracy
 
-def get_nn_model(nn_model, embedding, output_length):
+def get_nn_model(nn_model, embedding, output_length, k=1):
     if nn_model == 'cnn':
-        return cnn(embedding_size=embedding, output_length=output_length)
+        return cnn(embedding_size=embedding, output_length=output_length, k=k)
     elif nn_model == 'rnn':
-        return rnn(embedding_size=embedding, output_length=output_length)
+        return rnn(embedding_size=embedding, output_length=output_length, k=k)
     else:
         raise ValueError("Unknown NN type: {}".format(nn_model))
 
 
-def cnn(embedding_size, output_length):
+def cnn(embedding_size, output_length, k):
     """ Create and return a keras model of a CNN """
 
     NB_FILTER = 256
@@ -47,13 +52,13 @@ def cnn(embedding_size, output_length):
     model.compile(
         loss='binary_crossentropy',
         optimizer='adam',
-        metrics=['top_k_categorical_accuracy'],
+        metrics=[top_custom_categorical_accuracy(k)],
     )
 
     return model
 
 
-def rnn(embedding_size, output_length):
+def rnn(embedding_size, output_length, k):
     """ Create and return a keras model of a RNN """
     HIDDEN_LAYER_SIZE = 256
 
@@ -76,7 +81,7 @@ def rnn(embedding_size, output_length):
     model.compile(
         loss='binary_crossentropy',
         optimizer='adam',
-        metrics=['top_k_categorical_accuracy'],
+        metrics=[top_custom_categorical_accuracy(k)],
     )
 
     return model
