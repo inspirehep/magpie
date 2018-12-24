@@ -6,7 +6,7 @@ import keras.backend as K
 from magpie.config import SAMPLE_LENGTH
 
 def top_custom_categorical_accuracy(k=1):
-    def top_k_categorical_accuracy(y_true, y_pred, k=1):
+    def top_k_categorical_accuracy(y_true, y_pred):
         return K.mean(K.in_top_k(y_pred, K.argmax(y_true, axis=-1), k), axis=-1)
     return top_k_categorical_accuracy
 
