@@ -210,8 +210,8 @@ class Magpie(object):
         x_matrix = np.zeros((1, sample_length, embedding_size))
 
         for i, w in enumerate(words):
-            if w in self.word2vec_model:
-                word_vector = self.word2vec_model[w].reshape(1, -1)
+            if w in self.word2vec_model.wv:
+                word_vector = self.word2vec_model.wv[w].reshape(1, -1)
                 scaled_vector = self.scaler.transform(word_vector, copy=True)[0]
                 x_matrix[doc.doc_id][i] = scaled_vector
 

@@ -73,8 +73,8 @@ def build_x_and_y(filenames, file_directory, **kwargs):
         words = doc.get_all_words()[:SAMPLE_LENGTH]
 
         for i, w in enumerate(words):
-            if w in word2vec_model:
-                word_vector = word2vec_model[w].reshape(1, -1)
+            if w in word2vec_model.wv:
+                word_vector = word2vec_model.wv[w].reshape(1, -1)
                 x_matrix[doc_id][i] = scaler.transform(word_vector, copy=True)[0]
 
         labels = get_answers_for_doc(

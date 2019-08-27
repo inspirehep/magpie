@@ -50,8 +50,8 @@ def compute_word2vec_for_phrase(phrase, model):
     """
     result = np.zeros(model.vector_size, dtype='float32')
     for word in phrase.split():
-        if word in model:
-            result += model[word]
+        if word in model.wv:
+            result += model.wv[word]
 
     return result
 
@@ -78,8 +78,8 @@ def fit_scaler(data_dir, word2vec_model, batch_size=1024, persist_to_path=None):
         vectors = []
         for doc in batch:
             for word in doc.get_all_words():
-                if word in word2vec_model:
-                    vectors.append(word2vec_model[word])
+                if word in word2vec_model.wv:
+                    vectors.append(word2vec_model.wv[word])
 
         matrix = np.array(vectors)
         print("Fitted to {} vectors".format(matrix.shape[0]))
