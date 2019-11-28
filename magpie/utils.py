@@ -30,7 +30,7 @@ def load_from_disk(path_to_disk):
     if not os.path.exists(path_to_disk):
         raise ValueError("File " + path_to_disk + " does not exist")
 
-    return pickle.load(open(path_to_disk, 'rb'))
+    return pickle.load(open(path_to_disk, 'rb'), encoding='latin1')
 
 
 def get_documents(data_dir, as_generator=True, shuffle=False):
