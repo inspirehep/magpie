@@ -68,7 +68,7 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
         'nltk~=3.4',
-        'numpy~=1.17',
+        'numpy~=1.18.2',
         'gensim~=3.8.1',
         'scikit-learn~=0.22.2',
         'keras~=2.2.5',
