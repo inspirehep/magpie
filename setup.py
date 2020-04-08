@@ -67,7 +67,7 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
-        'nltk~=3.4',
+        'nltk~=3.4.5',
         'numpy~=1.18.2',
         'gensim~=3.8.1',
         'scikit-learn~=0.22.2',
