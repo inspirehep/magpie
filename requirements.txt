@@ -1,0 +1,7 @@
+nltk>=3.4
+numpy>=1.16.2
+setuptools>=39.0.1
+gensim>=3.4.0
+six>=1.11.0
+keras>=2.2.4
+scikit_learn>=0.20.3
