@@ -5,7 +5,7 @@ import os
 import sys
 from six import string_types
 
-import keras.models
+import tensorflow.keras.models
 import numpy as np
 
 from magpie.base.document import Document
